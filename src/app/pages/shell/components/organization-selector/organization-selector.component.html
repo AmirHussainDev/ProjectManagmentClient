@@ -1,0 +1,20 @@
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" nzTitle="Organizations" (nzOnClose)="close()">
+    <ng-container *nzDrawerContent>
+        <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
+            @for (item of data; track item) {
+            <nz-list-item nz-button nzType="text" (click)="setSubOrganization(item)">
+                <nz-list-item-meta nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                    nzDescription="">
+                    <nz-list-item-meta-title>
+                       {{ item.name }}
+                    </nz-list-item-meta-title>
+                </nz-list-item-meta>
+            </nz-list-item>
+            }
+            @if (data.length === 0) {
+            <nz-list-empty />
+            }
+        </nz-list>
+
+    </ng-container>
+</nz-drawer>

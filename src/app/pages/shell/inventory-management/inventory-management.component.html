@@ -1,0 +1,134 @@
+<div class="container">
+    <div class="section">
+        <!-- <h5 nz-typography>
+            Pending Invoices
+        </h5> -->
+        <div class="flex space-between" style="margin:12px"><span></span> <button (click)="isVisible=!isVisible"
+                nz-button nzType="primary" [nzSize]="'small'">
+                <span nz-icon nzType="plus"></span>
+
+            </button>
+        </div>
+        <nz-modal [(nzVisible)]="isVisible" nzTitle="Add inventory item" (nzOnCancel)="handleCancel()"
+            (nzOnOk)="submitForm()" [nzOkText]="'Submit'" [nzOkDisabled]="!inventoryItemForm.valid">
+            <ng-container *nzModalContent>
+                <form nz-form [formGroup]="inventoryItemForm" (ngSubmit)="submitForm()">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Stock In</nz-form-label>
+                        <nz-form-control>
+                            <nz-switch formControlName="stock_in"></nz-switch>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item *ngIf="inventoryItemForm.get('stock_in')?.value">
+                        <nz-form-label nzRequired>PO Number</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="purchase_id" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item *ngIf="!inventoryItemForm.get('stock_in')?.value">
+                        <nz-form-label nzRequired>Sale Id</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="sale_id" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Item name</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="name" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Vendor</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="vendor_id" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Quantity</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input (ngModelChange)="setTotal()" formControlName="qty" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Unit Price</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input (ngModelChange)="setTotal()" formControlName="unit_price" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Total</nz-form-label>
+                        <nz-form-control>
+                            <h4>{{this.inventoryItemForm.get('total')?.value | currency:'PKR '}}</h4>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Description</nz-form-label>
+                        <nz-form-control>
+                            <textarea nz-input formControlName="description"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+                </form>
+            </ng-container>
+        </nz-modal>
+
+
+        <nz-table [nzShowPagination]="false" [nzData]="inventory" [nzFrontPagination]="false" [nzLoading]="loading">
+            <thead>
+                <tr>
+                    <th nzWidth="60px"></th>
+                    <th nzColumnKey="item_name" [nzSortFn]="true">Name</th>
+                    <th nzColumnKey="vendor_name">Vendor</th>
+                    <th nzColumnKey="qty">Quantity</th>
+                    <th nzColumnKey="latest_unit_price">Unit Price</th>
+                    <th nzColumnKey="total">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of inventory; let i = index">
+                    <tr>
+                        <td [nzExpand]="expandSet.has(data.item_name)" [nzExpandIcon]="expandIcon"></td>
+
+                        <td> {{data.item_name}} </td>
+                        <td> {{data.vendor_name}} </td>
+                        <td> {{data.qty}} </td>
+                        <td> {{data.latest_unit_price | currency : 'PKR ' }} </td>
+                        <td> {{(data.qty* data.latest_unit_price) | currency : 'PKR '}} </td>
+                    </tr>
+                    <tr [nzExpand]="expandSet.has(data.item_name)">
+                        <nz-table [nzShowPagination]="false" [nzData]="data.subDetails" [nzFrontPagination]="false"
+                            [nzLoading]="loading">
+                            <thead>
+                                <tr>
+                                    <th nzColumnKey="qty">Reference #</th>
+                                    <th nzColumnKey="qty">Quantity</th>
+                                    <th nzColumnKey="latest_unit_price">Unit Price</th>
+                                    <th nzColumnKey="total">Total</th>
+                                </tr>
+                            </thead>
+            <tbody>
+                <ng-container *ngFor="let subData of data.subDetails; let i = index">
+                    <tr [className]="subData.stock_in?'purchase-row':'sale-row'">
+                        <td> {{subData.stock_in ?'PO- ':'SALE -'}}
+                            {{subData.stock_in?subData.purchase_id:subData.sale_id}} </td>
+                        <td> {{subData.stock_in ?'+':'-'}} {{subData.qty}} </td>
+                        <td> {{subData.unit_price | currency : 'PKR ' }} </td>
+                        <td> {{subData.total | currency : 'PKR '}} </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </nz-table>
+
+        </tr>
+        <ng-template #expandIcon>
+            <span nz-icon *ngIf="!expandSet.has(data.item_name)" nzType="caret-right" nzTheme="outline"
+                (click)="onExpandChange(data.item_name, true,i)"></span>
+            <span nz-icon *ngIf="expandSet.has(data.item_name)" nzType="caret-down" nzTheme="outline"
+                (click)="onExpandChange(data.item_name, false,i)"></span>
+        </ng-template>
+        </ng-container>
+        </tbody>
+        </nz-table>
+
+
+    </div>
+</div>

@@ -1,0 +1,47 @@
+.green-button {
+    background-color: rgb(114, 226, 114);
+}
+
+.green-button,
+.default {
+    font-size: 11px;
+    text-wrap: nowrap;
+    border: none;
+}
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.card-container ::ng-deep p {
+    margin: 0;
+}
+
+.card-container ::ng-deep>.ant-tabs-card .ant-tabs-content {
+    margin-top: -16px;
+    margin-bottom: 16px;
+
+}
+
+.card-container ::ng-deep>.ant-tabs-card .ant-tabs-content>.ant-tabs-tabpane {
+    background: #ffffffb6;
+    padding: 16px;
+}
+
+.card-container ::ng-deep>.ant-tabs-card>.ant-tabs-nav::before {
+    display: none;
+}
+
+.card-container ::ng-deep>.ant-tabs-card .ant-tabs-tab {
+    border-color: transparent;
+    background: transparent;
+}
+
+.card-container ::ng-deep>.ant-tabs-card .ant-tabs-tab-active {
+    background: #ffffffb6;
+}
+
+.num_details ::ng-deep >.ant-card-body {
+    padding: 4px;
+}

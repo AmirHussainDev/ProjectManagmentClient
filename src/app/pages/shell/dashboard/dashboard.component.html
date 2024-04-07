@@ -1,0 +1,62 @@
+<div class="dashboard"><nz-row nzGutter="16" style="margin-bottom: 12px;">
+        <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24">
+
+            <nz-card style="margin-bottom: 12px;" *ngIf="showTopTen">
+                <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions"
+                    [constructorType]="chartConstructor" style="width: 100%;display: block;"></highcharts-chart>
+
+            </nz-card>
+        </nz-col>
+
+        <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="14" [nzXl]="14" [nzXXl]="14">
+            <nz-card *ngIf="showTopTen">
+                <highcharts-chart [Highcharts]="Highcharts" [options]="piechartOptions"
+                    [constructorType]="chartConstructor" style="width: 100%;display: block;"></highcharts-chart>
+            </nz-card>
+        </nz-col>
+
+        <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="10" [nzXl]="10" [nzXXl]="10">
+            <nz-card>
+                <div class="flex space-between center">
+                    <h5 style="text-wrap: nowrap; margin-right: 10px;">Monthly Stock Trend</h5>
+                    <nz-select class="inputField" [(ngModel)]="selectedItem" (ngModelChange)="setItemBasedTrend()"
+                        nzPlaceHolder="Select item" style="width: 50px; ">
+                        <nz-option *ngFor="let item of items" [nzLabel]="item" [nzValue]="item"></nz-option>
+                    </nz-select>
+                </div>
+                <highcharts-chart *ngIf="showMonthly" [Highcharts]="Highcharts" [options]="lineChartOptions"
+                    [constructorType]="chartConstructor" style="width: 100%;display: block;"></highcharts-chart>
+            </nz-card>
+        </nz-col>
+        <nz-col class="num_details" [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24">
+            <nz-row nzGutter="8">
+                <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
+                    <nz-card style="margin-top: 12px;;margin-bottom: 12px;" [title]="'Current Stock'">
+                        <h3> Current Stock</h3>
+                        <h5> {{2650 | currency:'PKR '}}</h5>
+                    </nz-card>
+                </nz-col>
+                <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
+                    <nz-card style="margin-top: 12px;margin-bottom: 12px;" [title]="'Max Sales'">
+                        <h3> Max Sales</h3>
+                        <h5> {{2650 | currency:'PKR '}}</h5>
+                    </nz-card>
+                </nz-col>
+                <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
+                    <nz-card style="margin-top: 12px;margin-bottom: 12px;">
+                        <h3> Products Sold</h3>
+                        <h5> {{2650 | currency:'PKR '}}</h5>
+                    </nz-card>
+                </nz-col>
+                <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
+                    <nz-card style="margin-top: 12px;margin-bottom: 12px;">
+                        <h3> Current Stock Value</h3>
+                        <h5> {{2650 | currency:'PKR '}}</h5>
+                    </nz-card>
+                </nz-col>
+            </nz-row>
+
+        </nz-col>
+
+    </nz-row>
+</div>

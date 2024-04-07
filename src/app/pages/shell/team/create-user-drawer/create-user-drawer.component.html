@@ -1,0 +1,63 @@
+<nz-drawer [nzBodyStyle]="{ overflow: 'auto' }" [nzMaskClosable]="false" [nzWidth]="720" [nzVisible]="visible"
+    nzTitle="Create" [nzFooter]="footerTpl" (nzOnClose)="close()">
+    <nz-form *nzDrawerContent [formGroup]="userForm">
+        <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label>Name</nz-form-label>
+                    <nz-form-control>
+                        <input formControlName="name" nz-input placeholder="please enter user name" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label>Reports To</nz-form-label>
+                    <nz-form-control>
+                        <nz-select id="reports_to" formControlName="reports_to" placeholder="Select user"
+                            *ngIf="users.length">
+                            <nz-option *ngFor="let user of users" [nzValue]="user?.id"
+                                [nzLabel]="user?.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label>Role Name</nz-form-label>
+                    <nz-form-control>
+                        <nz-select id="role_id" formControlName="role_id" placeholder="Select role">
+                            <nz-option *ngFor="let role of userRoles"
+                                [nzValue]="role?.value" [nzLabel]="role?.key"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label>Organization </nz-form-label>
+                    <nz-form-control>
+                        <nz-select id="sub_organization_id" formControlName="sub_organization_id" placeholder="Select Organization"
+                            *ngIf="subOrganizations.length">
+                            <nz-option *ngFor="let sub of subOrganizations" [nzValue]="sub.id"
+                                [nzLabel]="sub.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </nz-form>
+
+    <ng-template #footerTpl>
+        <div style="float: right">
+            <button nz-button style="margin-right: 8px;" (click)="close()">Cancel</button>
+            <button nz-button nzType="primary" [disabled]="!userForm.valid" (click)="addUser()">Submit</button>
+        </div>
+    </ng-template>
+</nz-drawer>

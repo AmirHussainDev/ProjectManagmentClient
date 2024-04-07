@@ -1,0 +1,52 @@
+<button nz-button nzType="primary" (click)="open()">Add</button>
+<app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible" [userRoles]="userRoles" [users]="listOfData"
+    (closeDrawer)="close($event)"></app-create-user-drawer>
+<nz-table #editRowTable #sortTable [nzData]="listOfData" nzTableLayout="fixed">
+    <thead>
+        <tr>
+            <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+                {{ column.title }}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of sortTable.data">
+            <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
+                <td>{{ data.name }}</td>
+                <td>{{ data.reportTo }}</td>
+                <td>{{ data.roleName }}</td>
+                <td>{{ data.sub_organization }}</td>
+                <td><a (click)="startEdit(data.id)">Edit</a></td>
+            </ng-container>
+            <ng-template #editTemplate>
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" /></td>
+                <td>
+                    <nz-select id="reports_to" [(ngModel)]="editCache[data.id].data.reports_to"
+                        placeholder="Select user" *ngIf="listOfData.length">
+                        <nz-option *ngFor="let user of listOfData" [nzValue]="user?.id"
+                            [nzLabel]="user?.name"></nz-option>
+                    </nz-select>
+                </td>
+                <td>
+                    <nz-select id="role_id" [(ngModel)]="editCache[data.id].data.role_id" placeholder="Select role">
+                        <nz-option *ngFor="let role of userRoles" [nzValue]="role?.value"
+                            [nzLabel]="role?.key"></nz-option>
+                    </nz-select>
+
+                </td>
+ 
+                <td>
+                    <nz-select id="role_id" [(ngModel)]="editCache[data.id].data.sub_organization_id" placeholder="Select role">
+                        <nz-option *ngFor="let sub of subOrganizations" [nzValue]="sub?.value || 0"
+                            [nzLabel]="sub?.key || ''"></nz-option>
+                    </nz-select>
+
+                </td>
+                <td>
+                    <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
+                    <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+                </td>
+            </ng-template>
+        </tr>
+    </tbody>
+</nz-table>

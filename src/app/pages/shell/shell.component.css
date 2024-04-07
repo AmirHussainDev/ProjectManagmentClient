@@ -1,0 +1,65 @@
+.trigger {
+    font-size: 18px;
+    line-height: 50px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.ant-layout-header{
+    line-height: 50px;
+}
+.trigger:hover {
+    color: #1890ff;
+}
+
+.logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+    img{
+        height: 32px;
+        width: 100%;
+    }
+}
+
+nz-header {
+    background: #ffffff82;
+    padding: 0;
+    color: white;
+}
+
+nz-content {
+    margin: 0 16px;
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.inner-content {
+    padding: 24px;
+    background: #fff;
+    min-height: 360px;
+}
+
+nz-footer {
+    padding: 5px 5px;
+    color: white;
+    font-size: 9px;
+    background: #f0f2f51f;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+}
+
+.app-shell,
+app-shell {
+    width: 100% !important;
+}
+ 
+.userbtn{
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 0px !important;
+    color: white;
+}

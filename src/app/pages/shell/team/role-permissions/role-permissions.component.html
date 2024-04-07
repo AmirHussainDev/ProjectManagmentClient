@@ -1,0 +1,57 @@
+<div>
+    <button nz-button nzType="primary" (click)="showModal()">Add Role</button>
+</div>
+
+<!-- Modal for adding role name -->
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="Add Role" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <nz-form *nzModalContent [formGroup]="addRoleForm">
+        <nz-form-item>
+            <nz-form-label nzRequired>Role Name</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input role name">
+                <input nz-input formControlName="role_name" />
+            </nz-form-control>
+        </nz-form-item>
+    </nz-form>
+
+</nz-modal>
+
+<!-- Sections for each role with permissions checkboxes -->
+<div>
+
+    <nz-table #editRowTable #fixedTable [nzData]="roles" [nzScroll]="{ x: '1000px' }">
+        <thead>
+            <tr>
+                <th nzLeft>Role Name</th>
+
+                <th *ngFor="let item of appPermissions | keyvalue"> {{
+                    permissionNames[item.value]}}</th>
+<th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of roles">
+                <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
+                    <td nzLeft>{{ data.role_name }}</td>
+                    <td *ngFor="let item of appPermissions | keyvalue">
+                        <label nz-checkbox disabled [(ngModel)]="data.role_permissions[item.value]"></label>
+                    </td>
+                    <td>
+                        <a (click)="startEdit(data.id)">Edit</a>
+                    </td>
+                </ng-container>
+                <ng-template #editTemplate>
+                    <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.role_name" /></td>
+                    <td *ngFor="let item of appPermissions | keyvalue">
+                        <label nz-checkbox [(ngModel)]="data.role_permissions[item.value]"></label>
+                    </td>
+                    <td>
+                        <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
+                        <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?"
+                            (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+                    </td>
+                </ng-template>
+            </tr>
+        </tbody>
+    </nz-table>
+
+</div>

@@ -1,0 +1,7 @@
+<nz-breadcrumb>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" *ngFor="let breadcrumb of breadcrumbs | async">
+            <nz-breadcrumb-item>&nbsp; / {{ breadcrumb }}</nz-breadcrumb-item>
+        </li>
+    </ol>
+</nz-breadcrumb>

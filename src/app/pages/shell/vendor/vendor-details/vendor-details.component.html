@@ -1,0 +1,21 @@
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" [nzPlacement]="placement" [nzTitle]="vendor.name"
+    (nzOnClose)="onClose()">
+
+    <div *nzDrawerContent class="vendor-details">
+            <input nz-input placeholder="Enter product name" [(ngModel)]="newProduct" style="margin-bottom: 12px;">
+            <button nz-button nzType="primary" (click)="handleAddProduct()" style="margin-bottom: 12px;">Add
+                Product</button>
+            <nz-table [nzData]="products" nzShowPagination="false" nzBordered>
+                <thead>
+                    <tr>
+                        <th nzWidth="50%">Product Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of products; let i = index">
+                        <td>{{ product.name }}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+    </div>
+</nz-drawer>

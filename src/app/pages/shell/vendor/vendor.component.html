@@ -1,0 +1,72 @@
+<div>
+    <button nz-button nzType="primary" (click)="showModal()">Add Vendor</button>
+</div>
+<app-vendor-details *ngIf="drawerVisible" [vendor]="selectedVendor" (closeDrawer)="drawerVisible=false"
+    [visible]="drawerVisible"></app-vendor-details>
+
+<!-- Modal for adding Vendor name -->
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="Add Vendor" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <nz-form *nzModalContent [formGroup]="addVendorForm">
+        <nz-form-item>
+            <nz-form-label nzRequired>Vendor Name</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input Vendor name">
+                <input nz-input formControlName="name" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>Vendor Name</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input Vendor name">
+
+                <nz-upload class="avatar-uploader" nzAction="null" nzName="avatar" nzListType="picture-card"
+                    [nzShowUploadList]="false" [nzBeforeUpload]="beforeUpload" (nzChange)="handleChange($event)">
+                    <ng-container *ngIf="!avatarUrl">
+                        <span class="upload-icon" nz-icon [nzType]="loading ? 'loading' : 'plus'"></span>
+                        <div class="ant-upload-text">Upload</div>
+                    </ng-container>
+                    <img *ngIf="avatarUrl" [src]="avatarUrl" style="width: 100%" />
+                </nz-upload>
+            </nz-form-control>
+        </nz-form-item>
+
+    </nz-form>
+
+</nz-modal>
+<!-- <app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible"
+    [userVendors]="userVendors" [users]="listOfData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
+<nz-table #editRowTable #sortTable [nzData]="listOfData" nzTableLayout="fixed">
+    <thead>
+        <tr>
+            <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+                {{ column.title }}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of sortTable.data">
+            <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
+
+                <td>
+                    <div>
+                        <span nz-button (click)="viewDetails(data)" nz-icon nzType="profile" nzTheme="outline"></span>
+                        <img  class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
+                        <span> {{ data.name }}</span>
+
+                    </div>
+                </td>
+                <td>
+                    <a (click)="startEdit(data.id)">Edit</a>
+                </td>
+            </ng-container>
+            <ng-template #editTemplate>
+                <td>
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" />
+                </td>
+
+                <td>
+                    <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
+                    <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+                </td>
+            </ng-template>
+        </tr>
+    </tbody>
+</nz-table>

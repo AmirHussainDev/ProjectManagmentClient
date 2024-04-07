@@ -1,1 +1,189 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    background: #DDD0C8;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.p4 {
+    padding: 1em;
+
+}
+
+.app-shell,
+app-shell {
+    width: 100% !important;
+    height: 100vh;
+}
+
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.center {
+    align-items: center;
+}
+
+.content-main {
+    overflow-y: auto;
+    margin: 0px !important;
+    padding: 10px;
+
+}
+
+.ant-breadcrumb {
+    top: -6px;
+    position: relative;
+    left: 0px;
+    padding: 4px 21px;
+    background: #ddefff;
+    color: white;
+    font-size: 11px;
+    box-shadow: -3px 5px 5px -6px #000000a6;
+}
+
+.ant-layout-header {
+    height: 50px
+}
+
+.ant-breadcrumb-link {
+    color: #0000008f !important;
+}
+
+.smallIcon {
+    width: 32px;
+    height: 32px;
+}
+
+.inputField {
+    width: 100% !important;
+}
+
+.ant-form-item-control-input {
+    width: 100%;
+}
+
+tfoot tr td {
+    border: none !important
+}
+
+.ant-table-placeholder {
+    display: none;
+}
+
+.detailBar {
+    display: flex;
+    width: 100%;
+    margin-left: auto;
+    justify-content: space-between;
+    align-items: center;
+    background: #DDEFFF;
+    padding: 5px;
+    border: 1px solid #d5dfe8;
+}
+
+.appbackground {
+    background: url('../28.jpg');
+    background-size: cover
+}
+
+.ant-card {
+    background: #ddefffe0;
+}
+
+.ant-table {
+    background: #ffffffa8;
+    border-radius: 8px 8px 0px 0px !important;
+}
+
+.ant-table-footer,
+.ant-table-thead>tr>th {
+    color: white !important;
+    background: #282020ad !important;
+
+}
+
+.ant-table-tbody>tr.ant-table-row:hover>td,
+.ant-table-tbody>tr>td.ant-table-cell-row-hover {
+    background: #fafafa69;
+}
+
+.ant-table tfoot>tr>td,
+.ant-table tfoot>tr>th,
+.ant-table-tbody>tr>td,
+.ant-table-thead>tr>th {
+    position: relative;
+    padding: 8px;
+    font-size: 12px;
+    overflow-wrap: break-word;
+}
+
+.ant-table-expanded-row .ant-table-wrapper {
+    margin: 7px 8px 7px -8px;
+}
+
+.purchase-row {
+    background: #c6ffc6;
+}
+
+.sale-row {
+    background: #ffe1e1;
+}
+
+input.ng-invalid {
+    border: 1px solid red;
+}
+
+.error {
+    color: red;
+}
+
+td>input {
+    width: 100px;
+    display: flex;
+}
+
+.ant-input {}
+.ant-layout-sider-children {
+
+    overflow: auto;
+    padding-bottom: 25px;
+
+
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 5px;
+}
+ 
+::-webkit-scrollbar-track {
+    background-color: #ebebeb18;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: #ffffff82; 
+}
+
+.header-button{
+    border-radius: 13px !important;
+    background: #f0f8ff52 !important;
+    color: white !important ;
+    margin-left: 14px !important;
+}
+
+.header-button > .ant-select-selector{
+    border-radius: inherit !important;
+    background: none !important;
+    color: inherit !important;
+}
