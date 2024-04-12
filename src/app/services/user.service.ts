@@ -35,7 +35,7 @@ export class UserService {
   async getOrganizationUsers(): Promise<User[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/users/${organization_id}`).toPromise();
+      const response = await this.http.get(`/api/users/${organization_id}`).toPromise();
       return response as User[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -48,7 +48,7 @@ export class UserService {
   async createUser(userObj:UserCreateObj): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.post(`${environment.apiUrl}/users`,userObj).toPromise();
+      const response = await this.http.post(`/api/users`,userObj).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -61,7 +61,7 @@ export class UserService {
   async updateUser(userObj:any): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.put(`${environment.apiUrl}/users`,userObj).toPromise();
+      const response = await this.http.put(`/api/users`,userObj).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing

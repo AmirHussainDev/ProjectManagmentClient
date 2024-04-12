@@ -14,7 +14,7 @@ export class IntegrationService {
 
     // Method to fetch integration details from an API endpoint
     fetchIntegrationDetails(): Promise<any> {
-        return this.http.get<any>(`${environment.apiUrl}/organizations`).toPromise().then((data: any) => {
+        return this.http.get<any>(`/api/organizations`).toPromise().then((data: any) => {
             if (isPlatformBrowser(this.platformId)) {
                 localStorage.setItem('organizations', JSON.stringify(data));
                 if (data && data.length && data.some((org: any) => org.domain_name == location.hostname)) {

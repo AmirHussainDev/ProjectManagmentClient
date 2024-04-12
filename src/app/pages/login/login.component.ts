@@ -35,7 +35,7 @@ export class LoginComponent {
       const saltOrRounds = 20;
       const password = this.validateForm.value.password || '';
       const username = this.validateForm.value.username || '';
-      this.http.post<any>(`${environment.apiUrl}/auth/login`,
+      this.http.post<any>(`/api/auth/login`,
         {
           organization_id: this.organization_id,
           username,

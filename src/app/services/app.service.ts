@@ -22,7 +22,7 @@ export class AppService {
 
   getAndSetSites() {
     const organization_id = localStorage.getItem('organization_id');
-    return this.http.get(`${environment.apiUrl}/sites/${organization_id}`, { headers: this.header }).toPromise()
+    return this.http.get(`/api/sites/${organization_id}`, { headers: this.header }).toPromise()
   }
 
   setSites(sites: any) {
@@ -41,7 +41,7 @@ export class AppService {
   async getSubOrganizations(setDefault = false): Promise<SubOrganization[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/organizations/${organization_id}`).toPromise();
+      const response = await this.http.get(`/api/organizations/${organization_id}`).toPromise();
       const subOrgs = response as SubOrganization[]
       if (subOrgs && subOrgs.length && setDefault && localStorage.getItem('sub_organization_id')) {
         const subOrg = subOrgs.find((sub) => sub.id == (localStorage.getItem('sub_organization_id') || 0))
@@ -58,7 +58,7 @@ export class AppService {
 
   async createRole(userObj: RoleCreateObj): Promise<Role> {
     try {
-      const response = await this.http.post(`${environment.apiUrl}/role-permissions`, userObj).toPromise();
+      const response = await this.http.post(`/api/role-permissions`, userObj).toPromise();
       return response as Role;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -69,7 +69,7 @@ export class AppService {
 
   async updateRole(roleObj: any): Promise<Role> {
     try {
-      const response = await this.http.put(`${environment.apiUrl}/role-permissions`, roleObj).toPromise();
+      const response = await this.http.put(`/api/role-permissions`, roleObj).toPromise();
       return response as Role;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -84,7 +84,7 @@ export class AppService {
       body.append('name', name)
       body.append('file', file)
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.post(`${environment.apiUrl}/organizations/vendor/${organization_id}`, body).toPromise();
+      const response = await this.http.post(`/api/organizations/vendor/${organization_id}`, body).toPromise();
       return response as Role;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -97,7 +97,7 @@ export class AppService {
     try {
       const organization_id = localStorage.getItem('organization_id');
 
-      const response = await this.http.put(`${environment.apiUrl}/organizations/vendor/${organization_id}/${roleObj.id}`, roleObj).toPromise();
+      const response = await this.http.put(`/api/organizations/vendor/${organization_id}/${roleObj.id}`, roleObj).toPromise();
       return response as Role;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -110,7 +110,7 @@ export class AppService {
   async getVendors(): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/organizations/vendor/${organization_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/organizations/vendor/${organization_id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -123,7 +123,7 @@ export class AppService {
   async getVendorItems(vendorId: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/organizations/vendor-items/${organization_id}/${vendorId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/organizations/vendor-items/${organization_id}/${vendorId}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -135,7 +135,7 @@ export class AppService {
   async addVendorItem(vendorId: any, name: string): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.post(`${environment.apiUrl}/organizations/vendor-item/${organization_id}/${vendorId}`, { name }, { headers: this.header }).toPromise()
+      const response = await this.http.post(`/api/organizations/vendor-item/${organization_id}/${vendorId}`, { name }, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -148,7 +148,7 @@ export class AppService {
   async getSites(): Promise<Site[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/Sites/${organization_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/Sites/${organization_id}`, { headers: this.header }).toPromise()
       return response as Site[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -159,7 +159,7 @@ export class AppService {
   async getRolesAndPermissions(): Promise<Role[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/role-permissions/${organization_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/role-permissions/${organization_id}`, { headers: this.header }).toPromise()
       return response as Role[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -171,7 +171,7 @@ export class AppService {
   async getRoles(): Promise<Role[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/role-permissions/roles/${organization_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/role-permissions/roles/${organization_id}`, { headers: this.header }).toPromise()
       return response as Role[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -184,7 +184,7 @@ export class AppService {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const sub_organization_id = localStorage.getItem('sub_organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
       const subOrg = response as SubOrganization
       this.currentSubOrganization.next(subOrg);
       this.currentSubOrgId = subOrg.id;
@@ -198,7 +198,7 @@ export class AppService {
 
   async addSaleRequest(po: { details: PurchaseOrder, products: PurchaseItem[] }): Promise<any[]> {
     try {
-      const response = await this.http.post(`${environment.apiUrl}/inventory-purchase/sale`, po, { headers: this.header }).toPromise()
+      const response = await this.http.post(`/api/inventory-purchase/sale`, po, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting purchase request', error);
@@ -208,7 +208,7 @@ export class AppService {
 
   async updateSaleRequest(po: { details: PurchaseOrder, products: PurchaseItem[] }): Promise<any[]> {
     try {
-      const response = await this.http.put(`${environment.apiUrl}/inventory-purchase/sale`, po, { headers: this.header }).toPromise()
+      const response = await this.http.put(`/api/inventory-purchase/sale`, po, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting purchase request', error);
@@ -218,7 +218,7 @@ export class AppService {
 
   async addPurchaseRequest(po: { details: PurchaseOrder, products: PurchaseItem[] }): Promise<any[]> {
     try {
-      const response = await this.http.post(`${environment.apiUrl}/inventory-purchase`, po, { headers: this.header }).toPromise()
+      const response = await this.http.post(`/api/inventory-purchase`, po, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting purchase request', error);
@@ -228,7 +228,7 @@ export class AppService {
 
   async updatePurchaseRequest(po: { details: PurchaseOrder, products: PurchaseItem[] }): Promise<any[]> {
     try {
-      const response = await this.http.put(`${environment.apiUrl}/inventory-purchase`, po, { headers: this.header }).toPromise()
+      const response = await this.http.put(`/api/inventory-purchase`, po, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting purchase request', error);
@@ -239,7 +239,7 @@ export class AppService {
   async retirevePOByState(params: HttpParams): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/purchase-request-by-filter/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
+      const response = await this.http.get(`/api/inventory-purchase/purchase-request-by-filter/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -250,7 +250,7 @@ export class AppService {
   async retireveSaleByState(params: HttpParams): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/sale-request-by-filter/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
+      const response = await this.http.get(`/api/inventory-purchase/sale-request-by-filter/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -261,7 +261,7 @@ export class AppService {
   async retirevePOById(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/purchase-request-by-id/${organization_id}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/inventory-purchase/purchase-request-by-id/${organization_id}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -272,7 +272,7 @@ export class AppService {
   async retireveSaleById(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/sale-request-by-id/${organization_id}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/inventory-purchase/sale-request-by-id/${organization_id}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -283,7 +283,7 @@ export class AppService {
   async getInventoryBySubOrganization(currentSubOrgId:number): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/inventory/${organization_id}/${currentSubOrgId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/inventory-purchase/inventory/${organization_id}/${currentSubOrgId}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -294,7 +294,7 @@ export class AppService {
   async getInventory(currentOrganizationId=0): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/inventory/${organization_id}/${currentOrganizationId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/inventory-purchase/inventory/${organization_id}/${currentOrganizationId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -305,7 +305,7 @@ export class AppService {
   async getInventoryItemDetails(name: string): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${environment.apiUrl}/inventory-purchase/inventory-item-details/${organization_id}/${this.currentSubOrgId}?name=${name}`, {
+      const response = await this.http.get(`/api/inventory-purchase/inventory-item-details/${organization_id}/${this.currentSubOrgId}?name=${name}`, {
         headers: this.header,
         
       }).toPromise()
@@ -326,7 +326,7 @@ export class AppService {
         sub_organization_id: this.currentSubOrgId
       }
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.post(`${environment.apiUrl}/inventory-purchase/inventory`, body, { headers: this.header }).toPromise()
+      const response = await this.http.post(`/api/inventory-purchase/inventory`, body, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
