@@ -1,10 +1,10 @@
 <div class="app-shell">
   <nz-layout style="height: 100%;">
     <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null"
-      [nzWidth]="!isCollapsed && isMobile()? '100%':'200px'">
+      [nzWidth]="!isCollapsed && isMobile()? '100%' :'200px'" [nzCollapsedWidth]="45">
       <div [class]="!isCollapsed?'flex center space-between':'flex center space-around'">
-        <span class="logo flex center" style="background: #001529;">
-          <img src="../../../assets/veins.png" alt="">
+        <span class="logo flex center" [style]="isCollapsed?'padding-left:2px':'padding-left:24px'">
+          <img src="../../../assets/veins-v.png" alt="">
           <span class="heading" *ngIf="!isCollapsed">
             VEINS
           </span>
@@ -14,10 +14,6 @@
           [class]="!isCollapsed && isMobile()?'lightFont':'darkFont'" (click)="isCollapsed = !isCollapsed"></span>
       </div>
       <ul nz-menu nzTheme="dark" nzMode="inline">
-        <li nz-menu-item>
-          <span nz-icon nzType="file"></span>
-          <span>File</span>
-        </li>
         <li nz-menu-item>
           <span nz-icon nzType="dashboard"></span>
           <span>
@@ -78,26 +74,28 @@
       </ul>
       <nz-footer *ngIf="!isCollapsed">Veins system ©2024 Implement By SA3</nz-footer>
     </nz-sider>
-    <nz-layout class="appbackground" *ngIf="!isMobile() || (isCollapsed&&isMobile())">
+    <nz-layout class="appbackground" *ngIf="!isMobile() || (isCollapsed && isMobile())">
       <nz-header>
-        <div class="flex space-between center">
+        <div class="flex space-between center" style="flex-wrap: wrap;">
           <span class="flex center">
             <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
               (click)="isCollapsed = !isCollapsed"></span>
-            <h3>Home</h3>
+            <h3 class="header-text">Home</h3>
           </span>
-          <span class="flex center">
-            <button nz-button class="header-button" (click)="toggleOrganizations()">
-              {{currentSubOrganization.name}}
-              <span nz-icon nzType="down"></span>
-            </button>
-            <app-organization-selector [visible]="showOrganizations"
-              (closeDrawer)="toggleOrganizations()"></app-organization-selector>
-            <nz-form [formGroup]="siteForm">
-              <nz-select id="site" class="header-button" formControlName="site" placeholder="Select sites">
-                <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem" [nzLabel]="siteItem.label"></nz-option>
-              </nz-select>
-            </nz-form>
+          <span class="flex center space-between" [style.width]="isMobile()?'100%':'auto'">
+            <span>
+              <button nz-button class="header-button" (click)="toggleOrganizations()">
+                {{currentSubOrganization.name}}
+                <span nz-icon nzType="down"></span>
+              </button>
+              <app-organization-selector [visible]="showOrganizations"
+                (closeDrawer)="toggleOrganizations()"></app-organization-selector>
+              <nz-form [formGroup]="siteForm">
+                <nz-select id="site" class="header-button" formControlName="site" placeholder="Select sites">
+                  <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem" [nzLabel]="siteItem.label"></nz-option>
+                </nz-select>
+              </nz-form>
+            </span>
             <button nz-button class="userbtn" nzType="text" nz-dropdown [nzDropdownMenu]="menu1">
               <nz-avatar style="background-color: #f56a00;margin-right: 5px;"
                 [nzText]="getUserInitials(loggedInUser.name)"></nz-avatar>

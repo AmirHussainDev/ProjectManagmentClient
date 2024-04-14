@@ -1,7 +1,8 @@
 .trigger {
     font-size: 18px;
     line-height: 50px;
-    padding: 0 24px;
+    padding: 0 16px;
+    margin-top: 3px;
     cursor: pointer;
     transition: color 0.3s;
 }
@@ -10,20 +11,45 @@
     line-height: 50px;
 }
 
-.trigger:hover {
-    color: #1890ff;
+.header-text{
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: white;
+    margin: auto;
 }
 
 .logo {
     height: 32px;
     background: rgba(255, 255, 255, 0.2);
-    margin: 16px;
-
+    margin-top: 12px;
+    background: #001529;
+    padding-left: 24px;
     img {
         height: 32px;
         width: 100%;
     }
 }
+
+@media (max-width: 600px) {
+    .ant-layout-header {
+        height: 70px;
+        line-height: 22px;
+    }
+    .trigger {
+        line-height: 33px;
+        margin-top: 3px 
+    }
+    .logo {
+        margin-top: 5px !important;
+        margin: 0px;
+        padding-left: 24px;
+    }
+}
+
+.trigger:hover {
+    color: #1890ff;
+}
+
 
 nz-header {
     background: #ffffff82;
@@ -74,15 +100,16 @@ app-shell {
 .nav-link {
     color: white;
 }
-.lightFont{
-    color:white !important
+
+.lightFont {
+    color: white !important
 }
 
-.heading{
+.heading {
     font-family: revert;
     color: white;
     font-weight: 800;
     font-size: 22px;
     white-space: pre;
-    letter-spacing: 0.5em;
+    letter-spacing: 0.4em;
 }
