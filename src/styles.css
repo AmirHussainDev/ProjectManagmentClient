@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 body {
-    background: #DDD0C8;
+    background: url('../28.jpg') !important;
 }
 
 .text-center {
@@ -38,7 +38,7 @@ app-shell {
     align-items: center;
 }
 
-.content-main {
+-main {
     overflow-y: auto;
     margin: 0px !important;
     padding: 10px;
@@ -97,8 +97,8 @@ tfoot tr td {
 }
 
 .appbackground {
-    background: url('../28.jpg');
-    background-size: cover
+    background: url('../28.jpg') !important;
+    background-size: cover !important
 }
 
 .ant-card {

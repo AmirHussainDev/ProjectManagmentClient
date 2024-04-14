@@ -1,20 +1,24 @@
 <div class="app-shell">
   <nz-layout style="height: 100%;">
     <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null"
-      [nzWidth]="!isCollapsed && isMobile()? '100%' :'200px'" [nzCollapsedWidth]="55">
-      <div [class]="!isCollapsed?'logo flex center space-between':'logo flex center space-around'"
-      [style]="isCollapsed?'padding-left:2px':'padding-left:24px'">
-        <span class=" flex center space-between">
-          <img src="../../../assets/veins-v.png" alt="">
-          <span class="heading" *ngIf="!isCollapsed">
-            VEINS
+      [nzWidth]="!isCollapsed && isMobile()? '100%' :'200px'" [nzCollapsedWidth]="55" class="appbackground">
+      <span style="
+      background: #ffffff82;
+      display: flow-root;">
+        <div [class]="!isCollapsed?'logo flex center space-between':'logo flex center space-around'"
+          [style]="isCollapsed?'padding-left:2px':'padding-left:24px'">
+          <span class=" flex center space-between">
+            <img src="../../../assets/veins-ico.png" alt="">
+            <span class="heading" *ngIf="!isCollapsed">
+              VEINS
+            </span>
           </span>
-        </span>
-        <span class="trigger" *ngIf="!isCollapsed && isMobile()" nz-icon
-          [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-          [class]="!isCollapsed && isMobile()?'lightFont':'darkFont'" (click)="isCollapsed = !isCollapsed"></span>
-      </div>
-      <ul nz-menu nzTheme="dark" nzMode="inline">
+          <span class="trigger" *ngIf="!isCollapsed && isMobile()" nz-icon
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            [class]="!isCollapsed && isMobile()?'lightFont':'darkFont'" (click)="isCollapsed = !isCollapsed"></span>
+        </div>
+      </span>
+      <ul nz-menu nzTheme="dark" nzMode="inline" class="sideMenuItems">
         <li nz-menu-item>
           <span nz-icon nzType="dashboard"></span>
           <span>

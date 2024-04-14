@@ -9,6 +9,7 @@
 
 .ant-layout-header {
     line-height: 50px;
+    height: 56px;
 }
 
 .header-text {
@@ -20,10 +21,8 @@
 
 .logo {
     height: 32px;
-    background: rgba(255, 255, 255, 0.2);
     margin-top: 12px;
     margin-bottom: 12px !important;
-    background: #001529;
     padding-left: 24px;
 
     img {
@@ -32,7 +31,18 @@
     }
 }
 
+.sideMenuItems {
+    overflow: auto;
+    height: calc(100% - 56px);
+    background: inherit !important;
+}
+
 @media (max-width: 600px) {
+    .sideMenuItems {
+        overflow: auto;
+        height: calc(100% - 72px);
+    }
+
     .ant-layout-header {
         height: 72px;
         line-height: 22px;
@@ -55,8 +65,8 @@
         min-height: 60px;
         padding-top: 10px;
     }
-  
-    .anticon > * {
+
+    .anticon>* {
         line-height: 1;
         font-size: 16px !important;
     }
@@ -86,7 +96,9 @@ nz-header {
 }
 
 nz-content {
-    margin: 0 16px;
+
+    padding: 0 16px;
+    overflow: auto;
 }
 
 nz-breadcrumb {

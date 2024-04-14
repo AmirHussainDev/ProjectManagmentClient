@@ -3,9 +3,12 @@
   "short_name": "Veins",
   "theme_color": "#001529",
   "background_color": "#001529",
-  "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "splash_screen_icon":"assets/icons/icon-384x384.png",
+  "application_icon":"assets/icons/icon-384x384.png",
+  "maskable_cons":"assets/icons/icon-384x384.png",
+  "display": "standalone",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
