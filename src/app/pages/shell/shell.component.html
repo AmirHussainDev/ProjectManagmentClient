@@ -1,9 +1,10 @@
 <div class="app-shell">
   <nz-layout style="height: 100%;">
     <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null"
-      [nzWidth]="!isCollapsed && isMobile()? '100%' :'200px'" [nzCollapsedWidth]="45">
-      <div [class]="!isCollapsed?'flex center space-between':'flex center space-around'">
-        <span class="logo flex center" [style]="isCollapsed?'padding-left:2px':'padding-left:24px'">
+      [nzWidth]="!isCollapsed && isMobile()? '100%' :'200px'" [nzCollapsedWidth]="55">
+      <div [class]="!isCollapsed?'logo flex center space-between':'logo flex center space-around'"
+      [style]="isCollapsed?'padding-left:2px':'padding-left:24px'">
+        <span class=" flex center space-between">
           <img src="../../../assets/veins-v.png" alt="">
           <span class="heading" *ngIf="!isCollapsed">
             VEINS

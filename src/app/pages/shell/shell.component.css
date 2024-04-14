@@ -11,7 +11,7 @@
     line-height: 50px;
 }
 
-.header-text{
+.header-text {
     letter-spacing: 2px;
     text-transform: uppercase;
     color: white;
@@ -22,25 +22,53 @@
     height: 32px;
     background: rgba(255, 255, 255, 0.2);
     margin-top: 12px;
+    margin-bottom: 12px !important;
     background: #001529;
     padding-left: 24px;
+
     img {
         height: 32px;
-        width: 100%;
+        width: 32px;
     }
 }
 
 @media (max-width: 600px) {
     .ant-layout-header {
-        height: 70px;
+        height: 72px;
         line-height: 22px;
     }
+
+    ::ng-deep.ant-menu-submenu-title {
+        margin-bottom: 0px !important;
+        margin-top: 0px !important;
+        min-height: 60px;
+        padding-top: 10px;
+    }
+
+    .ant-menu-item,
+    .ant-menu-submenu {
+        border-bottom: 1px solid #343434;
+        background: #88949f87;
+        font-size: 16px !important;
+        margin-bottom: 0px !important;
+        margin-top: 0px !important;
+        min-height: 60px;
+        padding-top: 10px;
+    }
+  
+    .anticon > * {
+        line-height: 1;
+        font-size: 16px !important;
+    }
+
     .trigger {
         line-height: 33px;
-        margin-top: 3px 
+        margin-top: 3px
     }
+
     .logo {
-        margin-top: 5px !important;
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
         margin: 0px;
         padding-left: 24px;
     }
