@@ -5,7 +5,7 @@ import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShellComponent } from './shell.component';
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import en from '@angular/common/locales/en';
 import * as AllIcons from '@ant-design/icons-angular/icons';
@@ -16,6 +16,7 @@ import { NullToStringPipe } from '../../pipes/nullToString.pipe';
 import { ShellRoutingModule } from './shell-routing.module';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { OrganizationSelectorComponent } from './components/organization-selector/organization-selector.component';
+import { AuthInterceptor } from '../../auth-interceptor.service';
 
 registerLocaleData(en);
 
@@ -41,6 +42,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     NgZorroAntdModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US },
-  { provide: NZ_ICONS, useValue: icons }]
+  { provide: NZ_ICONS, useValue: icons },
+]
 })
 export class ShellModule { }

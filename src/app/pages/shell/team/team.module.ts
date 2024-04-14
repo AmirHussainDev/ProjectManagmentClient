@@ -10,6 +10,8 @@ import { NZ_ICONS } from 'ng-zorro-antd/icon';
 import { CreateUserDrawerComponent } from './create-user-drawer/create-user-drawer.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RolePermissionsComponent } from './role-permissions/role-permissions.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from '../../../auth-interceptor.service';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -31,7 +33,9 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     NgZorroAntdModule,
     ReactiveFormsModule,
     FormsModule
-  ], providers: [{ provide: NZ_I18N, useValue: en_US },
-  { provide: NZ_ICONS, useValue: icons }]
+  ], providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    { provide: NZ_ICONS, useValue: icons },
+  ]
 })
 export class TeamModule { }

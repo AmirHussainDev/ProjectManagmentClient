@@ -26,6 +26,14 @@ app-shell {
     justify-content: space-between;
 }
 
+.space-evenly {
+    justify-content:space-evenly;
+}
+
+.space-around {
+    justify-content:space-around;
+}
+
 .center {
     align-items: center;
 }

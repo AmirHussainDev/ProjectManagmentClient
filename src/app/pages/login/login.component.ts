@@ -43,7 +43,7 @@ export class LoginComponent {
         }
       ).toPromise().then((data: any) => {
         if (isPlatformBrowser(this.platformId) && data.access_token) {
-          localStorage.setItem('token', JSON.stringify(data.access_token));
+          localStorage.setItem('token', data.access_token);
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('sub_organization_id', JSON.stringify(data.user.sub_organization_id));
           this.router.navigate(['/']);

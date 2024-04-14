@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IntegrationService } from './services/integration.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import {  ShellModule } from './pages/shell/shell.module';
 import { LoginModule } from './pages/login/login.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,6 +12,7 @@ import { NgZorroAntdModule } from './ng-zorro-antd.module';
 import { CommonModule } from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { AuthInterceptor } from './auth-interceptor.service';
 export const initializeApp = (integrationService: IntegrationService) => {
   return () => integrationService.fetchIntegrationDetails();
 }
@@ -43,7 +44,8 @@ export const initializeApp = (integrationService: IntegrationService) => {
       useFactory: initializeApp,
       deps: [IntegrationService],
       multi: true,
-    }],
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   exports: [NgZorroAntdModule],
   bootstrap: [AppComponent]
 })

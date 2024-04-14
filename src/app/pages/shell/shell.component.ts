@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { AppService } from '../../services/app.service';
 import { Subscription, of } from 'rxjs';
 import { SubOrganization } from '../../services/app.interfact';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-shell',
@@ -13,6 +14,7 @@ import { SubOrganization } from '../../services/app.interfact';
 })
 export class ShellComponent implements OnInit, OnDestroy {
   isCollapsed = false;
+  isMobileDevice = true;
   loggedInUser: any = {};
   sites: any[] = [];
   site: any = {};
@@ -22,7 +24,9 @@ export class ShellComponent implements OnInit, OnDestroy {
   subOrgSubscription: Subscription;
   currentSubOrganization: SubOrganization
   constructor(private userService: UserService,
-    private appService: AppService, private fb: FormBuilder) {
+    private appService: AppService, private fb: FormBuilder,
+    private media: MediaMatcher
+    ) {
     this.siteForm = this.fb.group({
       site: []
     })
@@ -72,5 +76,10 @@ export class ShellComponent implements OnInit, OnDestroy {
     const nameArray = name.trim().split(' '); // Split the name into an array of words
     const initials = nameArray.map(word => word.charAt(0)); // Extract the first character of each word
     return initials.join('').toUpperCase(); // Join the characters and convert to uppercase
+}
+
+isMobile(): boolean {
+  const isMobile = this.media.matchMedia('(max-width: 600px)');
+  return isMobile.matches;
 }
 }
