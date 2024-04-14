@@ -1,8 +1,8 @@
 {
-  "name": "veins-frontend",
-  "short_name": "veins-frontend",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "name": "Veins Group of Companies",
+  "short_name": "Veins",
+  "theme_color": "#001529",
+  "background_color": "#001529",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
