@@ -20,14 +20,14 @@
       </span>
       <ul nz-menu nzTheme="dark" nzMode="inline" class="sideMenuItems">
         <li nz-menu-item>
-          <span nz-icon nzType="dashboard"></span>
+          <span nz-icon nzType="bar-chart"></span>
           <span>
             <a class="nav-link" [routerLink]="['/']" [state]="{tracingId: 123}" (click)="isCollapsed=true;">
               Dashboard
             </a>
           </span>
         </li>
-        <li nz-submenu nzTitle="Stocks" nzIcon="user">
+        <li nz-submenu nzTitle="Stocks" nzIcon="appstore">
           <ul>
             <li nz-menu-item> <a [routerLink]="['/purchase']" [state]="{tracingId: 2}" (click)="isCollapsed=true;">
                 Stock Details
@@ -43,13 +43,25 @@
               </a></li>
           </ul>
         </li>
-        <li nz-submenu nzTitle="Contractors" nzIcon="team">
+        <!-- <li nz-submenu nzTitle="Contractors" nzIcon="file-done">
           <ul>
-            <li nz-menu-item>Add Contractor</li>
-            <li nz-menu-item>Inquire Details</li>
+            <li nz-menu-item> <a [routerLink]="['/contractors/contract']" [state]="{tracingId: 2}"
+                (click)="isCollapsed=true;">
+                Create New
+              </a>
+            </li>
+            <li nz-menu-item> <a [routerLink]="['/contractors']" [state]="{tracingId: 2}" (click)="isCollapsed=true;">
+                Contracts
+              </a>
+            </li>
+            <li nz-menu-item> <a [routerLink]="['/contractors/payment-request']" [state]="{tracingId: 2}"
+                (click)="isCollapsed=true;">
+                Request Payments
+              </a>
+            </li>
           </ul>
-        </li>
-        <li nz-submenu nzTitle="Labours" nzIcon="team">
+        </li> -->
+        <li nz-submenu nzTitle="Labours" nzIcon="tool">
           <ul>
             <li nz-menu-item>Add Contractor</li>
             <li nz-menu-item>Inquire Details</li>
@@ -95,11 +107,7 @@
               </button>
               <app-organization-selector [visible]="showOrganizations"
                 (closeDrawer)="toggleOrganizations()"></app-organization-selector>
-              <nz-form [formGroup]="siteForm">
-                <nz-select id="site" class="header-button" formControlName="site" placeholder="Select sites">
-                  <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem" [nzLabel]="siteItem.label"></nz-option>
-                </nz-select>
-              </nz-form>
+             
             </span>
             <button nz-button class="userbtn" nzType="text" nz-dropdown [nzDropdownMenu]="menu1">
               <nz-avatar style="background-color: #f56a00;margin-right: 5px;"

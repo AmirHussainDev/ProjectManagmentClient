@@ -2,27 +2,28 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Subject, map } from 'rxjs';
-import { PurchaseItem, PurchaseOrder, Role, RoleCreateObj, Site, SubOrganization } from './app.interfact';
+import { ContractDetails, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
-
+ 
   apiUrl = environment.apiUrl;
   sites = new Subject<any[]>();
   currentSite = new Subject<any>();
   currentSiteId = 0;
   currentSubOrgId = 0;
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
-  constructor(private http: HttpClient,) { }
+  constructor(private http: HttpClient,private userService:UserService) { }
   header: HttpHeaders = new HttpHeaders({
     'accept': 'application/json'
   });
 
   getAndSetSites() {
     const organization_id = localStorage.getItem('organization_id');
-    return this.http.get(`/api/sites/${organization_id}`, { headers: this.header }).toPromise()
+    return this.http.get(`/api/sites/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
   }
 
   setSites(sites: any) {
@@ -148,7 +149,7 @@ export class AppService {
   async getSites(): Promise<Site[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/Sites/${organization_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/Sites/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
       return response as Site[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -196,7 +197,7 @@ export class AppService {
 
   }
 
-  async addSaleRequest(po: { details: PurchaseOrder, products: PurchaseItem[] }): Promise<any[]> {
+  async addSaleRequest(po: { details: SaleOrder, products: PurchaseItem[] }): Promise<any[]> {
     try {
       const response = await this.http.post(`/api/inventory-purchase/sale`, po, { headers: this.header }).toPromise()
       return response as any[];
@@ -362,6 +363,102 @@ export class AppService {
     }
 
     return diffs;
+  }
+
+  async createContract(details: any): Promise<any[]> {
+    try {
+      const response = await this.http.post(`/api/contractors`, details, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+
+  async retireveContracts(params: HttpParams): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/contractors/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async retireveContractById(id:any): Promise<any[]>{
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/contractors/contract/${organization_id}/${id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async updateContractRequest(details: PurchaseOrder): Promise<any[]>{
+    try {
+      const response = await this.http.put(`/api/contractors/contract`, details, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+  async createSite(details: any): Promise<any[]> {
+    try {
+      const body={...details,
+        organization : parseInt(localStorage.getItem('organization_id')||'0'),
+        subOrganization:this.currentSubOrgId,
+        created_by:this.userService.loggedInUser.id
+      }
+      const response = await this.http.post(`/api/Sites`, body, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+
+  async retireveSites(params: HttpParams): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/contractors/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async retireveSiteById(id:any): Promise<any[]>{
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async updateSiteRequest(details: SiteDetails): Promise<any[]>{
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.put(`/api/Sites/${organization_id}/${this.currentSubOrgId}/${details.id}`, details, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
   }
 
 }

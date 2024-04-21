@@ -1,0 +1,340 @@
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import html2canvas from 'html2canvas';
+import jspdf from 'jspdf';
+import _ from 'lodash';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { Subscription, Observable, Observer } from 'rxjs';
+import { ItemControl, ContractDetails } from '../../../../services/app.interfact';
+import { AppService } from '../../../../services/app.service';
+import { UserService } from '../../../../services/user.service';
+import { User } from '../../team/users/users.interface';
+import { ContractStateNames, ContractStates } from '../../../../services/app.constants';
+
+@Component({
+  selector: 'app-create-contract',
+  templateUrl: './create-contract.component.html',
+  styleUrl: './create-contract.component.css'
+})
+export class CreateContractComponent {
+  @ViewChild('content', { static: false }) content: ElementRef;
+  vendors: any[] = [];
+  vendorItems: { name: string }[] = [];
+  discountTotal: number = 0;
+  contractTotal: number = 0;
+  loading = false;
+  contractStates = ContractStates;
+  stateNames = ContractStateNames;
+  listOfData: User[] = [
+  ];
+  defaultItemValues = {
+    id: 0,
+    name: '',
+    qty: 0,
+    contract_id: 0,
+    discount: 0,
+    total: 0,
+    date_created: new Date(),
+    isCustom: false,
+    unit_price: 0
+  }
+  currentSubOrganizationSubscription: Subscription;
+  previousContractDetails: any;
+  contractDetails: FormGroup<ContractDetails> = new FormGroup({
+    id: new FormControl(),
+    contractor: new FormControl(),
+    subject: new FormControl(),
+    contract_type: new FormControl(),
+    state: new FormControl(this.contractStates.Draft),
+    with_material: new FormControl(0),
+    payment_schedule: new FormControl(0),
+    amount_per_schedule: new FormControl(0),
+    amount_per_day: new FormControl(0),
+    created_by: new FormControl(0),
+    site_id: new FormControl(0),
+    total: new FormControl(0),
+    organization_id: new FormControl(0),
+    sub_organization_id: new FormControl(0),
+    contract_start_date: new FormControl(new Date()),
+    contract_end_date: new FormControl(new Date()),
+    attachment: new FormControl(),
+    terms: new FormControl(''),
+  })
+  sites: any[];
+  siteForm: any;
+  constructor(
+    private appService: AppService,
+    private route: ActivatedRoute,
+    private userService: UserService,
+    private fb: FormBuilder,
+    private notification: NzNotificationService,
+    private router: Router,
+    private msg: NzMessageService,
+    private modal: NzModalService) {
+    this.contractDetails = this.fb.group({
+      id: new FormControl(),
+      contractor: new FormControl(),
+      subject: new FormControl(),
+      contract_type: new FormControl(),
+      state: new FormControl(this.contractStates.Draft),
+      with_material: new FormControl(0),
+      payment_schedule: new FormControl(0),
+      amount_per_schedule: new FormControl(0),
+      amount_per_day: new FormControl(0),
+      created_by: new FormControl(0),
+      site_id: new FormControl(0),
+      total: new FormControl(0),
+      organization_id: new FormControl(0),
+      sub_organization_id: new FormControl(0),
+      contract_start_date: new FormControl(new Date()),
+      contract_end_date: new FormControl(new Date()),
+      attachment: new FormControl(),
+      terms: new FormControl(''),
+    });
+  }
+  submitForm() { }
+  ngOnInit(): void {
+    this.loadAndUsers();
+    this.setSitesData()
+    this.route.queryParams.subscribe(params => {
+      // Use this queryParams object to load data
+      if (!params['CR']) {
+        this.contractDetails.reset({ state: this.contractStates.Draft, id: 0 });
+        this.contractDetails.enable();
+        this.contractDetails.updateValueAndValidity();
+
+
+      }
+      this.contractDetails.controls['id'].setValue(params['CR'] || 0);
+      this.setContractRequestDetails();
+    });
+
+  }
+
+  async setSitesData() {
+    const resp: any = await this.appService.getAndSetSites();
+    const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
+    this.sites = [...sitesData];
+  }
+
+  async setContractRequestDetails() {
+    this.loading = true;
+    if (this.contractDetails.controls['id'].value) {
+      await this.getExistingContract();
+    } else {
+      this.contractDetails.controls['organization_id'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
+      this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(resp => {
+        this.contractDetails.controls['sub_organization_id'].setValue(resp.id);
+      });
+      this.contractDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
+    }
+    this.disableAndEnableSpecificControls()
+    this.loading = false;
+  }
+
+  async getExistingContract() {
+    const response: any = await this.appService.retireveContractById(this.contractDetails.controls['id'].value)
+    if (response) {
+      this.contractDetails.patchValue({
+        id: response.id,
+        subject: response.subject,
+        state: response.state,
+        created_by: response.created_by,
+        total: response.total,
+        organization_id: response.organization_id,
+        sub_organization_id: response.sub_organization_id,
+
+        contractor: response.contractor,
+        contract_type: response.contract_type,
+        with_material: response.with_material,
+        payment_schedule: response.payment_schedule,
+        amount_per_schedule: response.amount_per_schedule,
+        amount_per_day: response.amount_per_day,
+        site_id: response.site_id,
+        contract_start_date: response.contract_start_date,
+        contract_end_date: response.contract_end_date,
+        attachment: response.attachment,
+        terms: response.terms,
+      })
+    }
+
+    this.previousContractDetails = this.contractDetails.getRawValue() as any;
+
+  }
+
+  async loadAndUsers() {
+    this.listOfData = await this.userService.getOrganizationUsers();
+  }
+  async submitRequest() {
+    const response: any = await this.appService.createContract({
+      ...this.contractDetails.value as ContractDetails,
+      state: this.contractStates.PendingApproval
+    } as any)
+    if (response) {
+      this.notification.create(
+        'success',
+        'Contract Order - ' + response['id'],
+        'Contract order submitted successfly. Please check for invoice and update later'
+      ).onClose.subscribe((resp) => {
+        this.router.navigate(['/'])
+      });
+    }
+  }
+
+  async cancelPaymentDetails() {
+    // this.modal.confirm({
+    //   nzTitle: 'Cancel PO ' + this.contractDetails.get('id')?.value,
+    //   nzContent: '<h4> Are you sure cancel this contract order.</h4>',
+    //   nzOkText: 'Yes',
+    //   nzOkType: 'primary',
+    //   nzOkDanger: true,
+    //   nzOnOk: async () => {
+    //     const body = {
+    //       id: this.previousContractDetails.id
+    //     }
+    //     console.log(body)
+
+    //     const response: any = await this.appService.updateContractRequest({
+    //       details: {
+    //         id: this.previousContractDetails.id,
+    //         state: this.contractStates.Cancelled
+    //       } as any, products: []
+    //     })
+    //     if (response) {
+    //       this.notification.create(
+    //         'success',
+    //         'Contract Order - ' + this.previousContractDetails.id,
+    //         'Contract order invoice cancelled successfly.',
+    //       ).onClose.subscribe((resp) => {
+    //         this.router.navigate(['/'])
+    //       });
+    //     }
+
+    //   },
+    //   nzCancelText: 'No',
+    //   nzOnCancel: () => console.log('Cancel')
+    // });
+
+  }
+
+  async confirmInvoiceDetails() {
+    const detailsDifference: any = this.appService.findObjectDifferences(this.previousContractDetails, this.contractDetails.getRawValue())
+    console.log(detailsDifference)
+    const body = {
+      id: this.previousContractDetails.id,
+      ...detailsDifference
+    }
+
+    const response: any = await this.appService.updateContractRequest({
+      ...body,
+      state: this.contractStates.Completed
+    })
+    if (response) {
+      this.notification.create(
+        'success',
+        'Contract Order - ' + this.previousContractDetails.id,
+        'Contract order invoice submitted successfly. Please proceed next for payment details',
+      ).onClose.subscribe((resp) => {
+        this.router.navigate(['/'])
+      });
+    }
+  }
+
+  printCard() {
+    let printContents = this.content.nativeElement.innerHTML;
+    let popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (popupWin) {
+      popupWin.document.open();
+      popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print</title>
+          <style>
+            /* Define print styles here */
+          </style>
+        </head>
+        <body onload="window.print();window.close()">
+          ${printContents}
+        </body>
+      </html>
+    `);
+      popupWin.print();
+
+      // popupWin.document.close();
+    }
+  }
+  generatePDF() {
+    const element = this.content.nativeElement;
+    html2canvas(element).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      // const pdf = new jspdf.jsPDF();
+      // const imgProps = pdf.getImageProperties(imgData);
+      // const pdfWidth = pdf.internal.pageSize.getWidth();
+      // const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      // pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // pdf.save('your-component.pdf');
+    });
+  }
+
+  disableAndEnableSpecificControls() {
+    const stateControl = this.contractDetails.get('state');
+
+    if (stateControl && stateControl.value !== this.contractStates.Draft) {
+      console.log(this.contractDetails);
+      Object.keys(this.contractDetails.controls).forEach(controlName => {
+        const control = this.contractDetails.get(controlName);
+        if (control &&
+          ((controlName !== 'attachment' &&
+            controlName !== 'terms' &&
+            stateControl.value === this.contractStates.PendingApproval)
+            ||
+            stateControl.value === this.contractStates.Completed)
+
+        ) {
+          control.disable();
+        }
+      });
+
+      console.log(this.contractDetails);
+      this.contractDetails.updateValueAndValidity();
+    }
+  }
+  beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
+    new Observable((observer: Observer<boolean>) => {
+
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        this.msg.error('You can only upload JPG file!');
+        observer.complete();
+        return;
+      }
+      const isLt2M = file.size! / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.msg.error('Image must smaller than 2MB!');
+        observer.complete();
+        return;
+      }
+      this.contractDetails.patchValue({
+        attachment: file
+      })
+      observer.next(isJpgOrPng && isLt2M);
+      observer.complete();
+    });
+
+  private getBase64(img: File, callback: (img: string) => void): void {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result!.toString()));
+    reader.readAsDataURL(img);
+  }
+
+  handleChange(info: { file: NzUploadFile }): void {
+
+    this.getBase64(info.file!.originFileObj!, (img: string) => {
+      this.loading = false;
+    });
+  }
+}

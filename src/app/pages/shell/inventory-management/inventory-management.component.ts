@@ -22,7 +22,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   inventoryItemForm: FormGroup;
   isVisible = false;
   expandSet = new Set<string>();
-
+  currentOrganizationId=0;
   constructor(private fb: FormBuilder,
 
     private appService: AppService) {
@@ -58,7 +58,8 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
-      if (change) {
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+      this.currentOrganizationId=change.id;
         this.loadInventory();
 
       }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AppPermissions, DefaultPermissions, PermissionName, Role, RoleCreateObj } from '../../../../services/app.interfact';
+import {  Role, RoleCreateObj } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
+import { DefaultPermissions, PermissionName, AppPermissions } from '../../../../services/app.constants';
 
 @Component({
   selector: 'app-role-permissions',

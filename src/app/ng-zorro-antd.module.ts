@@ -162,7 +162,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
         NzCodeEditorModule,
         NzGraphModule,
         NzQRCodeModule,
-        NzWaterMarkModule
+        NzWaterMarkModule,
+        NzCollapseModule,
     ],
     providers: []
 })

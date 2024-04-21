@@ -31,84 +31,6 @@ export interface RoleObj {
     id?: number;
 }
 
-export const AppPermissions = {
-    UpdatePermissions: 1,
-    AddPurchaseRequest: 2,
-    PurchaseVerification: 3,
-    ContractManagment: 4,
-    InventoryUpdates: 5,
-    LabourAgreementManagment: 6,
-    LabourAttendance: 7,
-    LabourSalaryManagment: 8,
-    MainDashboardView: 9,
-    SupervisorDashboardView: 10,
-    AddSites: 11,
-    ManageUsers: 12
-}
-
-
-export const PermissionName = {
-    [AppPermissions.AddSites]: "Add Sites",
-    [AppPermissions.ManageUsers]: "Manage Users",
-    [AppPermissions.UpdatePermissions]: "Update Permissions",
-    [AppPermissions.AddPurchaseRequest]: "Add Purchase Request",
-    [AppPermissions.PurchaseVerification]: "Purchase Verification",
-    [AppPermissions.ContractManagment]: "Contract Managment",
-    [AppPermissions.InventoryUpdates]: "Inventory Updates",
-    [AppPermissions.LabourAgreementManagment]: "Labour Agreement Managment",
-    [AppPermissions.LabourAttendance]: "Labour Attendance",
-    [AppPermissions.LabourSalaryManagment]: "Labour Salary Managment",
-    [AppPermissions.MainDashboardView]: "Main Dashboard View",
-    [AppPermissions.SupervisorDashboardView]: "Supervisor Dashboard View",
-}
-
-
-
-export const DefaultPermissions = {
-    [AppPermissions.AddSites]: false,
-    [AppPermissions.ManageUsers]: false,
-    [AppPermissions.UpdatePermissions]: false,
-    [AppPermissions.AddPurchaseRequest]: false,
-    [AppPermissions.PurchaseVerification]: false,
-    [AppPermissions.ContractManagment]: false,
-    [AppPermissions.InventoryUpdates]: false,
-    [AppPermissions.LabourAgreementManagment]: false,
-    [AppPermissions.LabourAttendance]: false,
-    [AppPermissions.LabourSalaryManagment]: false,
-    [AppPermissions.MainDashboardView]: false,
-    [AppPermissions.SupervisorDashboardView]: false,
-}
-
-
-export const SaleStates = {
-    Draft: 0,
-    PaymentConfirmation: 2,
-    Cancelled: 3,
-    Completed: 4
-}
-
-export const SaleStateNames = {
-    [SaleStates.Draft]: 'DRAFT',
-    [SaleStates.PaymentConfirmation]: 'PAYMENT CONFIRMATION',
-    [SaleStates.Cancelled]: 'CANCELLED',
-    [SaleStates.Completed]: 'COMPLETED'
-}
-
-export const POStates = {
-    Draft: 0,
-    PendingInvoice: 1,
-    PaymentProcessing: 2,
-    Cancelled: 3,
-    Completed: 4
-}
-
-export const InvoiceStateNames = {
-    [POStates.Draft]: 'DRAFT',
-    [POStates.PendingInvoice]: 'PENDING INVOICE',
-    [POStates.PaymentProcessing]: 'PAYMENT PROCESSING',
-    [POStates.Cancelled]: 'CANCELLED',
-    [POStates.Completed]: 'COMPLETED'
-}
 
 export interface SaleOrder {
     id?: number;
@@ -155,6 +77,8 @@ export interface PurchaseOrder {
     notes: string;
     item_cost: number;
     amount_paid: number;
+    isSiteBased: number;
+    site_ids: string;
     additional_cost: number;
     created_by: number;
     shipment_charges: number;
@@ -251,6 +175,8 @@ export interface PurchaseDetails {
     subject: FormControl;
     items: FormArray;
     selectedVendor: FormControl;
+    isSiteBased: FormControl;
+    site_ids: FormControl;
     state: FormControl;
     notes: FormControl;
     items_discount_total: FormControl;
@@ -282,4 +208,73 @@ export interface ItemControl {
     total: FormControl;
     date_created?: FormControl;
     isCustom?: FormControl;
+}
+
+export interface ContractDetails {
+    id: FormControl;
+    subject: FormControl;
+    contractor: FormControl;
+    state: FormControl;
+    contract_type: FormControl;
+    contract_start_date: FormControl;
+    contract_end_date: FormControl;
+    with_material: FormControl;
+    payment_schedule: FormControl;
+    amount_per_schedule: FormControl;
+    amount_per_day: FormControl;
+    created_by: FormControl;
+    total: FormControl;
+    organization_id: FormControl;
+    sub_organization_id: FormControl;
+    site_id: FormControl;
+    attachment: FormControl;
+    terms: FormControl;
+}
+
+
+export interface SiteDetails {
+    id: FormControl;
+    name: FormControl;
+    budget: FormControl;
+    owner: FormControl;
+    contact_no: FormControl;
+    state: FormControl;
+    address: FormControl;
+    site_start_date: FormControl;
+    site_end_date: FormControl;
+    details: FormControl;
+    created_by: FormControl;
+    total: FormControl;
+    organization: FormControl;
+    subOrganization: FormControl;
+}
+
+export interface Expense {
+    id: number;
+    name: string;
+    is_general: boolean;
+    quantity: number;
+    amount: number;
+    refered_by: number;
+    purchase_id?: number;
+    is_paid: boolean;
+    site: number;
+    organization: number;
+    subOrganization: number;
+    createdBy: number;
+}
+
+export interface ExpenseForm {
+    id: FormControl;
+    name: FormControl;
+    is_general: FormControl;
+    quantity: FormControl;
+    amount: FormControl;
+    refered_by: FormControl;
+    purchase_id?: FormControl;
+    is_paid: FormControl;
+    site: FormControl;
+    organization: FormControl;
+    subOrganization: FormControl;
+    createdBy: FormControl;
 }

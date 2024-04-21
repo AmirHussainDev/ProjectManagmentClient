@@ -18,6 +18,24 @@
         <form nz-form [formGroup]="purchaseDetails" (ngSubmit)="submitForm()">
             <div #content>
                 <nz-form-item>
+                    <nz-form-control nzErrorTip="Please select a vendor">
+                        <div nz-col >
+                            <label nz-checkbox [nzChecked]="purchaseDetails.get('isSiteBased')?.value" formControlName="isSiteBased">
+                                <span>Site Based</span>
+                            </label>
+                        </div>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="purchaseDetails.get('isSiteBased')?.value">
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sites</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                        <nz-select nzMode="multiple" class="inputField" formControlName="site_ids" placeholder="Select sites">
+                        <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem.id"
+                            [nzLabel]="siteItem.label"></nz-option>
+                    </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
                     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="selectedVendor">Vendor</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select a vendor">
                         <nz-select class="inputField" formControlName="selectedVendor"

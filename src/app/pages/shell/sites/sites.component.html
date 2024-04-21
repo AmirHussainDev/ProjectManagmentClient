@@ -1,15 +1,28 @@
-<button nz-button nzType="primary" (click)="open()">Add</button>
-<!-- <app-create-user-drawer *ngIf="visible" [visible]="visible" [userRoles]="userRoles" [users]="listOfData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
+<a [routerLink]="['./','new']" [state]="{tracingId: 2}">
+    <button nz-button nzType="primary" [nzSize]="'small'">
+        <span nz-icon nzType="plus"> </span>
+        New Site
+    </button>
+</a>
 <nz-table #sortTable [nzData]="sites" nzTableLayout="fixed">
     <thead>
         <tr>
-            <th *ngFor="let column of listOfColumn" >
+            <th></th>
+            <th *ngFor="let column of listOfColumn">
                 {{ column.title }}
             </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of sortTable.data">
+            <td>
+                <a [routerLink]="['./',data.id]" [state]="{tracingId: 2}">
+                    <button nz-button nzType="primary" [nzSize]="'small'">
+                        <span nz-icon nzType="eye"> </span>
+                        
+                    </button>
+                </a>
+            </td>
             <td>{{ data.id }}</td>
             <td>{{ data.name }}</td>
         </tr>

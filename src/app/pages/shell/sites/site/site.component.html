@@ -1,0 +1,173 @@
+<ng-template #renderHome>
+
+    <div class="detailBar-collapsible">
+        <span>
+            <h4> {{siteDetails.get('id')?.value || 'New'}} - /
+                {{siteDetails.get('name')?.value}}
+            </h4>
+        </span>
+
+        <span>
+            <button nz-button nzType="primary" (click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
+            <button style="margin-left: 12px;" nz-button nzType="primary" printSectionId="print-section" ngxPrint
+                printTitle="MyTitle">
+
+                <span nz-icon nzType="printer" nzTheme="outline"></span>
+            </button>
+        </span>
+    </div>
+</ng-template>
+
+<nz-collapse nzAccordion>
+    <nz-collapse-panel #p nzExpandedIcon='double-right' [nzHeader]="renderHome"
+        [nzActive]="isActive || (siteDetails.get('state')?.value !== siteStates.Approved && siteDetails.get('state')?.value !== siteStates.Completed )"
+        [nzDisabled]="(siteDetails.get('state')?.value !== siteStates.Approved && siteDetails.get('state')?.value !== siteStates.Completed )">
+
+        <div class="purchase-request" id="print-section">
+            <nz-card style="width:100%">
+                <form nz-form [formGroup]="siteDetails" (ngSubmit)="submitForm()">
+                    <div #content>
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">
+                                        Name</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <input class="control inputField" nz-input formControlName="name">
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                                        nzFor="budget">budget</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <input class="control inputField" z-input formControlName="budget">
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+
+                        </nz-row>
+
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                                        nzFor="owner">owner</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <input class="control inputField" nz-input formControlName="owner">
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                                        nzFor="contact_no">Contact
+                                        No</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <input class="control inputField" nz-input formControlName="contact_no">
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+                        </nz-row>
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="address">
+                                        Address</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <textarea [rows]="2" class="control inputField" nz-input
+                                            formControlName="address"></textarea>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+                        </nz-row>
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
+
+
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                                        nzFor="site_start_date">site_start_date</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <nz-date-picker class="control inputField"
+                                            formControlName="site_start_date"></nz-date-picker>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+
+
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                                        nzFor="site_end_date">site_end_date</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <nz-date-picker class="control inputField"
+                                            formControlName="site_end_date"></nz-date-picker>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+
+                        </nz-row>
+
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                            <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="4" [nzSm]="24" [nzXs]="24" nzRequired nzFor="details">
+                                        Contract Details
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="20" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <textarea [rows]="6" class="control inputField" nz-input
+                                            formControlName="details">
+                        </textarea>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </nz-col>
+                        </nz-row>
+                    </div>
+                    <span class="flex space-between">
+                        <span>
+                            <button *ngIf="(siteDetails.controls.state.value==siteStates.PendingApproval)" nz-button
+                                nzType="primary" (click)="cancelPaymentDetails()" nzDanger
+                                style="margin-bottom: 12px;float: right;">Cancel</button>
+                        </span>
+                        <span>
+                            <button *ngIf="siteDetails.controls.state.value==siteStates.Draft" nz-button
+                                nzType="primary" (click)="submitRequest()"
+                                style="margin-bottom: 12px;float: right;">Submit</button>
+
+                            <button *ngIf="siteDetails.controls.state.value==siteStates.PendingApproval" nz-button
+                                nzType="primary" (click)="approveDetails()"
+                                style="margin-bottom: 12px;float: right;">Approve
+                                Site</button>
+                        </span>
+                    </span>
+                </form>
+            </nz-card>
+
+        </div>
+
+        <ng-template #expandedIcon let-active>
+            {{ active }}
+            <span nz-icon nzType="caret-right" class="ant-collapse-arrow" [nzRotate]="p.nzActive ? 90 : -90"></span>
+        </ng-template>
+    </nz-collapse-panel>
+</nz-collapse>
+
+<div style="margin-top: 12px;" *ngIf="siteDetails.get('state')?.value===siteStates.Approved">
+
+    <nz-row nzGutter="4" style="margin-bottom: 12px;">
+        <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
+
+            <nz-card style="width:100%">
+                <app-expenses></app-expenses>
+            </nz-card>
+        </nz-col>
+        <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
+            <nz-card style="width:100%">
+                <app-owner-payments></app-owner-payments>
+             </nz-card>
+        </nz-col>
+    </nz-row>
+</div>

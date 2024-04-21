@@ -36,7 +36,23 @@
     height: calc(100% - 56px);
     background: inherit !important;
 }
+::ng-deep.ant-menu-submenu-title {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
 
+}
+
+.ant-menu-item,
+.ant-menu-submenu {
+    border-bottom: 1px solid #343434;
+    background: #88949f87;
+    font-size: 16px !important;
+    margin-bottom: 0px !important;
+    margin-top: 0px !important
+
+}
 @media (max-width: 600px) {
     .sideMenuItems {
         overflow: auto;

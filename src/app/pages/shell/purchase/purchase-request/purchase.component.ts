@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AppService } from '../../../../services/app.service';
-import { POStates, ItemControl, PurchaseDetails, PurchaseItem, PurchaseOrder, InvoiceStateNames } from '../../../../services/app.interfact';
+import { ItemControl, PurchaseDetails, PurchaseItem, PurchaseOrder } from '../../../../services/app.interfact';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { UserService } from '../../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import _ from 'lodash'
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { InvoiceStateNames, POStates } from '../../../../services/app.constants';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
@@ -45,6 +46,8 @@ export class PurchaseComponent implements OnInit {
   purchaseDetails: FormGroup<PurchaseDetails> = new FormGroup({
     id: new FormControl(),
     subject: new FormControl(),
+    isSiteBased: new FormControl(),
+    site_ids: new FormControl(),
     items: this.fb.array([]),
     selectedVendor: new FormControl(),
     state: new FormControl(POStates.Draft),
@@ -68,6 +71,8 @@ export class PurchaseComponent implements OnInit {
     terms: new FormControl(''),
     overall_discount: new FormControl(0)
   })
+  sites: any[];
+  subOrgSubscription: Subscription;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -80,6 +85,8 @@ export class PurchaseComponent implements OnInit {
     this.purchaseDetails = this.fb.group({
       id: new FormControl(),
       subject: new FormControl(),
+      isSiteBased: new FormControl(),
+      site_ids: new FormControl(),
       items: this.fb.array([]),
       selectedVendor: new FormControl(),
       state: new FormControl(POStates.Draft),
@@ -106,32 +113,44 @@ export class PurchaseComponent implements OnInit {
   }
   submitForm() { }
   ngOnInit(): void {
-    this.loadVendorsAndUsers();
+    this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
+      if (change && change.id > 0) {
+        this.setUpPurchaseForm()
+
+      }
+    });
+  }
+
+  async setUpPurchaseForm() {
+    await this.loadSitesVendorsAndUsers();
     this.route.queryParams.subscribe(params => {
       // Use this queryParams object to load data
-      if(!params['PO'] ){
+      if (!params['PO']) {
         this.purchaseDetails.reset({ state: POStates.Draft, id: 0 });
         this.purchaseDetails.enable();
         this.purchaseDetails.updateValueAndValidity();
-  
-  
       }
       this.purchaseDetails.controls['id'].setValue(params['PO'] || 0);
       this.setPurchaseRequestDetails();
     });
 
   }
+  async setSitesData() {
+    const resp: any = await this.appService.getAndSetSites();
+    const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
+    this.sites = [...sitesData];
+  }
+
 
   async setPurchaseRequestDetails() {
     this.loading = true;
     if (this.purchaseDetails.controls['id'].value) {
       await this.getExistingPurchase();
     } else {
+      this.purchaseDetails.controls['sub_organization_id'].setValue(this.appService.currentSubOrgId);
       this.purchaseDetails.controls['organization_id'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
-      this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(resp => {
-        this.purchaseDetails.controls['sub_organization_id'].setValue(resp.id);
-      });
       this.purchaseDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
+
     }
     this.disableAndEnableSpecificControls()
     this.loading = false;
@@ -146,6 +165,7 @@ export class PurchaseComponent implements OnInit {
         subject: response[0].subject,
         selectedVendor: response[0].selectedVendor,
         state: response[0].state,
+        isSiteBased: response[0].isSiteBased,
         notes: response[0].notes,
         items_discount_total: response[0].items_discount_total,
         overall_discount_total: response[0].overall_discount_total,
@@ -162,6 +182,13 @@ export class PurchaseComponent implements OnInit {
       })
 
       this.purchaseDetails.controls.selectedVendor.setValue(this.vendors.find(ven => ven.id == this.purchaseDetails.controls.vendor_id.value));
+      if (response[0].isSiteBased) {
+                 const selectedSites=JSON.parse(response[0].site_ids || '[]')
+
+        this.purchaseDetails.controls.site_ids.setValue(
+          this.sites.filter(site => selectedSites.indexOf(site.id) > -1)?.map((site:any)=>site.id)
+        )
+      }
       const items = response[0].items || [];
       items.forEach((item: any) => {
         this.addRow(item)
@@ -183,9 +210,10 @@ export class PurchaseComponent implements OnInit {
 
   }
 
-  async loadVendorsAndUsers() {
+  async loadSitesVendorsAndUsers() {
     this.vendors = await this.appService.getVendors()
     this.listOfData = await this.userService.getOrganizationUsers();
+    await this.setSitesData();
   }
 
   async onVendorSelect() {
@@ -325,7 +353,8 @@ export class PurchaseComponent implements OnInit {
     const response: any = await this.appService.addPurchaseRequest({
       details: {
         ...this.purchaseDetails.value as PurchaseOrder,
-        state: POStates.PendingInvoice
+        state: POStates.PendingInvoice,
+        site_ids: JSON.stringify(this.purchaseDetails.value.site_ids)
       }, products: this.purchaseDetails.controls['items'].value
     })
     if (response) {

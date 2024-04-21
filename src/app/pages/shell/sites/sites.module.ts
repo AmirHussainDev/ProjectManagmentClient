@@ -10,6 +10,12 @@ import { NZ_ICONS } from 'ng-zorro-antd/icon';
 import { NgZorroAntdModule } from '../../../ng-zorro-antd.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../../../auth-interceptor.service';
+import { SiteComponent } from './site/site.component';
+import { ExpensesComponent } from './expenses/expenses.component';
+import { OwnerPaymentsComponent } from './owner-payments/owner-payments.component';
+import { ContractorPaymentsComponent } from './contractor-payments/contractor-payments.component';
+import { SiteContractorsComponent } from './site-contractors/site-contractors.component';
+import { CreateContractComponent } from './create-contract/create-contract.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -21,7 +27,13 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 
 @NgModule({
   declarations: [
-    SitesComponent
+    SitesComponent,
+    SiteComponent,
+    ExpensesComponent,
+    OwnerPaymentsComponent,
+    ContractorPaymentsComponent,
+    SiteContractorsComponent,
+    CreateContractComponent,
   ],
   imports: [
     CommonModule,

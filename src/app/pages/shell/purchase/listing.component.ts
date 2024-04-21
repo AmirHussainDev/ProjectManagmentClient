@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AppService } from '../../../services/app.service';
 import { environment } from '../../../../environments/environment';
-import { InvoiceStateNames, POStates } from '../../../services/app.interfact';
 import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
+import { InvoiceStateNames, POStates } from '../../../services/app.constants';
 
 
 @Component({

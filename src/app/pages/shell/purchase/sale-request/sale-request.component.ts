@@ -12,7 +12,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
-import { SaleStates, SaleStateNames, ItemControl, SaleDetails, SaleOrder, SaleItemControl, SaleItemReturnControl, PaymentHistory } from '../../../../services/app.interfact';
+import { ItemControl, SaleDetails, SaleOrder, SaleItemControl, SaleItemReturnControl, PaymentHistory } from '../../../../services/app.interfact';
+import { SaleStateNames, SaleStates } from '../../../../services/app.constants';
 
 interface TreeNode {
   title: string;
