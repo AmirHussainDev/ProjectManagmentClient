@@ -1,43 +1,37 @@
-<div class="card-container">
-
-    <a *nzTabLink nz-tab-link [routerLink]="['.']" [queryParams]="{ tab: 'Contracts Request' }"
-        queryParamsHandling="merge">
-        Contracts Requests
-    </a>
-    <div class="flex space-between" style="margin-bottom:5px"><span></span>
-        <a [routerLink]="['./contract']" [state]="{tracingId: 2}">
+<div class="contract-container">
+    <div class="flex space-between" style="margin-bottom:5px">
+        <h3>Contracts</h3>
+        <a [routerLink]="[site_id,'contract','new']" [state]="{tracingId: 2}">
             <button nz-button nzType="primary" [nzSize]="'small'">
                 <span nz-icon nzType="plus"> </span>
-                New Contracts
+
             </button>
         </a>
     </div>
     <nz-table [nzShowPagination]="false" [nzData]="contracts" [nzFrontPagination]="false" [nzLoading]="loading"
         (nzQueryParams)="onContractsQueryParamsChange($event)">
-        <thead>
+        <!-- <thead>
             <tr>
                 <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Contracts</th>
                 <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status</th>
             </tr>
-        </thead>
+        </thead> -->
         <tbody>
             <tr *ngFor="let data of contracts">
-                <td>
+                <td [width]="'80%'">
                     <nz-list nzItemLayout="horizontal">
                         <nz-list-item>
-                            <nz-list-item-meta [nzAvatar]="apiUrl +'/images/'+data.vendor_filename">
+                            <nz-list-item-meta>
                                 <nz-list-item-meta-title>
                                     <span class="flex space-between">
-                                        <span>{{data.vendor_name}} - {{ data.subject }}</span>
-                                        <span>{{data.total | currency :'PKR'}}</span>
+                                        <span>{{data.contractor}} - {{ data.subject }}</span>
                                     </span>
 
                                 </nz-list-item-meta-title>
                                 <nz-list-item-meta-description>
                                     <span class="flex space-between">
                                         <span>
-                                            <a [routerLink]="['/','contractors', 'contract']"
-                                                [queryParams]="{ CR: data.id }" href="">CR-{{data.id}}</a>
+                                            <a [routerLink]="[site_id,'contract',data.id]" href="">CR-{{data.id}}</a>
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <span class="dateDisplay">
                                                 {{data.date_created | date : 'dd MMM yyyy' }}</span>
@@ -49,11 +43,10 @@
                     </nz-list>
                 </td>
                 <td style="text-align: end;">
-                    <button nz-button nzType="primary"
-                        [className]="data.state===states.Completed? 'green-button':'default'"
-                        [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
+                    <span nz-button
+                        [className]="data.state===states.Completed? 'status-chip green-button':'status-chip'">
                         {{ stateNames[data.state] }}
-                    </button>
+                    </span>
                 </td>
             </tr>
         </tbody>

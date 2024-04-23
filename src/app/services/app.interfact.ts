@@ -224,9 +224,9 @@ export interface ContractDetails {
     amount_per_day: FormControl;
     created_by: FormControl;
     total: FormControl;
-    organization_id: FormControl;
-    sub_organization_id: FormControl;
-    site_id: FormControl;
+    organization: FormControl;
+    subOrganization: FormControl;
+    site: FormControl;
     attachment: FormControl;
     terms: FormControl;
 }
@@ -265,7 +265,7 @@ export interface Expense {
 }
 
 export interface ExpenseForm {
-    id: FormControl;
+    id?: FormControl;
     name: FormControl;
     is_general: FormControl;
     quantity: FormControl;
@@ -274,7 +274,7 @@ export interface ExpenseForm {
     purchase_id?: FormControl;
     is_paid: FormControl;
     site: FormControl;
-    organization: FormControl;
-    subOrganization: FormControl;
-    createdBy: FormControl;
+    organization?: FormControl;
+    subOrganization?: FormControl;
+    createdBy?: FormControl;
 }

@@ -28,6 +28,7 @@ export class SiteComponent implements OnInit, OnDestroy {
   loading = false;
   siteStates = SiteStates;
   stateNames = SiteStateNames;
+  site_id=0;
   listOfData: User[] = [
   ];
   defaultItemValues = {
@@ -100,6 +101,7 @@ export class SiteComponent implements OnInit, OnDestroy {
 
       }
       this.siteDetails.controls['id'].setValue(paramMap.get('siteId')!=='new'?paramMap.get('siteId'): 0);
+      this.site_id=this.siteDetails.controls['id'].value;
       this.setSiteDetails();
     });
 

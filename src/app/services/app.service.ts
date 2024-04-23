@@ -303,6 +303,19 @@ export class AppService {
       throw error;
     }
   }
+
+  async getInventoryBySiteId(siteId=0): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/inventory-purchase/inventory/${organization_id}/${this.currentSubOrgId}/${siteId}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
   async getInventoryItemDetails(name: string): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
@@ -367,7 +380,7 @@ export class AppService {
 
   async createContract(details: any): Promise<any[]> {
     try {
-      const response = await this.http.post(`/api/contractors`, details, { headers: this.header }).toPromise()
+      const response = await this.http.post(`/api/sites/contractors`, details, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting purchase request', error);
@@ -376,10 +389,10 @@ export class AppService {
   }
 
 
-  async retireveContracts(params: HttpParams): Promise<any[]> {
+  async retireveContracts(site_id:number ,params: HttpParams): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/contractors/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
+      const response = await this.http.get(`/api/sites/contracts/${organization_id}/${this.currentSubOrgId}/${site_id}`, { headers: this.header, params }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -388,10 +401,10 @@ export class AppService {
     }
   }
 
-  async retireveContractById(id:any): Promise<any[]>{
+  async retireveContractById(siteId:any,id:any): Promise<any[]>{
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/contractors/contract/${organization_id}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/sites/contract/${organization_id}/${siteId}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -402,7 +415,7 @@ export class AppService {
 
   async updateContractRequest(details: PurchaseOrder): Promise<any[]>{
     try {
-      const response = await this.http.put(`/api/contractors/contract`, details, { headers: this.header }).toPromise()
+      const response = await this.http.put(`/api/sites/contract`, details, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting purchase request', error);

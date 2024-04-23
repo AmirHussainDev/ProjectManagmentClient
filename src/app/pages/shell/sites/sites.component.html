@@ -4,27 +4,66 @@
         New Site
     </button>
 </a>
-<nz-table #sortTable [nzData]="sites" nzTableLayout="fixed">
+<nz-table [nzShowPagination]="false" [nzData]="sites" [nzFrontPagination]="false">
     <thead>
         <tr>
-            <th></th>
-            <th *ngFor="let column of listOfColumn">
-                {{ column.title }}
-            </th>
+            <th nzWidth="60px"></th>
+            <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Site</th>
+            <th nzColumnKey="gender">Status</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of sortTable.data">
-            <td>
-                <a [routerLink]="['./',data.id]" [state]="{tracingId: 2}">
-                    <button nz-button nzType="primary" [nzSize]="'small'">
-                        <span nz-icon nzType="eye"> </span>
-                        
+        <ng-container *ngFor="let data of sites">
+
+            <tr [class.expanded]="expandSet.has(data.id)">
+                <td [nzExpandIcon]="expandIcon" [nzExpand]="expandSet.has(data.id)"
+                    (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+
+                <td>
+                    <nz-list nzItemLayout="horizontal">
+                        <nz-list-item>
+                            <nz-list-item-meta>
+                                <nz-list-item-meta-title>
+                                    <span class="flex space-between">
+                                        <span>{{data.name}} - {{ data.subject }}</span>
+                                        <span>{{data.amount | currency :'PKR'}}</span>
+                                    </span>
+
+                                </nz-list-item-meta-title>
+                                <nz-list-item-meta-description>
+                                    <span class="flex space-between">
+                                        <span>
+                                            <a [routerLink]="[ data.id]" href="">Site-{{data.id}}</a>
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                            <span class="dateDisplay">
+                                                {{data.date_created | date : 'dd MMM yyyy' }}</span>
+                                        </span>
+                                    </span>
+                                </nz-list-item-meta-description>
+                            </nz-list-item-meta>
+                        </nz-list-item>
+                    </nz-list>
+                </td>
+                <td style="text-align: end;">
+                    <button nz-button nzType="primary"
+                        [className]="data.state===siteStates.Completed? 'green-button':'default'"
+                        [nzDanger]="data.state===siteStates.Cancelled" [nzSize]="'small'" nzShape="round">
+                        {{ siteStateNames[data.state] }}
                     </button>
-                </a>
-            </td>
-            <td>{{ data.id }}</td>
-            <td>{{ data.name }}</td>
-        </tr>
+                </td>
+
+            </tr>
+            <tr [class.expanded]="expandSet.has(data.id)" [nzExpand]="expandSet.has(data.id)" class="expanded-table">
+                <app-site-contractors *ngIf="expandSet.has(data.id)" [site_id]="data.id"></app-site-contractors>
+
+            </tr>
+
+            <ng-template #expandIcon>
+                <span nz-icon *ngIf="!expandSet.has(data.id)" nzType="double-right" nzTheme="outline"
+                    (click)="onExpandChange(data.id, true)"></span>
+                <span nz-icon *ngIf="expandSet.has(data.id)" [nzRotate]="90" nzType="double-right" nzTheme="outline"
+                    (click)="onExpandChange(data.id, false)"></span>
+            </ng-template>
+        </ng-container>
     </tbody>
 </nz-table>

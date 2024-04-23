@@ -1,0 +1,7 @@
+.expanded-table>td{
+background: transparent !important;
+}
+
+::ng-deep.expanded{
+    background: #ffffffb8;
+}

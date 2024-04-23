@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppService } from '../../../services/app.service';
 import { Site } from '../../../services/app.interfact';
 import { Subscription } from 'rxjs';
+import { SiteStateNames, SiteStates } from '../../../services/app.constants';
 
 
 
@@ -11,6 +12,16 @@ import { Subscription } from 'rxjs';
   styleUrl: './sites.component.css'
 })
 export class SitesComponent implements OnInit, OnDestroy {
+  siteStates=SiteStates
+  siteStateNames=SiteStateNames
+  expandSet = new Set<number>();
+  onExpandChange(id: number, checked: boolean): void {
+    if (checked) {
+      this.expandSet.add(id);
+    } else {
+      this.expandSet.delete(id);
+    }
+  }
   listOfColumn = [
     {
       title: 'id'

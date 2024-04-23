@@ -27,11 +27,11 @@ app-shell {
 }
 
 .space-evenly {
-    justify-content:space-evenly;
+    justify-content: space-evenly;
 }
 
 .space-around {
-    justify-content:space-around;
+    justify-content: space-around;
 }
 
 .center {
@@ -85,13 +85,13 @@ tfoot tr td {
     display: none;
 }
 
-.detailBar-collapsible{
+.detailBar-collapsible {
     display: flex;
     width: 100%;
     margin-left: auto;
     justify-content: space-between;
     align-items: center;
-    padding:5px ;
+    padding: 5px;
 }
 
 .detailBar {
@@ -168,6 +168,7 @@ td>input {
 }
 
 .ant-input {}
+
 .ant-layout-sider-children {
 
     overflow: auto;
@@ -180,7 +181,7 @@ td>input {
 ::-webkit-scrollbar {
     width: 5px;
 }
- 
+
 ::-webkit-scrollbar-track {
     background-color: #ebebeb18;
     -webkit-border-radius: 5px;
@@ -190,23 +191,23 @@ td>input {
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    background: #ffffff82; 
+    background: #ffffff82;
 }
 
-.header-button{
+.header-button {
     border-radius: 13px !important;
     background: #f0f8ff52 !important;
-    color: white !important ;
+    color: white !important;
     margin-left: 14px !important;
 }
 
-.header-button > .ant-select-selector{
+.header-button>.ant-select-selector {
     border-radius: inherit !important;
     background: none !important;
     color: inherit !important;
 }
 
-.control{
+.control {
     border-radius: 13px !important;
     background: white;
     color: #4f4d4d !important;
@@ -214,12 +215,24 @@ td>input {
     border: 0.5px solid #d0cfcf;
 }
 
-.control > .ant-select-selector{
+.control>.ant-select-selector {
     border-radius: inherit !important;
     background: none !important;
     color: inherit !important;
 }
 
-.ant-form-item-label{
+.ant-form-item-label {
     text-align: left;
+}
+
+.ant-table-expanded-row>td {
+    background: transparent !important;
+}
+
+.status-chip {
+    background: #00000047;
+    padding: 4px;
+    border-radius: 6px;
+    color: white;
+    font-size: 10px;
 }

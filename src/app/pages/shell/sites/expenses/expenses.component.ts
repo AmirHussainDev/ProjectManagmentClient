@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Expense, SubOrganization } from '../../../../services/app.interfact';
+import { Component, Input, OnInit } from '@angular/core';
+import { Expense, ExpenseForm, SubOrganization } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-expenses',
@@ -8,6 +10,9 @@ import { AppService } from '../../../../services/app.service';
   styleUrl: './expenses.component.css'
 })
 export class ExpensesComponent implements OnInit {
+  addExpenseForm: FormGroup<ExpenseForm>;
+  vendorItems: any[] = [];
+  @Input() site_id:number;
 
   listOfColumn = [
     {
@@ -32,7 +37,7 @@ export class ExpensesComponent implements OnInit {
     },
     {
       title: 'Paid',
-      compare: (a: Expense, b: Expense) => (a.is_paid?1: 0 )- (b.is_paid?1 : 0),
+      compare: (a: Expense, b: Expense) => (a.is_paid ? 1 : 0) - (b.is_paid ? 1 : 0),
       priority: 2
     },
     {
@@ -45,13 +50,48 @@ export class ExpensesComponent implements OnInit {
   ];
 
   visible = false;
+  isVisible = false;
+  isOkLoading = false;
+
   ExpenseRoles: any[];
+  users: any[];
   subOrganizations: SubOrganization[];
   constructor(
-    private appService: AppService) {
-
+    private appService: AppService,
+    private userService: UserService,
+    private fb: FormBuilder) {
+    this.addExpenseForm = new FormGroup({
+      id: new FormControl(),
+      name: new FormControl(),
+      is_general: new FormControl(),
+      quantity: new FormControl(),
+      amount: new FormControl(),
+      refered_by: new FormControl(),
+      purchase_id: new FormControl(),
+      is_paid: new FormControl(),
+      site: new FormControl(),
+      organization: new FormControl(),
+      subOrganization: new FormControl(),
+      createdBy: new FormControl(),
+    }) as FormGroup<ExpenseForm>
   }
 
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    this.isOkLoading = true;
+    setTimeout(() => {
+      this.isVisible = false;
+      this.isOkLoading = false;
+    }, 3000);
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
+  }
   ngOnInit(): void {
     this.populateExpenseData();
   }
@@ -112,13 +152,22 @@ export class ExpensesComponent implements OnInit {
       subOrganization: 1,
       createdBy: 1
     }],
-      this.ExpenseRoles = await this.appService.getRoles();
+    this.users= await this.userService.getOrganizationUsers();
+    this.ExpenseRoles = await this.appService.getRoles();
     this.subOrganizations = await this.appService.getSubOrganizations();
-
+    this.vendorItems = await this.appService.getInventoryBySiteId(this.site_id)
     this.ExpenseRoles = this.ExpenseRoles.map(role => ({ key: role.role_name, value: role.id }))
     this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
     // this.mapExpenseData();
     this.updateEditCache();
+  }
+
+  index = 0;
+  addItem(input: HTMLInputElement): void {
+    const value = input.value;
+    if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
+      this.vendorItems = [...this.vendorItems, { name: input.value }];
+    }
   }
 
   // mapExpenseData() {

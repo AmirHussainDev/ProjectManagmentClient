@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
@@ -12,15 +12,16 @@ import { ContractStateNames, ContractStates } from '../../../../services/app.con
   styleUrl: './site-contractors.component.css'
 })
 export class SiteContractorsComponent implements OnInit, OnDestroy {
+  @Input() site_id = 0
   loading = true;
   apiUrl = environment.apiUrl;
   filterStates = Object.keys(ContractStateNames).map((res: any) => ({ text: ContractStateNames[res], value: res }))
   contracts: any[] = [];
   states = ContractStates;
-  stateNames=ContractStateNames;
+  stateNames = ContractStateNames;
   subOrgSubscription: Subscription;
 
-  constructor(private appService:AppService){
+  constructor(private appService: AppService) {
 
   }
   ngOnInit(): void {
@@ -55,12 +56,12 @@ export class SiteContractorsComponent implements OnInit, OnDestroy {
         params = params.append(filter.key, value);
       });
     });
-    this.getAndSetContracts(params);
+    this.getAndSetContracts(this.site_id, params);
 
   }
 
-  async getAndSetContracts(params: HttpParams) {
-    this.contracts = await this.appService.retireveContracts(params)
+  async getAndSetContracts(site_id: number, params: HttpParams) {
+    this.contracts = await this.appService.retireveContracts(site_id, params)
     this.loading = false;
   }
 

@@ -55,10 +55,10 @@ export class CreateContractComponent {
     amount_per_schedule: new FormControl(0),
     amount_per_day: new FormControl(0),
     created_by: new FormControl(0),
-    site_id: new FormControl(0),
+    site: new FormControl(0),
     total: new FormControl(0),
-    organization_id: new FormControl(0),
-    sub_organization_id: new FormControl(0),
+    organization: new FormControl(0),
+    subOrganization: new FormControl(0),
     contract_start_date: new FormControl(new Date()),
     contract_end_date: new FormControl(new Date()),
     attachment: new FormControl(),
@@ -86,10 +86,10 @@ export class CreateContractComponent {
       amount_per_schedule: new FormControl(0),
       amount_per_day: new FormControl(0),
       created_by: new FormControl(0),
-      site_id: new FormControl(0),
+      site: new FormControl(0),
       total: new FormControl(0),
-      organization_id: new FormControl(0),
-      sub_organization_id: new FormControl(0),
+      organization: new FormControl(0),
+      subOrganization: new FormControl(0),
       contract_start_date: new FormControl(new Date()),
       contract_end_date: new FormControl(new Date()),
       attachment: new FormControl(),
@@ -100,16 +100,16 @@ export class CreateContractComponent {
   ngOnInit(): void {
     this.loadAndUsers();
     this.setSitesData()
-    this.route.queryParams.subscribe(params => {
+    this.route.paramMap.subscribe(paramMap => {
       // Use this queryParams object to load data
-      if (!params['CR']) {
+      if (!paramMap.get('contractId')) {
         this.contractDetails.reset({ state: this.contractStates.Draft, id: 0 });
         this.contractDetails.enable();
         this.contractDetails.updateValueAndValidity();
-
-
       }
-      this.contractDetails.controls['id'].setValue(params['CR'] || 0);
+
+      this.contractDetails.controls['id'].setValue(paramMap.get('contractId')!=='new'?paramMap.get('contractId'): 0);
+      this.contractDetails.controls['site'].setValue(paramMap.get('siteId') || 0);
       this.setContractRequestDetails();
     });
 
@@ -126,9 +126,9 @@ export class CreateContractComponent {
     if (this.contractDetails.controls['id'].value) {
       await this.getExistingContract();
     } else {
-      this.contractDetails.controls['organization_id'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
+      this.contractDetails.controls['organization'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
       this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(resp => {
-        this.contractDetails.controls['sub_organization_id'].setValue(resp.id);
+        this.contractDetails.controls['subOrganization'].setValue(resp.id);
       });
       this.contractDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
     }
@@ -137,7 +137,7 @@ export class CreateContractComponent {
   }
 
   async getExistingContract() {
-    const response: any = await this.appService.retireveContractById(this.contractDetails.controls['id'].value)
+    const response: any = await this.appService.retireveContractById(this.contractDetails.controls['site'].value,this.contractDetails.controls['id'].value)
     if (response) {
       this.contractDetails.patchValue({
         id: response.id,
@@ -145,16 +145,15 @@ export class CreateContractComponent {
         state: response.state,
         created_by: response.created_by,
         total: response.total,
-        organization_id: response.organization_id,
-        sub_organization_id: response.sub_organization_id,
-
+        organization: response.organization_id,
+        subOrganization: response.sub_organization_id,
         contractor: response.contractor,
         contract_type: response.contract_type,
         with_material: response.with_material,
         payment_schedule: response.payment_schedule,
         amount_per_schedule: response.amount_per_schedule,
         amount_per_day: response.amount_per_day,
-        site_id: response.site_id,
+        site: response.site_id,
         contract_start_date: response.contract_start_date,
         contract_end_date: response.contract_end_date,
         attachment: response.attachment,
