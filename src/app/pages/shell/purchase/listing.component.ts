@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
 import { InvoiceStateNames, POStates } from '../../../services/app.constants';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 
 @Component({
@@ -15,14 +16,18 @@ import { InvoiceStateNames, POStates } from '../../../services/app.constants';
 export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   apiUrl = environment.apiUrl;
   pendingInvoices: any[] = [];
-  saleRequests:any[]=[];
+  saleRequests: any[] = [];
   stateNames = InvoiceStateNames
   paymentConfirmations: any[] = [];
   states = POStates;
   partialPayments: any[] = []
   subOrgSubscription: Subscription;
+  showSide=false;
   tabs = ['Purchase Request', 'Purchase Returns', 'Sale Requests', 'Sale Return'];
-  constructor(private appService: AppService) { }
+  constructor(
+    private appService: AppService,
+    private media: MediaMatcher,
+  ) { }
   total = 1;
   loading = true;
   pageSize = 10;
@@ -116,5 +121,8 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.total = this.pendingInvoices.length; // mock the total data here
   }
 
-
+  isMobile(): boolean {
+    const isMobile = this.media.matchMedia('(max-width: 600px)');
+    return isMobile.matches;
+  }
 }

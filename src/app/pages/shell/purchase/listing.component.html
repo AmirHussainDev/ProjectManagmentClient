@@ -1,143 +1,165 @@
-<div class="container">
-    <div class="section">
-        <!-- <h5 nz-typography>
-            Pending Invoices
-        </h5> -->
-        <div class="card-container">
-            <nz-tabset nzType="card" [nzTabPosition]="'top'">
-                <nz-tab>
-                    <a *nzTabLink nz-tab-link [routerLink]="['.']" [queryParams]="{ tab: 'Purchase Request' }"
-                        queryParamsHandling="merge">
-                        Purchase Requests
-                    </a>
-                    <div class="flex space-between" style="margin-bottom:5px"><span></span>
-                        <a [routerLink]="['./purchase']" [state]="{tracingId: 2}">
-                            <button nz-button nzType="primary" [nzSize]="'small'">
-                                <span nz-icon nzType="plus"> </span>
-                                New Purchase
-                            </button>
-                        </a>
-                    </div>
-                    <nz-table [nzShowPagination]="false" [nzData]="pendingInvoices" [nzFrontPagination]="false"
-                        [nzLoading]="loading" [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
-                        (nzQueryParams)="onPurchaseQueryParamsChange($event)">
-                        <thead>
-                            <tr>
-                                <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Purchase</th>
-                                <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let data of pendingInvoices">
-                                <td>
-                                    <nz-list nzItemLayout="horizontal">
-                                        <nz-list-item>
-                                            <nz-list-item-meta [nzAvatar]="apiUrl +'/images/'+data.vendor_filename">
-                                                <nz-list-item-meta-title>
-                                                    <span class="flex space-between">
-                                                        <span>{{data.vendor_name}} - {{ data.subject }}</span>
-                                                        <span>{{data.total | currency :'PKR'}}</span>
-                                                    </span>
-
-                                                </nz-list-item-meta-title>
-                                                <nz-list-item-meta-description>
-                                                    <span class="flex space-between">
-                                                        <span>
-                                                            <a [routerLink]="['/', 'purchase','purchase']"
-                                                                [queryParams]="{ PO: data.id }"
-                                                                href="">PO-{{data.id}}</a>
-                                                            <nz-divider nzType="vertical"></nz-divider>
-                                                            <span class="dateDisplay">
-                                                                {{data.date_created | date : 'dd MMM yyyy'                 }}</span>
-                                                        </span>
-                                                    </span>
-                                                </nz-list-item-meta-description>
-                                            </nz-list-item-meta>
-                                        </nz-list-item>
-                                    </nz-list>
-                                </td>
-                                <td style="text-align: end;">
-                                    <button nz-button nzType="primary"
-                                        [className]="data.state===states.Completed? 'green-button':'default'"
-                                        [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
-                                        {{ stateNames[data.state] }}
+<nz-row>
+    <nz-col [nzSpan]="!isMobile()&&showSide?8:24">
+        <div class="container">
+            <div class="section">
+                <div class="card-container">
+                    <nz-tabset nzType="card" [nzTabPosition]="'top'">
+                        <nz-tab>
+                            <a *nzTabLink nz-tab-link (click)="showSide=false" [routerLink]="['.']"
+                                [queryParams]="{ tab: 'Purchase Request' }" queryParamsHandling="merge">
+                                Purchase Requests
+                            </a>
+                            <div class="flex space-between" style="margin-bottom:5px"><span></span>
+                                <a (click)="showSide=true" [routerLink]="['./purchase']" [state]="{tracingId: 2}">
+                                    <button nz-button nzType="primary" [nzSize]="'small'">
+                                        <span nz-icon nzType="plus"> </span>
+                                        New Purchase
                                     </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
+                                </a>
+                            </div>
+                            <nz-table [nzShowPagination]="false" [nzData]="pendingInvoices" [nzFrontPagination]="false"
+                                [nzLoading]="loading" [nzTotal]="total" [nzPageSize]="pageSize"
+                                [nzPageIndex]="pageIndex" (nzQueryParams)="onPurchaseQueryParamsChange($event)">
+                                <thead>
+                                    <tr>
+                                        <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Purchase</th>
+                                        <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of pendingInvoices">
+                                        <td>
+                                            <nz-list nzItemLayout="horizontal">
+                                                <nz-list-item>
+                                                    <nz-list-item-meta
+                                                        [nzAvatar]="apiUrl +'/images/'+data.vendor_filename">
+                                                        <nz-list-item-meta-title>
+                                                            <span class="flex space-between">
+                                                                <span>{{data.vendor_name}} - {{ data.subject }}</span>
+                                                                <span>{{data.total | currency :'PKR'}}</span>
+                                                            </span>
+
+                                                        </nz-list-item-meta-title>
+                                                        <nz-list-item-meta-description>
+                                                            <span class="flex space-between">
+                                                                <span>
+                                                                    <a (click)="showSide=true"
+                                                                        [routerLink]="['/', 'purchase','purchase']"
+                                                                        [queryParams]="{ PO: data.id }"
+                                                                        href="">PO-{{data.id}}</a>
+                                                                    <nz-divider nzType="vertical"></nz-divider>
+                                                                    <span class="dateDisplay">
+                                                                        {{data.date_created | date : 'dd MMM yyyy'
+                                                                        }}</span>
+                                                                </span>
+                                                            </span>
+                                                        </nz-list-item-meta-description>
+                                                    </nz-list-item-meta>
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td style="text-align: end;">
+                                            <button nz-button nzType="primary"
+                                                [className]="data.state===states.Completed? 'green-button':'default'"
+                                                [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"
+                                                nzShape="round">
+                                                {{ stateNames[data.state] }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
 
 
 
-                </nz-tab>
-                <nz-tab>
-                    <a *nzTabLink nz-tab-link [routerLink]="['.']" [queryParams]="{ tab: 'two' }"
-                        queryParamsHandling="merge">
-                        Sale Requests
-                    </a>
-                    <div class="flex space-between" style="margin-bottom:5px"><span></span>
-                        <a [routerLink]="['./sale']" [state]="{tracingId: 2}">
-                            <button nz-button nzType="primary" [nzSize]="'small'">
-                                <span nz-icon nzType="plus"> </span>
-                                New Sale
-                            </button>
-                        </a>
-                    </div>
-                    <nz-table [nzShowPagination]="false" [nzData]="saleRequests" [nzFrontPagination]="false"
-                        [nzLoading]="loading" [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
-                        (nzQueryParams)="onSaleQueryParamsChange($event)">
-                        <thead>
-                            <tr>
-                                <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Sale</th>
-                                <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let data of saleRequests">
-                                <td>
-                                    <nz-list nzItemLayout="horizontal">
-                                        <nz-list-item>
-                                            <nz-list-item-meta>
-                                                <nz-list-item-meta-title>
-                                                    <span class="flex space-between">
-                                                        <span>{{ data.subject }}</span>
-                                                        <span>{{data.total | currency :'PKR'}}</span>
-                                                    </span>
-
-                                                </nz-list-item-meta-title>
-                                                <nz-list-item-meta-description>
-                                                    <span class="flex space-between">
-                                                        <span>
-                                                            <a [routerLink]="['/', 'purchase','sale']"
-                                                                [queryParams]="{ SALE: data.id }" href="">SALE -
-                                                                {{data.id}}</a>
-                                                            <nz-divider nzType="vertical"></nz-divider>
-                                                            <span class="dateDisplay"> {{data.date_created | date : 'dd
-                                                                MMM yyyy'
-                                                                }}</span>
-                                                        </span>
-                                                    </span>
-                                                </nz-list-item-meta-description>
-                                            </nz-list-item-meta>
-                                        </nz-list-item>
-                                    </nz-list>
-                                </td>
-                                <td style="text-align: end;">
-                                    <button nz-button nzType="primary"
-                                        [className]="data.state===states.Completed? 'green-button':'default'"
-                                        [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
-                                        {{ stateNames[data.state] }}
+                        </nz-tab>
+                        <nz-tab>
+                            <a *nzTabLink nz-tab-link (click)="showSide=false" [routerLink]="['.']"
+                                [queryParams]="{ tab: 'two' }" queryParamsHandling="merge">
+                                Sale Requests
+                            </a>
+                            <div class="flex space-between" style="margin-bottom:5px"><span></span>
+                                <a (click)="showSide=true" [routerLink]="['./sale']" [state]="{tracingId: 2}">
+                                    <button nz-button nzType="primary" [nzSize]="'small'">
+                                        <span nz-icon nzType="plus"> </span>
+                                        New Sale
                                     </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
+                                </a>
+                            </div>
+                            <nz-table [nzShowPagination]="false" [nzData]="saleRequests" [nzFrontPagination]="false"
+                                [nzLoading]="loading" [nzTotal]="total" [nzPageSize]="pageSize"
+                                [nzPageIndex]="pageIndex" (nzQueryParams)="onSaleQueryParamsChange($event)">
+                                <thead>
+                                    <tr>
+                                        <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Sale</th>
+                                        <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of saleRequests">
+                                        <td>
+                                            <nz-list nzItemLayout="horizontal">
+                                                <nz-list-item>
+                                                    <nz-list-item-meta>
+                                                        <nz-list-item-meta-title>
+                                                            <span class="flex space-between">
+                                                                <span>{{ data.subject }}</span>
+                                                                <span>{{data.total | currency :'PKR'}}</span>
+                                                            </span>
+
+                                                        </nz-list-item-meta-title>
+                                                        <nz-list-item-meta-description>
+                                                            <span class="flex space-between">
+                                                                <span>
+                                                                    <a (click)="showSide=true"
+                                                                        [routerLink]="['/', 'purchase','sale']"
+                                                                        [queryParams]="{ SALE: data.id }" href="">SALE -
+                                                                        {{data.id}}</a>
+                                                                    <nz-divider nzType="vertical"></nz-divider>
+                                                                    <span class="dateDisplay"> {{data.date_created |
+                                                                        date : 'dd
+                                                                        MMM yyyy'
+                                                                        }}</span>
+                                                                </span>
+                                                            </span>
+                                                        </nz-list-item-meta-description>
+                                                    </nz-list-item-meta>
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td style="text-align: end;">
+                                            <button nz-button nzType="primary"
+                                                [className]="data.state===states.Completed? 'green-button':'default'"
+                                                [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"
+                                                nzShape="round">
+                                                {{ stateNames[data.state] }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
 
 
 
-                </nz-tab>
+                        </nz-tab>
 
-            </nz-tabset>
+                    </nz-tabset>
+                </div>
+            </div>
         </div>
-    </div>
+    </nz-col>
+    <nz-col class="sidebarright" [nzSpan]="!isMobile()&&showSide?16:0" *ngIf="!isMobile()&&showSide">
+        <router-outlet></router-outlet>
+    </nz-col>
+</nz-row>
+<div *ngIf="isMobile()&&showSide">
+    <nz-drawer  nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]="" (nzOnClose)="showSide=false">
+        <ng-container *nzDrawerContent>
+
+            <router-outlet>
+            </router-outlet>
+        </ng-container>
+    </nz-drawer>
 </div>

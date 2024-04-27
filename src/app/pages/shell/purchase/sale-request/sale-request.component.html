@@ -1,3 +1,4 @@
+<div class="container">
 <div class="detailBar">
     <span>
         <h4> SALE - {{SaleRequestDetails.get('id')?.value || 'New'}} /
@@ -14,7 +15,7 @@
 </div>
 
 <div class="SaleRequest-request" id="print-section">
-    <nz-card style="width:100%">
+    <nz-card style="width:100%" nzBordered="false">
         <form nz-form [formGroup]="SaleRequestDetails" (ngSubmit)="submitForm()">
             <div #content>
               
@@ -359,3 +360,4 @@
 <ng-template #customNoDataTemplate>
 
 </ng-template>
+</div>

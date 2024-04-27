@@ -3,9 +3,10 @@ import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { UserService } from '../../services/user.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { AppService } from '../../services/app.service';
-import { Subscription, of } from 'rxjs';
+import { Subscription, filter, of } from 'rxjs';
 import { SubOrganization } from '../../services/app.interfact';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-shell',
@@ -23,10 +24,15 @@ export class ShellComponent implements OnInit, OnDestroy {
   siteSubscription: Subscription;
   subOrgSubscription: Subscription;
   currentSubOrganization: SubOrganization
+  currentRoutePath: string;
+  currentUrl: any;
+  currentRoutes: string[] = []
   constructor(private userService: UserService,
     private appService: AppService, private fb: FormBuilder,
-    private media: MediaMatcher
-    ) {
+    private media: MediaMatcher,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.siteForm = this.fb.group({
       site: []
     })
@@ -35,6 +41,19 @@ export class ShellComponent implements OnInit, OnDestroy {
     this.loggedInUser = this.userService.getUserDetails();
     this.setSitesData();
     this.onSiteChange();
+   this.extractRoutePath(this.router.url)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.currentUrl = event.url;
+     this.extractRoutePath(this.currentUrl)
+    });
+
+  }
+
+  private extractRoutePath(url: string) {
+    url = url.replace(/(https?:\/\/[^\/]+)?\/?/, '');
+    this.currentRoutes =  url.split('/').filter(route => route); // Remove query parameters
   }
 
   toggleOrganizations() {
@@ -76,10 +95,10 @@ export class ShellComponent implements OnInit, OnDestroy {
     const nameArray = name.trim().split(' '); // Split the name into an array of words
     const initials = nameArray.map(word => word.charAt(0)); // Extract the first character of each word
     return initials.join('').toUpperCase(); // Join the characters and convert to uppercase
-}
+  }
 
-isMobile(): boolean {
-  const isMobile = this.media.matchMedia('(max-width: 600px)');
-  return isMobile.matches;
-}
+  isMobile(): boolean {
+    const isMobile = this.media.matchMedia('(max-width: 600px)');
+    return isMobile.matches;
+  }
 }

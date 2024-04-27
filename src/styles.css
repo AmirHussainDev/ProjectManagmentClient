@@ -50,14 +50,15 @@ app-shell {
     position: relative;
     left: 0px;
     padding: 4px 21px;
-    background: #ddefff;
     color: white;
     font-size: 11px;
     box-shadow: -3px 5px 5px -6px #000000a6;
 }
 
 .ant-layout-header {
-    height: 50px
+    height: 40px;
+    background: #F7F7FE;
+    color: black;
 }
 
 .ant-breadcrumb-link {
@@ -101,18 +102,15 @@ tfoot tr td {
     margin-top: 10px;
     justify-content: space-between;
     align-items: center;
-    background: #DDEFFF;
     padding: 5px;
-    border: 1px solid #d5dfe8;
 }
 
 .appbackground {
-    background: url('../28.jpg') !important;
+    /* background: url('../28.jpg') !important; */
     background-size: cover !important
 }
 
 .ant-card {
-    background: #ddefffe0;
 }
 
 .ant-table {
@@ -197,7 +195,7 @@ td>input {
 .header-button {
     border-radius: 13px !important;
     background: #f0f8ff52 !important;
-    color: white !important;
+    /* color: white !important; */
     margin-left: 14px !important;
 }
 
@@ -235,4 +233,17 @@ td>input {
     border-radius: 6px;
     color: white;
     font-size: 10px;
+}
+
+a:hover{
+color: inherit !important;
+}
+
+.container{
+    display: block !important;
+    height: calc(100vh - 62px);
+    overflow-y: auto;
+}
+.sidebarright{
+    border-left: 1px solid #80808033;
 }

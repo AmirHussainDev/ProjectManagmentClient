@@ -10,12 +10,13 @@
 .ant-layout-header {
     line-height: 50px;
     height: 56px;
+    border-bottom: 0.1px solid #80808017;
 }
 
 .header-text {
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: white;
+    /* color: white; */
     margin: auto;
 }
 
@@ -34,25 +35,52 @@
 .sideMenuItems {
     overflow: auto;
     height: calc(100% - 56px);
+    background: #21263C;
+    /* background: inherit !important; */
+}
+.ant-menu-inline{
     background: inherit !important;
 }
+
 ::ng-deep.ant-menu-submenu-title {
     margin-bottom: 0px !important;
     margin-top: 0px !important;
     padding-top: 5px;
     padding-bottom: 5px;
+}
 
+.ant-menu-item:hover,
+.ant-menu-submenu:hover {
+    background: #343434;
+    color: rgb(201, 198, 198);
 }
 
 .ant-menu-item,
 .ant-menu-submenu {
-    border-bottom: 1px solid #343434;
-    background: #88949f87;
-    font-size: 16px !important;
+    /* border-bottom: 1px solid #343434; */
+    /* background: #88949f87; */
+    margin: 8px !important;
+    width: auto !important;
+    border-radius: 8px;
+    padding-left: 12px !important;
+    font-size: 12px !important;
     margin-bottom: 0px !important;
-    margin-top: 0px !important
-
+    margin-top: 0px !important;
+    height: 32px;
 }
+
+.ant-menu-item-selected {
+    background: inherit !important;
+}
+
+.selected-route {
+    background: #BB86FC !important;
+}
+
+ul {
+    margin-top: 10px;
+}
+
 @media (max-width: 600px) {
     .sideMenuItems {
         overflow: auto;
@@ -70,16 +98,22 @@
         min-height: 60px;
         padding-top: 10px;
     }
-
+    .selected-route {
+        background: #BB86FC !important;
+    }
     .ant-menu-item,
     .ant-menu-submenu {
         border-bottom: 1px solid #343434;
-        background: #88949f87;
+        /* background: #88949f87; */
+
+        margin: 0px !important;
         font-size: 16px !important;
         margin-bottom: 0px !important;
         margin-top: 0px !important;
         min-height: 60px;
         padding-top: 10px;
+        padding-left: 20px !important;
+        border-radius: 0px !important;
     }
 
     .anticon>* {
@@ -106,13 +140,13 @@
 
 
 nz-header {
-    background: #ffffff82;
+    /* background: #ffffff82; */
     padding: 0;
-    color: white;
+    /* color: white; */
 }
 
 nz-content {
-
+    background: white;
     padding: 6px 6px;
     overflow: auto;
 }
@@ -123,7 +157,7 @@ nz-breadcrumb {
 
 .inner-content {
     padding: 24px;
-    background: #fff;
+    /* background: #fff; */
     min-height: 360px;
 }
 
@@ -131,7 +165,7 @@ nz-footer {
     padding: 5px 5px;
     color: white;
     font-size: 9px;
-    background: #f0f2f51f;
+    background: inherit;
     position: absolute;
     bottom: 0px;
     width: 100%;
@@ -165,7 +199,7 @@ app-shell {
     font-family: revert;
     color: white;
     font-weight: 800;
-    font-size: 22px;
+    font-size: 18px;
     white-space: pre;
     letter-spacing: 0.4em;
 }

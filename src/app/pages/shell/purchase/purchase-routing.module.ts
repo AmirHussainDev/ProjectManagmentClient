@@ -7,16 +7,19 @@ import { ListingComponent } from './listing.component';
 const routes: Routes = [
   {
     path: '', component: ListingComponent,
-    data:{name:' '}
+    data:{name:' '},
+    children:[
+      {
+        path: 'sale', component: SaleRequestComponent,
+        data:{name:' '}
+      },
+      {
+        path: 'purchase', component: PurchaseComponent,
+        data:{name:' '}
+      },
+    ]
   },
-  {
-    path: 'sale', component: SaleRequestComponent,
-    data:{name:' '}
-  },
-  {
-    path: 'purchase', component: PurchaseComponent,
-    data:{name:' '}
-  },
+
 ];
 
 @NgModule({
