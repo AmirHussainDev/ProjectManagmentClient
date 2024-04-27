@@ -16,11 +16,13 @@ import { User } from '../../team/users/users.interface';
 import { ContractStateNames, ContractStates } from '../../../../services/app.constants';
 
 @Component({
-  selector: 'app-create-contract',
-  templateUrl: './create-contract.component.html',
-  styleUrl: './create-contract.component.css'
+  selector: 'app-site-contract',
+  templateUrl: './site-contract.component.html',
+  styleUrl: './site-contract.component.css'
 })
-export class CreateContractComponent {
+export class SiteContractComponent {
+  isActive = false;
+
   @ViewChild('content', { static: false }) content: ElementRef;
   vendors: any[] = [];
   vendorItems: { name: string }[] = [];
@@ -29,6 +31,7 @@ export class CreateContractComponent {
   loading = false;
   contractStates = ContractStates;
   stateNames = ContractStateNames;
+  site_id = 0;
   listOfData: User[] = [
   ];
   defaultItemValues = {
@@ -107,8 +110,8 @@ export class CreateContractComponent {
         this.contractDetails.enable();
         this.contractDetails.updateValueAndValidity();
       }
-
-      this.contractDetails.controls['id'].setValue(paramMap.get('contractId')!=='new'?paramMap.get('contractId'): 0);
+      this.site_id = parseInt(paramMap.get('siteId')?.toString()||'0');
+      this.contractDetails.controls['id'].setValue(paramMap.get('contractId') !== 'new' ? paramMap.get('contractId') : 0);
       this.contractDetails.controls['site'].setValue(paramMap.get('siteId') || 0);
       this.setContractRequestDetails();
     });
@@ -137,7 +140,7 @@ export class CreateContractComponent {
   }
 
   async getExistingContract() {
-    const response: any = await this.appService.retireveContractById(this.contractDetails.controls['site'].value,this.contractDetails.controls['id'].value)
+    const response: any = await this.appService.retireveContractById(this.contractDetails.controls['site'].value, this.contractDetails.controls['id'].value)
     if (response) {
       this.contractDetails.patchValue({
         id: response.id,

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SitesComponent } from './sites.component';
 import { SiteContractorsComponent } from './site-contractors/site-contractors.component';
-import { CreateContractComponent } from './create-contract/create-contract.component';
+import { SiteContractComponent } from './site-contract/site-contract.component';
 import { SiteComponent } from './site/site.component';
 
 const routes: Routes = [
@@ -15,7 +15,7 @@ const routes: Routes = [
     data:{name:'Site'}
   },
   {
-    path: ':siteId/contract/:contractId', component: CreateContractComponent,
+    path: ':siteId/contract/:contractId', component: SiteContractComponent,
     data:{name:'Create Contract'}
   },
 ];

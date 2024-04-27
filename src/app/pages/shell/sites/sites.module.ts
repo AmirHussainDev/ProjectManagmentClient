@@ -15,7 +15,10 @@ import { ExpensesComponent } from './expenses/expenses.component';
 import { OwnerPaymentsComponent } from './owner-payments/owner-payments.component';
 import { ContractorPaymentsComponent } from './contractor-payments/contractor-payments.component';
 import { SiteContractorsComponent } from './site-contractors/site-contractors.component';
-import { CreateContractComponent } from './create-contract/create-contract.component';
+import { SiteContractComponent } from './site-contract/site-contract.component';
+import { UsernamePipe } from "../../../pipes/username.pipe";
+import { WorkLogComponent } from './site-contract/work-log/work-log.component';
+import { ContractPaymentComponent } from './site-contract/contract-payment/contract-payment.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -26,23 +29,28 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 
 
 @NgModule({
-  declarations: [
-    SitesComponent,
-    SiteComponent,
-    ExpensesComponent,
-    OwnerPaymentsComponent,
-    ContractorPaymentsComponent,
-    SiteContractorsComponent,
-    CreateContractComponent,
-  ],
-  imports: [
-    CommonModule,
-    SitesRoutingModule,
-    NgZorroAntdModule,
-    ReactiveFormsModule,
-    FormsModule
-  ], providers: [{ provide: NZ_I18N, useValue: en_US },
-  { provide: NZ_ICONS, useValue: icons },
-  ]
+    declarations: [
+        SitesComponent,
+        SiteComponent,
+        ExpensesComponent,
+        OwnerPaymentsComponent,
+        ContractorPaymentsComponent,
+        SiteContractorsComponent,
+        SiteContractComponent,
+        WorkLogComponent,
+        ContractPaymentComponent,
+    ],
+    providers: [{ provide: NZ_I18N, useValue: en_US },
+        { provide: NZ_ICONS, useValue: icons },
+        UsernamePipe
+    ],
+    imports: [
+        CommonModule,
+        SitesRoutingModule,
+        NgZorroAntdModule,
+        ReactiveFormsModule,
+        FormsModule,
+        UsernamePipe
+    ]
 })
 export class SitesModule { }

@@ -261,7 +261,9 @@ export interface Expense {
     site: number;
     organization: number;
     subOrganization: number;
-    createdBy: number;
+    created_by?: number;
+    note: string;
+    unit_price?:number;
 }
 
 export interface ExpenseForm {
@@ -277,4 +279,83 @@ export interface ExpenseForm {
     organization?: FormControl;
     subOrganization?: FormControl;
     createdBy?: FormControl;
+    note: FormControl;
+    unit_price:FormControl;
+
 }
+
+export interface OwnerPayment {
+    id: number;
+    name: string;
+    amount: number;
+    is_paid: boolean;
+    site: number;
+    organization: number;
+    subOrganization: number;
+    created_by?: number;
+    note: string;
+}
+
+export interface OwnerPaymentForm {
+    id?: FormControl;
+    name: FormControl;
+    amount: FormControl;
+    is_paid: FormControl;
+    site: FormControl;
+    organization?: FormControl;
+    subOrganization?: FormControl;
+    created_by?: FormControl;
+    note: FormControl;
+}
+
+
+export interface ContractPayment {
+    id: number;
+    contractor: number;
+    amount: number;
+    subject: string;
+}
+export interface ContractorWorkLogForm {
+    id?: FormControl;
+    amount: FormControl;
+    note: FormControl;
+    work_from: FormControl;
+    work_to: FormControl;
+    no_of_units: FormControl;
+    contract: FormControl;
+    site: FormControl;
+    organization?: FormControl;
+    subOrganization?: FormControl;
+    created_by?: FormControl;
+}
+export interface ContractorWorkLog {
+    id: number;
+    contractor: number;
+    amount: number;
+    note: string;
+    work_from: Date;
+    work_to: Date;
+    no_of_units: Date;
+    site: number;
+    contract: number;
+}
+
+export interface ContractorPaymentForm {
+    id?: FormControl;
+    amount: FormControl;
+    note: FormControl;
+    contract: FormControl;
+    site: FormControl;
+    organization?: FormControl;
+    subOrganization?: FormControl;
+    created_by?: FormControl;
+}
+export interface ContractorPayment {
+    id: number;
+    contractor: number;
+    amount: number;
+    note: string;
+    site: number;
+    contract: number;
+}
+

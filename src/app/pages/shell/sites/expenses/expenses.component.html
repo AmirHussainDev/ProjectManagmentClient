@@ -1,20 +1,22 @@
-<h3>Expense</h3>
-<button nz-button nzType="primary" (click)="showModal()">
-    <span>Show Modal</span>
-</button>
+<div class="flex center space-between">
+    <h3>Expense</h3>
+    <button nz-button nzType="primary" (click)="showModal()">
+        <span>Add Expense</span>
+    </button>
+</div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Add Expense" (nzOnCancel)="handleCancel()"
     [nzOkDisabled]="addExpenseForm.invalid" (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">
 
     <nz-card *nzModalContent style="width:100%">
         <form nz-form [formGroup]="addExpenseForm" (ngSubmit)="handleOk()">
-
             <nz-row nzGutter="2" style="margin-bottom: 12px;">
                 <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
                     <nz-form-item>
                         <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">Name</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-select class="control inputField" formControlName="name" [nzDropdownRender]="renderTemplate" nzAllowClear
-                                nzPlaceHolder="Select item">
+                            <nz-select class="control inputField" formControlName="name"
+                                [nzDropdownRender]="renderTemplate" nzAllowClear nzPlaceHolder="Select item"
+                                (ngModelChange)="onExpenseNameChange($event)">
                                 <nz-option *ngFor="let item of vendorItems" [nzLabel]="item.name"
                                     [nzValue]="item.name"></nz-option>
                             </nz-select>
@@ -26,7 +28,8 @@
                         <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                             nzFor="quantity">Quantity</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <input class="control inputField" nz-input formControlName="quantity">
+                            <input (change)="onQuantityChange()" class="control inputField" nz-input
+                                formControlName="quantity">
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>
@@ -34,25 +37,57 @@
             <nz-row nzGutter="2" style="margin-bottom: 12px;">
                 <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
                     <nz-form-item>
-                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">amount</nz-form-label>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">Unit
+                            Price</nz-form-label>
                         <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
                             nzErrorTip="The input is not valid date!">
-                            <input class="control inputField" nz-input formControlName="amount">
-                            &nbsp; <label nz-checkbox [nzChecked]="addExpenseForm.get('isPaid')?.value"
-                                formControlName="is_paid">Paid</label>
+                            <input (change)="onUnitPriceChange()" class="control inputField" nz-input
+                                formControlName="unit_price">
+                            &nbsp;
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>
 
                 <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
                     <nz-form-item>
-                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
-                            nzFor="refered_by">refered_by</nz-form-label>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">Amount</nz-form-label>
+                        <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
+                            nzErrorTip="The input is not valid date!">
+                            <div class="flex center space-between">
+                                <span> {{addExpenseForm.get('amount')?.value |currency : ' '}} </span>
+                                <label nz-checkbox [nzChecked]="addExpenseForm.get('is_paid')?.value"
+                                    formControlName="is_paid">Paid</label>
+
+                            </div>
+
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+            <nz-row nzGutter="2" style="margin-bottom: 12px;">
+
+
+                <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzFor="refered_by">Refered By</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-select id="reports_to" formControlName="refered_by" placeholder="Select user">
+                            <nz-select class="control inputField" id="reports_to" formControlName="refered_by"
+                                placeholder="Select user">
                                 <nz-option *ngFor="let user of users" [nzValue]="user?.id"
                                     [nzLabel]="user?.name"></nz-option>
                             </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+            <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">Payment
+                            Notes</nz-form-label>
+                        <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
+                            nzErrorTip="The input is not valid date!">
+                            <textarea class="control inputField" nz-input formControlName="note"></textarea>
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>
@@ -81,43 +116,45 @@
     <tbody>
         <tr *ngFor="let data of sortTable.data">
             <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
-                <td>{{ data.refered_by }}</td>
-                <td>{{ data.name }}</td>
+                <td>{{ data.refered_by | username }}</td>
+                <td>{{!data.is_general?'PO - '+data.purchase_id+' ':''}}
+                    {{ data.name }}</td>
                 <td>{{ data.quantity }}</td>
-
+                <td>{{ data.unit_price }}</td>
                 <td>{{ data.amount }}</td>
                 <td>
                     <label nz-checkbox disabled [nzChecked]="editCache[data.id].data.is_paid"
                         [(ngModel)]="editCache[data.id].data.is_paid"></label>
-
                 </td>
                 <td><a (click)="startEdit(data.id)">Edit</a></td>
             </ng-container>
             <ng-template #editTemplate>
+                <td>{{ data.refered_by }}</td>
                 <td>
-                    <!-- <nz-select id="refered_by" [(ngModel)]="editCache[data.id].data.refered_by"
-                        placeholder="Select user" *ngIf="listOfData.length">
-                        <nz-option *ngFor="let user of listOfData" [nzValue]="user?.id"
-                            [nzLabel]="user?.name"></nz-option>
-                    </nz-select> -->
+                    <span *ngIf="data.is_general">
+                        <input nz-input [(ngModel)]="editCache[data.id].data.name">
+
+                    </span>
+                    <span *ngIf="!data.is_general">{{editCache[data.id].data.name}}</span>
                 </td>
 
+                <td>
+                    <input nz-input id="quantity" (ngModelChange)="onItemQuantityChange(data.id)" [(ngModel)]="editCache[data.id].data.quantity" />
+                </td>
+                <td>
 
-                <td>
-                    <nz-select id="role_id" [(ngModel)]="editCache[data.id].data.name" placeholder="Select role">
-                        <nz-option *ngFor="let sub of subOrganizations" [nzValue]="sub?.value || 0"
-                            [nzLabel]="sub?.key || ''"></nz-option>
-                    </nz-select>
+                    <span *ngIf="data.is_general">
+                        <input nz-input id="unit_price" (ngModelChange)="onItemQuantityChange(data.id)" [(ngModel)]="editCache[data.id].data.unit_price" />
+                    </span>
+
+                    <span *ngIf="!data.is_general">{{editCache[data.id].data.unit_price}}</span>
 
                 </td>
                 <td>
-                    <input nz-input id="amount" [(ngModel)]="editCache[data.id].data.amount" />
+                    <input nz-input disabled id="unit_price"  [(ngModel)]="editCache[data.id].data.amount" />
                 </td>
                 <td>
-                    <input nz-input id="quantity" [(ngModel)]="editCache[data.id].data.quantity" />
-                </td>
-                <td>
-                    <label nz-checkbox [nzChecked]="editCache[data.id].data.is_paid"
+                    <label nz-checkbox [disabled]="!data.is_general" [nzChecked]="editCache[data.id].data.is_paid"
                         [(ngModel)]="editCache[data.id].data.is_paid"></label>
 
                 </td>

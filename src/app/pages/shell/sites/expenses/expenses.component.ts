@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Expense, ExpenseForm, SubOrganization } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../../services/user.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { UserService } from '../../../../services/user.service';
 export class ExpensesComponent implements OnInit {
   addExpenseForm: FormGroup<ExpenseForm>;
   vendorItems: any[] = [];
-  @Input() site_id:number;
+  @Input() site_id: number;
 
   listOfColumn = [
     {
@@ -26,8 +26,13 @@ export class ExpensesComponent implements OnInit {
       priority: false
     },
     {
-      title: 'Quanitity',
+      title: 'Quantity',
       compare: (a: Expense, b: Expense) => a.quantity - b.quantity,
+      priority: 2
+    },
+    {
+      title: 'Unit Price',
+      compare: (a: Expense, b: Expense) => (a.unit_price || 0) - (b.unit_price || 0),
       priority: 2
     },
     {
@@ -61,18 +66,17 @@ export class ExpensesComponent implements OnInit {
     private userService: UserService,
     private fb: FormBuilder) {
     this.addExpenseForm = new FormGroup({
-      id: new FormControl(),
-      name: new FormControl(),
-      is_general: new FormControl(),
-      quantity: new FormControl(),
-      amount: new FormControl(),
-      refered_by: new FormControl(),
-      purchase_id: new FormControl(),
-      is_paid: new FormControl(),
-      site: new FormControl(),
-      organization: new FormControl(),
-      subOrganization: new FormControl(),
-      createdBy: new FormControl(),
+      id: new FormControl(0),
+      name: new FormControl('', [Validators.required]),
+      is_general: new FormControl(true),
+      quantity: new FormControl(0, [Validators.required]),
+      amount: new FormControl({ value: 0, disabled: true }),
+      refered_by: new FormControl(0),
+      purchase_id: new FormControl(0),
+      is_paid: new FormControl(0),
+      site: new FormControl(this.site_id),
+      note: new FormControl(),
+      unit_price: new FormControl(0, [Validators.required]),
     }) as FormGroup<ExpenseForm>
   }
 
@@ -81,14 +85,23 @@ export class ExpensesComponent implements OnInit {
     this.isVisible = true;
   }
 
-  handleOk(): void {
-    this.isOkLoading = true;
-    setTimeout(() => {
+  async handleOk() {
+    try {
+      this.isOkLoading = true;
+      await this.addExpense()
       this.isVisible = false;
-      this.isOkLoading = false;
-    }, 3000);
-  }
+      this.addExpenseForm.reset()
+    } catch (err) {
 
+    } finally {
+      this.isOkLoading = false;
+      this.populateExpenseData();
+
+    }
+  }
+  async addExpense() {
+    this.subOrganizations = await this.appService.saveSiteExpense({ ...this.addExpenseForm.getRawValue(), site: this.site_id });
+  }
   handleCancel(): void {
     this.isVisible = false;
   }
@@ -110,49 +123,8 @@ export class ExpensesComponent implements OnInit {
   }
 
   async populateExpenseData() {
-    this.listOfData = [{
-      id: 1,
-      name: 'Item',
-      is_general: false,
-      quantity: 10,
-      amount: 1000,
-      refered_by: 1,
-      purchase_id: 36,
-      is_paid: true,
-      site: 11,
-      organization: 1,
-      subOrganization: 1,
-      createdBy: 1
-    },
-    {
-      id: 1,
-      name: 'Item',
-      is_general: false,
-      quantity: 10,
-      amount: 1000,
-      refered_by: 1,
-      purchase_id: 36,
-      is_paid: true,
-      site: 11,
-      organization: 1,
-      subOrganization: 1,
-      createdBy: 1
-    },
-    {
-      id: 1,
-      name: 'Item',
-      is_general: false,
-      quantity: 10,
-      amount: 1000,
-      refered_by: 1,
-      purchase_id: 36,
-      is_paid: true,
-      site: 11,
-      organization: 1,
-      subOrganization: 1,
-      createdBy: 1
-    }],
-    this.users= await this.userService.getOrganizationUsers();
+    this.listOfData = await this.appService.retrieveExpensesBySiteId(this.site_id)
+    this.users = await this.userService.getOrganizationUsers();
     this.ExpenseRoles = await this.appService.getRoles();
     this.subOrganizations = await this.appService.getSubOrganizations();
     this.vendorItems = await this.appService.getInventoryBySiteId(this.site_id)
@@ -166,7 +138,8 @@ export class ExpensesComponent implements OnInit {
   addItem(input: HTMLInputElement): void {
     const value = input.value;
     if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
-      this.vendorItems = [...this.vendorItems, { name: input.value }];
+      this.vendorItems = [...this.vendorItems, { name: input.value, isCustom: true }];
+      input.value = ''
     }
   }
 
@@ -185,7 +158,7 @@ export class ExpensesComponent implements OnInit {
   //     data.site = reportToExpense?.site || 0;
   //     data.organization = reportToExpense?.organization || 0;
   //     data.subOrganization = reportToExpense?.subOrganization || 0;
-  //     data.createdBy = reportToExpense?.createdBy || 0;
+  //     data.created_by = reportToExpense?.created_by || 0;
   //   }
   //   )
   // }
@@ -213,6 +186,7 @@ export class ExpensesComponent implements OnInit {
     // });
     this.editCache[id].edit = false;
     Object.assign(this.listOfData[index], this.editCache[id].data);
+   await this.appService.updateSiteExpense(this.editCache[id].data)
     this.populateExpenseData();
   }
 
@@ -225,4 +199,50 @@ export class ExpensesComponent implements OnInit {
     });
   }
 
+  onExpenseNameChange(event: any) {
+    const selectedItem = this.vendorItems.find(pro => pro.name === event.trim())
+    if (selectedItem.isCustom) {
+      this.addExpenseForm.controls.is_general.setValue(true)
+      this.addExpenseForm.controls.is_paid.enable()
+      this.addExpenseForm.controls.unit_price.enable()
+
+      this.addExpenseForm.controls.is_paid.setValue(false)
+      this.addExpenseForm.controls.quantity.setValue(0)
+      this.addExpenseForm.controls.amount.setValue(0)
+      this.addExpenseForm.controls.purchase_id?.setValue(0);
+      this.addExpenseForm.controls.unit_price?.setValue(0);
+
+    } else {
+      this.addExpenseForm.controls.is_general.setValue(false)
+      this.addExpenseForm.controls.is_paid.setValue(true)
+      this.addExpenseForm.controls.quantity.setValue(0)
+      this.addExpenseForm.controls.amount.setValue(0)
+      this.addExpenseForm.controls.is_paid.disable()
+      this.addExpenseForm.controls.purchase_id?.setValue(selectedItem.purchase_id);
+      this.addExpenseForm.controls.unit_price?.setValue(selectedItem.unit_price);
+      this.addExpenseForm.controls.unit_price.disable()
+
+    }
+  }
+
+  onQuantityChange() {
+    if (!this.addExpenseForm.controls.is_general.value) {
+      const selectedItem = this.vendorItems.find(pro => pro.name === this.addExpenseForm.controls.name.value)
+      this.addExpenseForm.patchValue({ amount: this.addExpenseForm.controls.quantity.value * parseFloat(selectedItem.unit_price) })
+    } else {
+      this.onUnitPriceChange()
+    }
+  }
+
+  onUnitPriceChange() {
+    if (this.addExpenseForm.controls.is_general.value) {
+      this.addExpenseForm.patchValue({ amount: this.addExpenseForm.controls.quantity.value * this.addExpenseForm.controls.unit_price.value })
+    }
+  }
+
+  onItemQuantityChange(id: number) {
+    setTimeout(()=>{
+      this.editCache[id].data.amount = this.editCache[id].data.quantity * (parseFloat(this.editCache[id].data.unit_price?.toString() || '0') || 0)
+    })
+  }
 }

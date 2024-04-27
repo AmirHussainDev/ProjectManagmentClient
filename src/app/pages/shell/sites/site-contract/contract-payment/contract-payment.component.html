@@ -1,40 +1,29 @@
 <div class="flex center space-between">
-    <h3>Owner Payment</h3>
+    <h3>Payments</h3>
     <button nz-button nzType="primary" (click)="showModal()">
-        <span>Add Owner Payment</span>
+        <span>Add Payment</span>
     </button>
 </div>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Add Owner Payment" (nzOnCancel)="handleCancel()"
-    [nzOkDisabled]="addOwnerPaymentForm.invalid" (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Add Contractor Payment" (nzOnCancel)="handleCancel()"
+    [nzOkDisabled]="addContractorPaymentForm.invalid" (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">
 
     <nz-card *nzModalContent style="width:100%">
-        <form nz-form [formGroup]="addOwnerPaymentForm" (ngSubmit)="handleOk()">
+        <form nz-form [formGroup]="addContractorPaymentForm" (ngSubmit)="handleOk()">
             <nz-row nzGutter="2" style="margin-bottom: 12px;">
-                <nz-col [nzMd]="10" [nzSm]="24" [nzXs]="24">
+                <!-- <nz-col [nzMd]="10" [nzSm]="24" [nzXs]="24">
                     <nz-form-item>
-                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">Name</nz-form-label>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="from">From</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <input class="control inputField" nz-input formControlName="name">
+                            <nz-range-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
                         </nz-form-control>
                     </nz-form-item>
-                </nz-col>
-                <nz-col [nzMd]="10" [nzSm]="16" [nzXs]="16">
+                </nz-col> -->
+                <nz-col *ngIf="contractDetails.contract_type == '1'" [nzMd]="10" [nzSm]="16" [nzXs]="16">
                     <nz-form-item>
-                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
-                            nzFor="amount">Amount</nz-form-label>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="amount">Amount
+                            </nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <input class="control inputField" nz-input formControlName="amount">
-                        </nz-form-control>
-                    </nz-form-item>
-                </nz-col>
-                <nz-col [nzMd]="4" [nzSm]="8" [nzXs]="8">
-                    <nz-form-item>
-                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">
-                            Is Paid</nz-form-label>
-                        <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
-                            nzErrorTip="The input is not valid date!">
-                            <label nz-checkbox [nzChecked]="addOwnerPaymentForm.get('is_paid')?.value"
-                                formControlName="is_paid">Paid</label>
+                            <input nz-input formControlName="amount" >
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>
@@ -77,20 +66,18 @@
     <tbody>
         <tr *ngFor="let data of sortTable.data">
             <td>
-                {{ data.name }}</td>
+                {{ data.note }}</td>
             <td>{{ data.amount }}</td>
-            <td>
-
-                <label nz-checkbox [disabled]="!editCache[data.id]?.edit" [nzChecked]="editCache[data.id].data.is_paid"
-                    [(ngModel)]="editCache[data.id].data.is_paid"></label>
-            </td>
-            <td>
-                <a *ngIf="!editCache[data.id]?.edit" (click)="startEdit(data.id)">Edit</a>
+            <!-- <td>
+                {{data.no_of_units}}
+            </td> -->
+            <!-- <td> -->
+            <!-- <a *ngIf="!editCache[data.id]?.edit" (click)="startEdit(data.id)">Edit</a>
                 <a *ngIf="editCache[data.id]?.edit" (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
                 <a *ngIf="editCache[data.id]?.edit" nz-popconfirm nzPopconfirmTitle="Sure to cancel?"
-                    (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+                    (nzOnConfirm)="cancelEdit(data.id)">Cancel</a> -->
 
-            </td>
+            <!-- </td> -->
 
         </tr>
     </tbody>

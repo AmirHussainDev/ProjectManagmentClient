@@ -1,59 +1,92 @@
-import { Component, OnInit } from '@angular/core';
-import { Expense, SubOrganization } from '../../../../services/app.interfact';
+import { Component, Input, OnInit } from '@angular/core';
+import { OwnerPayment, OwnerPaymentForm, SubOrganization } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-owner-payments',
   templateUrl: './owner-payments.component.html',
   styleUrl: './owner-payments.component.css'
 })
-export class OwnerPaymentsComponent implements  OnInit {
+export class OwnerPaymentsComponent implements OnInit {
+  addOwnerPaymentForm: FormGroup<OwnerPaymentForm>;
+  vendorItems: any[] = [];
+  @Input() site_id: number;
 
   listOfColumn = [
     {
-      title: 'Reference By',
-      compare: (a: Expense, b: Expense) => a.refered_by - b.refered_by,
-      priority: 3
-    },
-    {
       title: 'Name',
-      compare: (a: Expense, b: Expense) => a.name.localeCompare(b.name),
+      compare: (a: OwnerPayment, b: OwnerPayment) => a.name.localeCompare(b.name),
       priority: false
     },
     {
-      title: 'Quanitity',
-      compare: (a: Expense, b: Expense) => a.quantity - b.quantity,
-      priority: 2
-    },
-    {
       title: 'Amount',
-      compare: (a: Expense, b: Expense) => a.amount - b.amount,
+      compare: (a: OwnerPayment, b: OwnerPayment) => a.amount - b.amount,
       priority: 2
     },
     {
       title: 'Paid',
-      compare: (a: Expense, b: Expense) => (a.is_paid?1: 0 )- (b.is_paid?1 : 0),
+      compare: (a: OwnerPayment, b: OwnerPayment) => (a.is_paid ? 1 : 0) - (b.is_paid ? 1 : 0),
       priority: 2
     },
     {
       title: 'Action',
-      compare: (a: Expense, b: Expense) => a.refered_by - b.refered_by,
+      compare: (a: OwnerPayment, b: OwnerPayment) => a.amount - b.amount,
       priority: 3
     }
   ];
-  listOfData: Expense[] = [
+  listOfData: OwnerPayment[] = [
   ];
 
   visible = false;
-  ExpenseRoles: any[];
+  isVisible = false;
+  isOkLoading = false;
+
+  OwnerPaymentRoles: any[];
+  users: any[];
   subOrganizations: SubOrganization[];
   constructor(
-    private appService: AppService) {
-
+    private appService: AppService,
+    private userService: UserService,
+    private fb: FormBuilder) {
+    this.addOwnerPaymentForm = new FormGroup({
+      id: new FormControl(0),
+      name: new FormControl('', [Validators.required]),
+      amount: new FormControl(0 , [Validators.required]),
+      is_paid: new FormControl(0),
+      site: new FormControl(this.site_id),
+      note: new FormControl(),
+    }) as FormGroup<OwnerPaymentForm>
   }
 
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  async handleOk() {
+    try {
+      this.isOkLoading = true;
+      await this.addOwnerPayment()
+      this.isVisible = false;
+      this.addOwnerPaymentForm.reset()
+    } catch (err) {
+
+    } finally {
+      this.isOkLoading = false;
+      this.populateOwnerPaymentData();
+
+    }
+  }
+  async addOwnerPayment() {
+    this.subOrganizations = await this.appService.saveSiteOwnerPayment({ ...this.addOwnerPaymentForm.getRawValue(), site: this.site_id });
+  }
+  handleCancel(): void {
+    this.isVisible = false;
+  }
   ngOnInit(): void {
-    this.populateExpenseData();
+    this.populateOwnerPaymentData();
   }
 
 
@@ -65,82 +98,51 @@ export class OwnerPaymentsComponent implements  OnInit {
   close(refresh = false): void {
     this.visible = false;
     if (refresh) {
-      this.populateExpenseData();
+      this.populateOwnerPaymentData();
     }
   }
 
-  async populateExpenseData() {
-    this.listOfData = [{
-      id: 1,
-      name: 'Item',
-      is_general: false,
-      quantity: 10,
-      amount: 1000,
-      refered_by: 1,
-      purchase_id: 36,
-      is_paid: true,
-      site: 11,
-      organization: 1,
-      subOrganization: 1,
-      createdBy: 1
-    },
-    {
-      id: 1,
-      name: 'Item',
-      is_general: false,
-      quantity: 10,
-      amount: 1000,
-      refered_by: 1,
-      purchase_id: 36,
-      is_paid: true,
-      site: 11,
-      organization: 1,
-      subOrganization: 1,
-      createdBy: 1
-    },
-    {
-      id: 1,
-      name: 'Item',
-      is_general: false,
-      quantity: 10,
-      amount: 1000,
-      refered_by: 1,
-      purchase_id: 36,
-      is_paid: true,
-      site: 11,
-      organization: 1,
-      subOrganization: 1,
-      createdBy: 1
-    }],
-      this.ExpenseRoles = await this.appService.getRoles();
+  async populateOwnerPaymentData() {
+    this.listOfData = await this.appService.retrieveOwnerPaymentsBySiteId(this.site_id)
+    this.users = await this.userService.getOrganizationUsers();
+    this.OwnerPaymentRoles = await this.appService.getRoles();
     this.subOrganizations = await this.appService.getSubOrganizations();
-
-    this.ExpenseRoles = this.ExpenseRoles.map(role => ({ key: role.role_name, value: role.id }))
+    this.vendorItems = await this.appService.getInventoryBySiteId(this.site_id)
+    this.OwnerPaymentRoles = this.OwnerPaymentRoles.map(role => ({ key: role.role_name, value: role.id }))
     this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
-    // this.mapExpenseData();
+    // this.mapOwnerPaymentData();
     this.updateEditCache();
   }
 
-  // mapExpenseData() {
-  //   console.log('ExpenseRoles', this.ExpenseRoles)
+  index = 0;
+  addItem(input: HTMLInputElement): void {
+    const value = input.value;
+    if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
+      this.vendorItems = [...this.vendorItems, { name: input.value, isCustom: true }];
+      input.value = ''
+    }
+  }
+
+  // mapOwnerPaymentData() {
+  //   console.log('OwnerPaymentRoles', this.OwnerPaymentRoles)
   //   this.listOfData = this.listOfData.map(data => {
-  //     const reportToExpense = this.listOfData.find(Expense => Expense.id == data.reports_to)
-  //     data.id = reportToExpense?.id || 0;
-  //     data.amount = reportToExpense?.amount || 0;
-  //     data.name = reportToExpense?.name || '';
-  //     data.quantity = reportToExpense?.quantity || 0;
-  //     data.is_general = reportToExpense?.is_general || false;
-  //     data.refered_by = reportToExpense?.refered_by || 0;
-  //     data.purchase_id = reportToExpense?.refered_by || 0;
-  //     data.is_paid = reportToExpense?.is_paid || false;
-  //     data.site = reportToExpense?.site || 0;
-  //     data.organization = reportToExpense?.organization || 0;
-  //     data.subOrganization = reportToExpense?.subOrganization || 0;
-  //     data.createdBy = reportToExpense?.createdBy || 0;
+  //     const reportToOwnerPayment = this.listOfData.find(OwnerPayment => OwnerPayment.id == data.reports_to)
+  //     data.id = reportToOwnerPayment?.id || 0;
+  //     data.amount = reportToOwnerPayment?.amount || 0;
+  //     data.name = reportToOwnerPayment?.name || '';
+  //     data.quantity = reportToOwnerPayment?.quantity || 0;
+  //     data.is_general = reportToOwnerPayment?.is_general || false;
+  //     data.refered_by = reportToOwnerPayment?.refered_by || 0;
+  //     data.purchase_id = reportToOwnerPayment?.refered_by || 0;
+  //     data.is_paid = reportToOwnerPayment?.is_paid || false;
+  //     data.site = reportToOwnerPayment?.site || 0;
+  //     data.organization = reportToOwnerPayment?.organization || 0;
+  //     data.subOrganization = reportToOwnerPayment?.subOrganization || 0;
+  //     data.created_by = reportToOwnerPayment?.created_by || 0;
   //   }
   //   )
   // }
-  editCache: { [key: string]: { edit: boolean; data: Expense } } = {};
+  editCache: { [key: string]: { edit: boolean; data: OwnerPayment } } = {};
   startEdit(id: number): void {
     this.editCache[id].edit = true;
   }
@@ -155,7 +157,7 @@ export class OwnerPaymentsComponent implements  OnInit {
 
   async saveEdit(id: number) {
     const index = this.listOfData.findIndex(item => item.id === id);
-    // await this.appService.updateExpense({
+    // await this.appService.updateOwnerPayment({
     //   id,
     //   organization_id: this.editCache[id].data.organization_id,
     //   role_id: this.editCache[id].data.role_id,
@@ -164,7 +166,8 @@ export class OwnerPaymentsComponent implements  OnInit {
     // });
     this.editCache[id].edit = false;
     Object.assign(this.listOfData[index], this.editCache[id].data);
-    this.populateExpenseData();
+   await this.appService.updateSiteOwnerPayment(this.editCache[id].data)
+    this.populateOwnerPaymentData();
   }
 
   updateEditCache(): void {

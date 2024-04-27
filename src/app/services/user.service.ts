@@ -11,7 +11,7 @@ import { SubOrganization } from './app.interfact';
   providedIn: 'root'
 })
 export class UserService {
-
+  users: User[]
   constructor(
     private router: Router,
     private http: HttpClient
@@ -31,11 +31,12 @@ export class UserService {
       return this.loggedInUser
     }
   }
-  
+
   async getOrganizationUsers(): Promise<User[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/users/${organization_id}`).toPromise();
+      this.users = response as User[];
       return response as User[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -45,10 +46,10 @@ export class UserService {
   }
 
 
-  async createUser(userObj:UserCreateObj): Promise<User> {
+  async createUser(userObj: UserCreateObj): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.post(`/api/users`,userObj).toPromise();
+      const response = await this.http.post(`/api/users`, userObj).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -58,10 +59,10 @@ export class UserService {
   }
 
 
-  async updateUser(userObj:any): Promise<User> {
+  async updateUser(userObj: any): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.put(`/api/users`,userObj).toPromise();
+      const response = await this.http.put(`/api/users`, userObj).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing

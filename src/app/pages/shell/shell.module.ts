@@ -17,6 +17,7 @@ import { ShellRoutingModule } from './shell-routing.module';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { OrganizationSelectorComponent } from './components/organization-selector/organization-selector.component';
 import { AuthInterceptor } from '../../auth-interceptor.service';
+import { UsernamePipe } from '../../pipes/username.pipe';
 
 registerLocaleData(en);
 

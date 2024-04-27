@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Subject, map } from 'rxjs';
-import { ContractDetails, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
+import { ContractDetails, Expense, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
 import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
- 
+
   apiUrl = environment.apiUrl;
   sites = new Subject<any[]>();
   currentSite = new Subject<any>();
   currentSiteId = 0;
   currentSubOrgId = 0;
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
-  constructor(private http: HttpClient,private userService:UserService) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
   header: HttpHeaders = new HttpHeaders({
     'accept': 'application/json'
   });
@@ -281,7 +281,7 @@ export class AppService {
       throw error;
     }
   }
-  async getInventoryBySubOrganization(currentSubOrgId:number): Promise<any[]> {
+  async getInventoryBySubOrganization(currentSubOrgId: number): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/inventory-purchase/inventory/${organization_id}/${currentSubOrgId}`, { headers: this.header }).toPromise()
@@ -292,7 +292,7 @@ export class AppService {
       throw error;
     }
   }
-  async getInventory(currentOrganizationId=0): Promise<any[]> {
+  async getInventory(currentOrganizationId = 0): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/inventory-purchase/inventory/${organization_id}/${currentOrganizationId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
@@ -304,7 +304,7 @@ export class AppService {
     }
   }
 
-  async getInventoryBySiteId(siteId=0): Promise<any[]> {
+  async getInventoryBySiteId(siteId = 0): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/inventory-purchase/inventory/${organization_id}/${this.currentSubOrgId}/${siteId}`, { headers: this.header }).toPromise()
@@ -321,7 +321,7 @@ export class AppService {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/inventory-purchase/inventory-item-details/${organization_id}/${this.currentSubOrgId}?name=${name}`, {
         headers: this.header,
-        
+
       }).toPromise()
       return response as any[];
     } catch (error) {
@@ -389,7 +389,7 @@ export class AppService {
   }
 
 
-  async retireveContracts(site_id:number ,params: HttpParams): Promise<any[]> {
+  async retireveContracts(site_id: number, params: HttpParams): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/sites/contracts/${organization_id}/${this.currentSubOrgId}/${site_id}`, { headers: this.header, params }).toPromise()
@@ -401,7 +401,7 @@ export class AppService {
     }
   }
 
-  async retireveContractById(siteId:any,id:any): Promise<any[]>{
+  async retireveContractById(siteId: any, id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/sites/contract/${organization_id}/${siteId}/${id}`, { headers: this.header }).toPromise()
@@ -413,7 +413,7 @@ export class AppService {
     }
   }
 
-  async updateContractRequest(details: PurchaseOrder): Promise<any[]>{
+  async updateContractRequest(details: PurchaseOrder): Promise<any[]> {
     try {
       const response = await this.http.put(`/api/sites/contract`, details, { headers: this.header }).toPromise()
       return response as any[];
@@ -425,10 +425,11 @@ export class AppService {
 
   async createSite(details: any): Promise<any[]> {
     try {
-      const body={...details,
-        organization : parseInt(localStorage.getItem('organization_id')||'0'),
-        subOrganization:this.currentSubOrgId,
-        created_by:this.userService.loggedInUser.id
+      const body = {
+        ...details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id
       }
       const response = await this.http.post(`/api/Sites`, body, { headers: this.header }).toPromise()
       return response as any[];
@@ -437,6 +438,7 @@ export class AppService {
       throw error;
     }
   }
+
 
 
   async retireveSites(params: HttpParams): Promise<any[]> {
@@ -451,7 +453,7 @@ export class AppService {
     }
   }
 
-  async retireveSiteById(id:any): Promise<any[]>{
+  async retireveSiteById(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/Sites/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
@@ -463,7 +465,7 @@ export class AppService {
     }
   }
 
-  async updateSiteRequest(details: SiteDetails): Promise<any[]>{
+  async updateSiteRequest(details: SiteDetails): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.put(`/api/Sites/${organization_id}/${this.currentSubOrgId}/${details.id}`, details, { headers: this.header }).toPromise()
@@ -474,4 +476,165 @@ export class AppService {
     }
   }
 
+  async saveSiteExpense(details: any): Promise<any[]> {
+    try {
+      const body = {
+        ...details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id
+      }
+      const response = await this.http.post(`/api/Sites/expenses`, body, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+  async retrieveExpensesBySiteId(id: any): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/expenses/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+  async updateSiteExpense(details:Expense) {
+    try {
+      const response = await this.http.put(`/api/Sites/expenses`, details, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+
+  }
+
+  async saveSiteOwnerPayment(details: any): Promise<any[]> {
+    try {
+      const body = {
+        ...details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id
+      }
+      const response = await this.http.post(`/api/Sites/ownerpayment`, body, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+  async retrieveOwnerPaymentsBySiteId(id: any): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/ownerpayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+  
+  async updateSiteOwnerPayment(details:OwnerPayment) {
+    try {
+      const response = await this.http.put(`/api/Sites/ownerpayment`, details, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+
+  }
+  async retrieveContractorsPaymentsBySiteId(id: any): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/contractorspayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async retrieveContractPaymentsBySiteId(id: any): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/contractorspayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+
+  async saveSiteContractorWorkLog(details: any): Promise<any[]> {
+    try {
+      const body = {
+        ...details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id,
+      }
+      const response = await this.http.post(`/api/Sites/contractworklog`, body, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+  async retrieveSiteContractWorkLogBySiteId(id: any,contract_id: any): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/contractworklog/${organization_id}/${this.currentSubOrgId}/${id}/${contract_id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async saveSiteContractorPayment(details: any): Promise<any[]> {
+    try {
+      const body = {
+        ...details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id,
+      }
+      const response = await this.http.post(`/api/Sites/contractpayment`, body, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      console.error('Error posting purchase request', error);
+      throw error;
+    }
+  }
+
+  async retrieveSiteContractPaymentBySiteId(id: any,contract_id: any): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/contractpayment/${organization_id}/${this.currentSubOrgId}/${id}/${contract_id}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  
+  
+
+  
 }

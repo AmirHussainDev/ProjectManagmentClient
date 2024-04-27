@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IntegrationService } from './services/integration.service';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
-import {  ShellModule } from './pages/shell/shell.module';
+import { ShellModule } from './pages/shell/shell.module';
 import { LoginModule } from './pages/login/login.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgZorroAntdModule } from './ng-zorro-antd.module';
@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { AuthInterceptor } from './auth-interceptor.service';
+import { UsernamePipe } from './pipes/username.pipe';
 export const initializeApp = (integrationService: IntegrationService) => {
   return () => integrationService.fetchIntegrationDetails();
 }

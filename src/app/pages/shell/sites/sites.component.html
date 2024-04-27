@@ -59,9 +59,9 @@
             </tr>
 
             <ng-template #expandIcon>
-                <span nz-icon *ngIf="!expandSet.has(data.id)" nzType="double-right" nzTheme="outline"
-                    (click)="onExpandChange(data.id, true)"></span>
-                <span nz-icon *ngIf="expandSet.has(data.id)" [nzRotate]="90" nzType="double-right" nzTheme="outline"
+                <span nz-icon *ngIf="!expandSet.has(data.id)" nzType="double-right" nzTheme="outline"  style="font-size: 16px; color: #08c;"
+                    (click)="onExpandChange(data.id, true)" ></span>
+                <span nz-icon *ngIf="expandSet.has(data.id)" [nzRotate]="90" nzType="double-right" nzTheme="outline"  style="font-size: 16px; color: #08c;"
                     (click)="onExpandChange(data.id, false)"></span>
             </ng-template>
         </ng-container>
