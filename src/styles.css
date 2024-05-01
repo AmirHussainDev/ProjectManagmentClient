@@ -110,8 +110,7 @@ tfoot tr td {
     background-size: cover !important
 }
 
-.ant-card {
-}
+.ant-card {}
 
 .ant-table {
     background: #ffffffa8;
@@ -121,7 +120,7 @@ tfoot tr td {
 .ant-table-footer,
 .ant-table-thead>tr>th {
     color: white !important;
-    background: #282020ad !important;
+    background: #21263C !important;
 
 }
 
@@ -235,15 +234,21 @@ td>input {
     font-size: 10px;
 }
 
-a:hover{
-color: inherit !important;
+a:hover {
+    color: inherit !important;
 }
 
-.container{
+.container {
     display: block !important;
     height: calc(100vh - 62px);
     overflow-y: auto;
 }
-.sidebarright{
+
+.sidebarright {
     border-left: 1px solid #80808033;
+}
+
+.ant-btn-primary {
+    border-color: #BB86FC;
+    background: #BB86FC;
 }

@@ -359,3 +359,29 @@ export interface ContractorPayment {
     contract: number;
 }
 
+
+export interface EmployeeForm{
+    organization: FormControl;
+    subOrganization: FormControl;
+    position: FormControl;
+    employee: FormControl;
+    supervisor: FormControl;
+    salary: FormControl;
+    overtime: FormControl;
+    siginout_required: FormControl;
+    details: FormControl;
+}
+
+
+export interface Employee{
+    id:number;
+    organization:number ;
+    subOrganization: number;
+    position: string;
+    employee: number;
+    supervisor: number;
+    salary: number;
+    overtime: boolean;
+    siginout_required: boolean;
+    details: string;
+}

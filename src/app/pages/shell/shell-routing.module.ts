@@ -30,6 +30,10 @@ const routes: Routes = [
       {
         path: 'inventory', loadChildren: () => import('./inventory-management/inventory-management.module').then(m => m.InventoryManagementModule),
         data: { name: 'Inventory' }
+      },
+      {
+        path: 'employee', loadChildren: () => import('./employee-management/employee-management.module').then(m => m.EmployeeManagementModule),
+        data: { name: 'Employee' }
       }
 
     ],

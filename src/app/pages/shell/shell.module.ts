@@ -18,6 +18,7 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
 import { OrganizationSelectorComponent } from './components/organization-selector/organization-selector.component';
 import { AuthInterceptor } from '../../auth-interceptor.service';
 import { UsernamePipe } from '../../pipes/username.pipe';
+import { EmployeeContractComponent } from './employee-management/employee-contract/employee-contract.component';
 
 registerLocaleData(en);
 
@@ -32,7 +33,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     ShellComponent,
     NullToStringPipe,
     BreadcrumbComponent,
-    OrganizationSelectorComponent],
+    OrganizationSelectorComponent,
+    ],
   imports: [
     CommonModule,
     FormsModule,

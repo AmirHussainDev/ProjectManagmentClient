@@ -633,8 +633,45 @@ export class AppService {
     }
   }
 
+  async createEmployee(userObj: any): Promise<Role> {
+    try {
+      const body = {
+        ...userObj,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: localStorage.getItem('sub_organization_id'),
+        created_by: this.userService.loggedInUser.id,
+      }
+      const response = await this.http.post(`/api/employee`, body).toPromise();
+      return response as Role;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+  async getOrganizationEmployees(){
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/employee/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
   
-  
+  async updateEmployee(roleObj: any): Promise<Role> {
+    try {
+      const response = await this.http.put(`/api/employee`, roleObj).toPromise();
+      return response as Role;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
 
   
 }
