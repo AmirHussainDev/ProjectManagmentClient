@@ -71,7 +71,7 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('attendance')===-1">
+          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('attendance')===-1&&currentRoutes.indexOf('pay-processing')===-1">
             <span nz-icon style="font-size: 18px;" nzType="profile" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/employee']" [state]="{tracingId: 123}"
@@ -86,6 +86,15 @@
               <a class="nav-link" [routerLink]="['/employee',loggedInUser.id,'attendance']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
                 Attendance
+              </a>
+            </span>
+          </li>
+          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('pay-processing')>-1">
+            <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
+            <span>
+              <a class="nav-link" [routerLink]="['/employee','pay-processing']" [state]="{tracingId: 123}"
+                (click)="isMobile()?isCollapsed=true:null">
+                Payments
               </a>
             </span>
           </li>

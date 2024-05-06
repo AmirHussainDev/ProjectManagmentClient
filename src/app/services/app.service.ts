@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Subject, map } from 'rxjs';
-import { ContractDetails, Expense, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
+import { Attendance, ContractDetails, Employee, EmployeePayments, Expense, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -503,7 +503,7 @@ export class AppService {
       throw error;
     }
   }
-  async updateSiteExpense(details:Expense) {
+  async updateSiteExpense(details: Expense) {
     try {
       const response = await this.http.put(`/api/Sites/expenses`, details, { headers: this.header }).toPromise()
       return response as any[];
@@ -541,8 +541,8 @@ export class AppService {
       throw error;
     }
   }
-  
-  async updateSiteOwnerPayment(details:OwnerPayment) {
+
+  async updateSiteOwnerPayment(details: OwnerPayment) {
     try {
       const response = await this.http.put(`/api/Sites/ownerpayment`, details, { headers: this.header }).toPromise()
       return response as any[];
@@ -593,7 +593,7 @@ export class AppService {
     }
   }
 
-  async retrieveSiteContractWorkLogBySiteId(id: any,contract_id: any): Promise<any[]> {
+  async retrieveSiteContractWorkLogBySiteId(id: any, contract_id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/Sites/contractworklog/${organization_id}/${this.currentSubOrgId}/${id}/${contract_id}`, { headers: this.header }).toPromise()
@@ -621,7 +621,7 @@ export class AppService {
     }
   }
 
-  async retrieveSiteContractPaymentBySiteId(id: any,contract_id: any): Promise<any[]> {
+  async retrieveSiteContractPaymentBySiteId(id: any, contract_id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/Sites/contractpayment/${organization_id}/${this.currentSubOrgId}/${id}/${contract_id}`, { headers: this.header }).toPromise()
@@ -650,7 +650,7 @@ export class AppService {
     }
   }
 
-  async getOrganizationEmployees(){
+  async getOrganizationEmployees() {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/employee/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
@@ -661,7 +661,19 @@ export class AppService {
       throw error;
     }
   }
-  
+
+  async getEmployeeDetail(UserId: number,subOrgId:number) {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/employee/${organization_id}/${subOrgId}/${UserId}`, { headers: this.header }).toPromise()
+      return response as Employee;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
   async updateEmployee(roleObj: any): Promise<Role> {
     try {
       const response = await this.http.put(`/api/employee`, roleObj).toPromise();
@@ -673,5 +685,81 @@ export class AppService {
     }
   }
 
+  async getCurrentDateAttendance(userId: number): Promise<Attendance> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+
+      const response = await this.http.get(`/api/employee/attendance/currentDayAttendance/${organization_id}/${this.currentSubOrgId}/${userId}`, { headers: this.header }).toPromise()
+      return response as Attendance;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+  async getCurrentUserAttendance(employeeId: number): Promise<{ lastPayment: EmployeePayments, attendances: Attendance[] }> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/employee/attendance/currentEmployeeAttendance/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
+      return response as { lastPayment: EmployeePayments, attendances: Attendance[] };
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+  async getCurrentEmployeeSubordinates(userId: number): Promise<Employee[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/employee/currentEmployeeSubordinates/${organization_id}/${this.currentSubOrgId}/${userId}`, { headers: this.header }).toPromise()
+      return response  as Employee[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+
+  async createAttendance(userObj: Attendance): Promise<Attendance> {
+    try {
+      const body = {
+        ...userObj,
+        created_by: this.userService.loggedInUser.id,
+      }
+      const response = await this.http.post(`/api/employee/attendance`, body).toPromise();
+      return response as Attendance;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+  async updateAttendance(roleObj: Attendance): Promise<Attendance> {
+    try {
+      const response = await this.http.put(`/api/employee/attendance`, roleObj).toPromise();
+      return response as Attendance;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
   
+
+  async getEmployeePaymentsDetail(subOrgId: number): Promise<{paymentObject:any,employee:Employee}[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/payments/employees/${organization_id}/${subOrgId}`, { headers: this.header }).toPromise()
+      return response  as {paymentObject:any,employee:Employee}[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
 }

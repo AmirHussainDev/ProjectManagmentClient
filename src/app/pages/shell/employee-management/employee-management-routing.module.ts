@@ -11,6 +11,10 @@ const routes: Routes = [
     data: { name: 'All Employee' }
   },
   {
+    path: 'pay-processing', component: PayProcessingComponent,
+    data: { name: 'Payment' }
+  },
+  {
     path: ':employeeId', component: EmployeeContractComponent,
     data: { name: 'Employee' }
   },
@@ -19,10 +23,7 @@ const routes: Routes = [
     data: { name: 'Attendance' }
   },
 
-  {
-    path: ':employeeId/pay-processing', component: PayProcessingComponent,
-    data: { name: 'Payment' }
-  },
+  
 ];
 
 @NgModule({

@@ -1,1 +1,72 @@
-<p>pay-processing works!</p>
+<!-- NZ Table -->
+
+<h3>Employee Payments</h3>
+
+<nz-table #basicTable nzShowPagination="false" [nzData]="paymentData" [nzBordered]="true">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Salary</th>
+            <th>Payment From</th>
+            <th>Amount</th>
+            <th>Balance</th>
+            <th>Advance Balance</th>
+            <th> Proceed For Payment </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of paymentData">
+            <td>{{ row.employee?.employee?.name}}
+            <td>{{ row.employee?.salary | currency :' '}} </td>
+            <td><span>{{ row.paymentObject?.minDateCreated | date : 'dd-mm-yyyy' }}
+                </span>
+            </td>
+            <td>{{ row.paymentObject?.totalAmount|| 0 | currency :' ' }}</td>
+            <td>{{ row.paymentObject?.balance||0 | currency :' ' }}
+            </td>
+            <td><span>{{ row.paymentObject?.advanceBalance || 0 | currency :' '}}</span>
+
+            </td>
+            <td>
+                <a nzType="primary" (click)="open(row)">Pay</a>
+
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right"
+    [nzTitle]="'Payment for Employee: ' +selectedEmployee?.employee?.employee.name" nzWidth="50%" (nzOnClose)="close()">
+    <ng-container *nzDrawerContent>
+
+        <h3><strong> Employee Attendance </strong></h3>
+        <app-attendance-details *ngIf="selectedEmployee" [employee]="selectedEmployee.employee">
+        </app-attendance-details>
+        <nz-collapse nzGhost>
+
+            <nz-collapse-panel [nzHeader]="expandTitle" [nzActive]="activeSalaryHistory">
+                <p style="margin:0;">
+                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a
+                    welcome
+                    guest in many households across the world.
+                </p>
+            </nz-collapse-panel>
+
+        </nz-collapse>
+
+        <ng-template #expandTitle>
+            <div class="flex space-between" style="width: 100%;">
+
+                <span>
+                    Today : {{ today |date: 'EEEE d MMM yyyy' }}
+                </span>
+                <span> <b> Payment {{(selectedEmployee.paymentObject.totalAmount || 0 )| currency:' '}} </b></span>
+            </div>
+        </ng-template>
+
+        
+
+
+    </ng-container>
+</nz-drawer>

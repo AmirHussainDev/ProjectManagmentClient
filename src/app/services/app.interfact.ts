@@ -1,4 +1,5 @@
 import { FormControl, FormArray, FormGroup } from "@angular/forms";
+import { User } from "../pages/shell/team/users/users.interface";
 
 export interface SubOrganization {
     id: number;
@@ -263,7 +264,7 @@ export interface Expense {
     subOrganization: number;
     created_by?: number;
     note: string;
-    unit_price?:number;
+    unit_price?: number;
 }
 
 export interface ExpenseForm {
@@ -280,7 +281,7 @@ export interface ExpenseForm {
     subOrganization?: FormControl;
     createdBy?: FormControl;
     note: FormControl;
-    unit_price:FormControl;
+    unit_price: FormControl;
 
 }
 
@@ -360,7 +361,7 @@ export interface ContractorPayment {
 }
 
 
-export interface EmployeeForm{
+export interface EmployeeForm {
     organization: FormControl;
     subOrganization: FormControl;
     position: FormControl;
@@ -373,15 +374,48 @@ export interface EmployeeForm{
 }
 
 
-export interface Employee{
-    id:number;
-    organization:number ;
+export interface Employee {
+    id: number;
+    organization: number;
     subOrganization: number;
     position: string;
-    employee: number;
-    supervisor: number;
+    employee: any;
+    supervisor: any;
     salary: number;
     overtime: boolean;
     siginout_required: boolean;
     details: string;
+    date_created:Date;
+}
+
+export interface Attendance {
+    id: number;
+    employee: number;
+    sign_in: Date;
+    sign_out: Date;
+    sign_in_corrd?: string;
+    sign_out_corrd?: string;
+    hours_worked: number;
+    approved_hours: number;
+    amount: number;
+    created_by: number;
+    date_created: Date;
+}
+
+export interface EmployeePayments {
+    id: number;
+    payment_type: string;
+
+    employee: Employee;
+
+    amount: number;
+
+    balance: number;
+
+    payment_notes: string;
+
+    created_by: User;
+
+    date_created: Date;
+
 }

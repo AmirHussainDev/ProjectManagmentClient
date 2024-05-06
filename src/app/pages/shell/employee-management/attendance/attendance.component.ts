@@ -1,57 +1,128 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AppService } from '../../../../services/app.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Attendance, Employee, EmployeePayments } from '../../../../services/app.interfact';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-attendance',
   templateUrl: './attendance.component.html',
   styleUrl: './attendance.component.css'
 })
-export class AttendanceComponent  implements  OnInit {
+export class AttendanceComponent implements OnInit, OnDestroy {
   currentDate: Date = new Date();
-  supervisorData: any[] = []; // Data for supervisor's table
   supervisorUsers: any[] = []; // List of users belonging to supervisor
+  signInTime: Date;
+  signOutTime: Date;
+  employee: Employee;
+  currentUserId: number;
+  currentDateAttendanceIndex = 0;
+  subOrganizationSubscription: Subscription;
+  latitude: number;
+  longitude: number;
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+
+    private router: Router,
+    private appService: AppService
+  ) { }
 
   ngOnInit(): void {
-    // Initialize table data for supervisor
-    this.initializeSupervisorTableData();
+    this.subOrganizationSubscription = this.appService.currentSubOrganization.subscribe((change) => {
 
-    // Fetch users belonging to supervisor
+      this.route.paramMap.subscribe(paramMap => {
+        // Use this queryParams object to load data
+        if (change && change.id > 0 && paramMap.get('userId')) {
+          this.currentUserId = parseInt(paramMap.get('userId') || '0')
+          this.setCurrentUserDetails(change.id);
+        }
+      })
+
+    })
+
+    this.sunscribeToGeoLocation();
+  }
+
+  sunscribeToGeoLocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+
+          this.latitude = position.coords.latitude,
+            this.longitude = position.coords.longitude
+        }
+      );
+    }
+  }
+  async setCurrentUserDetails(subOrgId: number) {
+    this.employee = await this.appService.getEmployeeDetail(this.currentUserId, subOrgId)
+    if (!this.employee) {
+      alert('No employee found')
+      this.router.navigate(['/'])
+    }
+    this.getCurrentDayAttance(this.employee.id);
     this.fetchSupervisorUsers();
   }
 
-  signIn(): void {
-    // Implement sign-in functionality
-    console.log('Signed In');
+  async getCurrentDayAttance(userId: number) {
+    const response: Attendance = await this.appService.getCurrentDateAttendance(userId)
+    this.processCurentDayAttendance(response)
   }
+  processCurentDayAttendance(response: Attendance) {
+    if (response) {
+      this.currentDateAttendanceIndex = response.id
 
-  signOut(): void {
-    // Implement sign-out functionality
-    console.log('Signed Out');
-  }
+      if (response.sign_in) {
+        this.signInTime = new Date(response.sign_in)
+      }
 
-  initializeSupervisorTableData(): void {
-    // Initialize table data for supervisor
-    const startDate = new Date('2024-01-01'); // Example start date
-    const endDate = new Date('2024-01-31'); // Example end date
-
-    const dates = [];
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      dates.push({ date: currentDate });
-      currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+      if (response.sign_out) {
+        this.signOutTime = new Date(response.sign_out)
+      }
+    } else {
+      this.currentDateAttendanceIndex = 0
     }
-    this.supervisorData = dates;
   }
 
-  fetchSupervisorUsers(): void {
-    // Fetch users belonging to supervisor (current user)
-    // Replace this with actual API call to fetch users
+  async signIn() {
+    const response: Attendance = await this.appService.createAttendance({
+      employee: this.employee.id,
+      sign_in: new Date(),
+      sign_in_corrd: this.latitude + ',' + this.longitude
+    } as any)
+    this.processCurentDayAttendance(response)
+  }
+
+  async signOut() {
+    const response: Attendance = await this.appService.updateAttendance({
+      id: this.currentDateAttendanceIndex,
+      sign_out: new Date(),
+      sign_out_corrd: this.latitude + ',' + this.longitude,
+      hours_worked: Math.round(this.getDifferenceInHours(this.signInTime, new Date()))
+    } as any)
+    this.processCurentDayAttendance(response)
+  }
+
+  getDifferenceInHours(date1: Date, date2: Date): number {
+    const diffInMilliseconds = Math.abs(date2.getTime() - date1.getTime());
+    const hours = diffInMilliseconds / (1000 * 60 * 60);
+    return hours;
+  }
+
+
+
+  async fetchSupervisorUsers() {
     this.supervisorUsers = [
-      { name: 'User 1', data: this.generateUserData() },
-      { name: 'User 2', data: this.generateUserData() },
-      // Add more users as needed
+      { employee: this.employee, isSupervisor: false },
     ];
+    const subordinates: Employee[] = await this.appService.getCurrentEmployeeSubordinates(this.currentUserId)
+
+    if (subordinates&&subordinates.length) {
+      this.supervisorUsers = [...this.supervisorUsers,
+      ...subordinates.map((employee) => ({ employee, isSupervisor: true }))
+      ]
+    }
   }
 
   generateUserData(): any[] {
@@ -67,4 +138,10 @@ export class AttendanceComponent  implements  OnInit {
     }
     return dates;
   }
+  ngOnDestroy() {
+    if (this.subOrganizationSubscription) {
+      this.subOrganizationSubscription.unsubscribe();
+    }
+  }
 }
+

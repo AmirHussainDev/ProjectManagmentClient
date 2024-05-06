@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { AuthInterceptor } from './auth-interceptor.service';
-import { UsernamePipe } from './pipes/username.pipe';
 
 export const initializeApp = (integrationService: IntegrationService) => {
   return () => integrationService.fetchIntegrationDetails();

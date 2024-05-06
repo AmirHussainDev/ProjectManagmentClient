@@ -12,6 +12,8 @@ import { UsernamePipe } from '../../../pipes/username.pipe';
 import * as AllIcons from '@ant-design/icons-angular/icons';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { EmployeeContractComponent } from './employee-contract/employee-contract.component';
+import { SafePipe } from '../../../pipes/safe.pipe';
+import { AttendanceDetailsComponent } from './attendance/attendance-details/attendance-details.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -27,12 +29,14 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     EmployeeManagementComponent,
     AttendanceComponent,
     PayProcessingComponent,
-    EmployeeContractComponent
+    EmployeeContractComponent,
+    AttendanceDetailsComponent
     
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US },
     { provide: NZ_ICONS, useValue: icons },
-    UsernamePipe
+    UsernamePipe,
+    SafePipe
 ],
   imports: [
     EmployeeManagementRoutingModule,
@@ -40,7 +44,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     NgZorroAntdModule,
     ReactiveFormsModule,
     FormsModule,
-    UsernamePipe
+    UsernamePipe,
+    SafePipe,
   ]
 })
 export class EmployeeManagementModule { }
