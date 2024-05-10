@@ -24,13 +24,15 @@ export class EmployeeContractComponent implements OnInit {
     this.employeeForm = this.fb.group({
       employee: [0, [Validators.required]],
       position: ['', [Validators.required]],
+      isSalaryHourly: [false],
       salary: [0, [Validators.required]],
       overtime: [false, [Validators.required]],
       siginout_required: [false, [Validators.required]],
       organization: [parseInt(localStorage.getItem('organization_id') || '0')],
       subOrganization: [0],
       supervisor: [0, [Validators.required]],
-      details: ['', [Validators.required]]
+      details: ['', [Validators.required]],
+      workingHours: [8, [Validators.required]]
     });
   }
 

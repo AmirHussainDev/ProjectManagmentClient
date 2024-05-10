@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AppService } from '../../../../../services/app.service';
 import { EmployeePayments, Attendance, Employee } from '../../../../../services/app.interfact';
+import { EmployeeManagementService } from '../../employee-management.service';
 
 @Component({
   selector: 'app-attendance-details',
@@ -12,13 +13,28 @@ export class AttendanceDetailsComponent implements OnInit {
   @Input() employee: Employee;
   @Input() isSupervisor: boolean;
   supervisorData: any[] = []; // Data for supervisor's table
-
-  constructor(private appService: AppService) {
+  latitude: number;
+  longitude: number;
+  totalAmount=0;
+  constructor(private appService: AppService, private employeeManagementService: EmployeeManagementService) {
 
   }
 
   ngOnInit(): void {
     this.getCurrentUserAttance();
+    this.sunscribeToGeoLocation();
+  }
+
+  sunscribeToGeoLocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+
+          this.latitude = position.coords.latitude,
+            this.longitude = position.coords.longitude
+        }
+      );
+    }
   }
 
   async getCurrentUserAttance() {
@@ -34,12 +50,10 @@ export class AttendanceDetailsComponent implements OnInit {
     // Initialize table data for supervisor
     const currentDate = new Date();
     const lastPaymentDate = lastPayment ? new Date(lastPayment.date_created) : null;
-    const attendanceDates = attendances.map(a => new Date(a.date_created));
-
+    const attendanceDates = attendances.map(a => new Date(a.attendance_date));
     let startDate: Date;
-
     // Determine the start date based on the last payment date and attendance dates
-    if (lastPaymentDate && lastPaymentDate >= new Date(Math.min(...attendanceDates.map(date => date.getTime())))) {
+    if (lastPaymentDate && ( Math.min(...attendanceDates.map(date => date.getTime())) === Infinity || lastPaymentDate <=new Date(Math.min(...attendanceDates.map(date => date.getTime()))))) {
       startDate = lastPaymentDate;
     } else if (attendanceDates && attendanceDates.length) {
       startDate = new Date(Math.min(...attendanceDates.map(date => date.getTime())));
@@ -53,7 +67,7 @@ export class AttendanceDetailsComponent implements OnInit {
     let index = 0;
     while (currentDateIterator <= currentDate) {
       const attendanceObj = attendances.find(a => {
-        const attendanceDate = new Date(a.date_created);
+        const attendanceDate = new Date(a.attendance_date);
         attendanceDate.setHours(0, 0, 0, 0);
         currentDateIterator.setHours(0, 0, 0, 0);
         return attendanceDate.getTime() === currentDateIterator.getTime();
@@ -64,6 +78,9 @@ export class AttendanceDetailsComponent implements OnInit {
     }
 
     this.supervisorData = datesArray;
+    this.totalAmount=this.supervisorData.reduce((accumulator, currentValue) => {
+      return accumulator + (Number(currentValue.attendanceObj.amount)||0);
+  }, 0);
   }
 
   editCache: { [key: string]: { edit: boolean; data: { date: Date, attendanceObj: Attendance } } } = {};
@@ -78,6 +95,37 @@ export class AttendanceDetailsComponent implements OnInit {
       edit: false
     };
   }
+  claculateAndSetAmount(index: number) {
+    const salaryPerHour = this.employeeManagementService.calculateHourlyRate(
+      this.employee.salary,
+      this.editCache[index].data.date,
+      this.employee.workingHours || 8,
+      this.employee.isSalaryHourly
+    )
+    setTimeout(()=>{
+      this.editCache[index].data.attendanceObj.amount = (salaryPerHour * 
+        this.employeeManagementService.calculateWorkingHours(this.employee, (this.editCache[index].data.attendanceObj.approved_hours||this.editCache[index].data.attendanceObj.hours_worked)));
+
+    })
+  }
+
+  signIn(index: number) {
+    this.editCache[index].data.attendanceObj.sign_in_corrd = this.latitude + ',' + this.longitude
+  }
+
+  signOut(index: number) {
+    this.editCache[index].data.attendanceObj.sign_out_corrd = this.latitude + ',' + this.longitude
+    this.editCache[index].data.attendanceObj.hours_worked =
+      Math.round(this.employeeManagementService.getDifferenceInHours(this.editCache[index].data.attendanceObj.sign_in, this.editCache[index].data.attendanceObj.sign_out))
+    const salaryPerHour = this.employeeManagementService.calculateHourlyRate(
+      this.employee.salary,
+      this.editCache[index].data.date,
+      this.employee.workingHours || 8,
+      this.employee.isSalaryHourly
+    )
+    this.editCache[index].data.attendanceObj.amount = (salaryPerHour *
+      this.employeeManagementService.calculateWorkingHours(this.employee, (this.editCache[index].data.attendanceObj.approved_hours || this.editCache[index].data.attendanceObj.hours_worked)));
+  }
 
   async saveEdit(id: any) {
     const index = this.supervisorData.findIndex(item => item.id === id);
@@ -86,17 +134,23 @@ export class AttendanceDetailsComponent implements OnInit {
         id: this.editCache[id].data.attendanceObj.id,
         sign_in: this.editCache[id].data.attendanceObj.sign_in,
         sign_out: this.editCache[id].data.attendanceObj.sign_out,
+        sign_in_corrd: this.editCache[id].data.attendanceObj.sign_in_corrd,
+        sign_out_corrd: this.editCache[id].data.attendanceObj.sign_out_corrd,
         hours_worked: this.editCache[id].data.attendanceObj.hours_worked,
         approved_hours: this.editCache[id].data.attendanceObj.approved_hours,
-        amount: this.editCache[id].data.attendanceObj.approved_hours,
+        amount: this.editCache[id].data.attendanceObj.amount,
       } as Attendance);
     } else {
       await this.appService.createAttendance({
+        employee: this.employee.id,
         sign_in: this.editCache[id].data.attendanceObj.sign_in,
         sign_out: this.editCache[id].data.attendanceObj.sign_out,
+        sign_in_corrd: this.editCache[id].data.attendanceObj.sign_in_corrd,
+        sign_out_corrd: this.editCache[id].data.attendanceObj.sign_out_corrd,
         hours_worked: this.editCache[id].data.attendanceObj.hours_worked,
         approved_hours: this.editCache[id].data.attendanceObj.approved_hours,
-        amount: this.editCache[id].data.attendanceObj.approved_hours,
+        attendance_date:this.editCache[id].data.date,
+        amount: this.editCache[id].data.attendanceObj.amount,
       } as Attendance);
     }
     this.editCache[id].edit = false;

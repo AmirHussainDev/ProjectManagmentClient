@@ -367,10 +367,12 @@ export interface EmployeeForm {
     position: FormControl;
     employee: FormControl;
     supervisor: FormControl;
+    isSalaryHourly: FormControl;
     salary: FormControl;
     overtime: FormControl;
     siginout_required: FormControl;
     details: FormControl;
+    workingHours:FormControl;
 }
 
 
@@ -382,6 +384,8 @@ export interface Employee {
     employee: any;
     supervisor: any;
     salary: number;
+    workingHours:number;
+    isSalaryHourly:boolean;
     overtime: boolean;
     siginout_required: boolean;
     details: string;
@@ -400,6 +404,7 @@ export interface Attendance {
     amount: number;
     created_by: number;
     date_created: Date;
+    attendance_date:Date,
 }
 
 export interface EmployeePayments {

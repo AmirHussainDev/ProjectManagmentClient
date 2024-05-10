@@ -1,5 +1,7 @@
 <!-- NZ Table -->
-<nz-table #basicTable nzShowPagination="false" [nzData]="supervisorData" [nzBordered]="true">
+<nz-table #basicTable nzShowPagination="false"
+[nzFooter]="footerDetails"
+[nzData]="supervisorData" [nzBordered]="true">
     <thead>
         <tr>
             <th>Date</th>
@@ -15,30 +17,36 @@
         <tr *ngFor="let row of supervisorData">
             <td>{{ row.date | date : 'EEEE d MMM yyyy' }}
 
-            <td><span *ngIf="!editCache[row.id]?.edit"> {{ row.attendanceObj?.sign_in | date : 'hh:mm a' }}
+            <td><span class="flex space-between" *ngIf="!editCache[row.id]?.edit"> {{ row.attendanceObj?.sign_in | date
+                    : 'hh:mm a' }}
                     <a target="_blank" [href]="'https://www.google.com/maps?q='+row.attendanceObj?.sign_in_corrd"
-                        nz-button nzType="default" nzShape="circle" [nzSize]="'small'" nzShape="round">
+                        nzType="default" nzShape="circle" nzShape="round">
                         <span nz-icon nzType="environment" nzTheme="outline"></span>
                     </a>
                 </span>
-                <nz-time-picker *ngIf="editCache[row.id]?.edit" [(ngModel)]="row.attendanceObj.sign_in"
-                    nzFormat="HH:mm"></nz-time-picker>
+                <nz-time-picker *ngIf="editCache[row.id]?.edit" (ngModelChange)="signIn(row.id)"
+                    [(ngModel)]="editCache[row.id].data.attendanceObj.sign_in" nzFormat="HH:mm"></nz-time-picker>
             </td>
-            <td><span *ngIf="!editCache[row.id]?.edit">{{ row.attendanceObj?.sign_out | date : 'hh:mm a' }}
+            <td><span class="flex space-between" *ngIf="!editCache[row.id]?.edit">{{ row.attendanceObj?.sign_out | date
+                    : 'hh:mm a' }}
                     <a *ngIf="!editCache[row.id]?.edit" target="_blank"
-                        [href]="'https://www.google.com/maps?q='+row.attendanceObj?.sign_out_corrd" nz-button
-                        nzType="default" nzShape="circle" [nzSize]="'small'" nzShape="round">
+                        [href]="'https://www.google.com/maps?q='+row.attendanceObj?.sign_out_corrd" nzType="default"
+                        nzShape="circle" nzShape="round">
                         <span nz-icon nzType="environment" nzTheme="outline"></span>
                     </a>
                 </span>
-                <nz-time-picker *ngIf="editCache[row.id]?.edit" [(ngModel)]="row.attendanceObj.sign_out"
-                    nzFormat="HH:mm"></nz-time-picker>
+                <nz-time-picker *ngIf="editCache[row.id]?.edit" (ngModelChange)="signOut(row.id)"
+                    [(ngModel)]="editCache[row.id].data.attendanceObj.sign_out" nzFormat="HH:mm"></nz-time-picker>
             </td>
             <td>{{ row.attendanceObj?.hours_worked }}</td>
-            <td> <span *ngIf="!editCache[row.id]?.edit"> {{ row.attendanceObj?.approved_hours }} </span>
-                <input *ngIf="editCache[row.id]?.edit" nz-input [(ngModel)]="row.attendanceObj.approved_hours" />
+            <td>
+                <span *ngIf="!editCache[row.id]?.edit"> {{ row.attendanceObj?.approved_hours }} </span>
+                <input *ngIf="editCache[row.id]?.edit" (ngModelChange)="claculateAndSetAmount(row.id)" nz-input
+                    [(ngModel)]="editCache[row.id].data.attendanceObj.approved_hours" />
             </td>
-            <td><span>{{ row.attendanceObj?.amount }}</span>
+            <td><span *ngIf="editCache[row.id]?.edit">{{ (editCache[row.id].data?.attendanceObj?.amount || 0) | currency
+                    :' ' }}</span>
+                <span *ngIf="!editCache[row.id]?.edit">{{ (row.attendanceObj?.amount || 0) | currency :' ' }}</span>
 
             </td>
             <td *ngIf="isSupervisor">
@@ -50,3 +58,14 @@
         </tr>
     </tbody>
 </nz-table>
+<ng-template #footerDetails>
+    <span class="flex space-between center">
+
+        <span></span>
+
+        <span>
+            <b>
+           Total: 
+            {{totalAmount | currency: 'PKR '}}</b></span>
+    </span>
+</ng-template>

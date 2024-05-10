@@ -15,32 +15,35 @@
                 <td>{{ data.employee|username }}</td>
                 <td>{{ data.position }}</td>
                 <td>{{ data.supervisor |username }}</td>
-                <td>{{ data.salary }}</td>
+                <td>{{ data.salary }} {{data.isSalaryHourly?'/h':'/m'}}</td>
                 <td>{{ data.overtime }}</td>
                 <td>{{ data.siginout_required }}</td>
+                <td>{{ data.workingHours }}</td>
                 <td><a (click)="startEdit(data.id)">Edit</a></td>
             </ng-container>
             <ng-template #editTemplate>
                 <td>{{ data.employee|username }}</td>
 
                 <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.position" /></td>
-                
+
                 <td>
                     <nz-select id="supervisor" [(ngModel)]="editCache[data.id].data.supervisor"
                         placeholder="Select user" *ngIf="listOfData.length">
-                        <nz-option *ngFor="let user of users" [nzValue]="user?.id"
-                            [nzLabel]="user?.name"></nz-option>
+                        <nz-option *ngFor="let user of users" [nzValue]="user?.id" [nzLabel]="user?.name"></nz-option>
                     </nz-select>
                 </td>
-               
-                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.salary" /></td>
+
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.salary" /> {{editCache[data.id].data.isSalaryHourly?'/h':'/m'}}</td>
                 <td>
-                    <label nz-checkbox [(ngModel)]="editCache[data.id].data.overtime" [nzChecked]="editCache[data.id].data.overtime"></label>
+                    <label nz-checkbox [(ngModel)]="editCache[data.id].data.overtime"
+                        [nzChecked]="editCache[data.id].data.overtime"></label>
                 </td>
                 <td>
-                    <label nz-checkbox [(ngModel)]="editCache[data.id].data.siginout_required" [nzChecked]="editCache[data.id].data.siginout_required"></label>
+                    <label nz-checkbox [(ngModel)]="editCache[data.id].data.siginout_required"
+                        [nzChecked]="editCache[data.id].data.siginout_required"></label>
                 </td>
-               
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.workingHours" /></td>
+
                 <td>
                     <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
                     <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>

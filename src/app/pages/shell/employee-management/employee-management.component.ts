@@ -44,6 +44,11 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       priority: 3
     },
     {
+      title: 'Working Hours',
+      compare: (a: Employee, b: Employee) => a.workingHours - b.workingHours,
+      priority: 3
+    },
+    {
       title: 'Action',
       compare: (a: Employee, b: Employee) => (a.id || 0) - (b.id || 0),
       priority: 3

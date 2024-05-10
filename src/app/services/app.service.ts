@@ -654,7 +654,7 @@ export class AppService {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/employee/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
-      return response as any[];
+      return response as Employee[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);
@@ -751,11 +751,40 @@ export class AppService {
 
   
 
-  async getEmployeePaymentsDetail(subOrgId: number): Promise<{paymentObject:any,employee:Employee}[]> {
+  async getEmployeePaymentsDetail(subOrgId: number=0): Promise<{paymentObject:any,employee:Employee}[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/payments/employees/${organization_id}/${subOrgId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/payments/employees/${organization_id}/${subOrgId|| this.currentSubOrgId}`, { headers: this.header }).toPromise()
       return response  as {paymentObject:any,employee:Employee}[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+  async createPayment(userObj: any): Promise<any> {
+    try {
+      const body = {
+        ...userObj,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: localStorage.getItem('sub_organization_id'),
+        created_by: this.userService.loggedInUser.id,
+      }
+      const response = await this.http.post(`/api/payments`, body).toPromise();
+      return response ;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+ async getPayments(employeeId:number){
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/payments/employee/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
+      return response  as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);

@@ -3,13 +3,13 @@ import { UserService } from '../services/user.service';
 
 @Pipe({
   name: 'username',
-  standalone:true
+  standalone: true
 })
 export class UsernamePipe implements PipeTransform {
 
   constructor(private userService: UserService) { }
   transform(value: unknown, ...args: unknown[]): unknown {
-    const user = this.userService.users.find(user => user.id == value)
+    const user = this.userService.users?.find(user => user.id == value)
     return user ? user.name : value;
   }
 

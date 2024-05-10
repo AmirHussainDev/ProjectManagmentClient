@@ -42,9 +42,31 @@
         <div nz-row [nzGutter]="8">
             <div nz-col nzSpan="12">
                 <nz-form-item>
+                    <nz-form-label>Salary Nature</nz-form-label>
+                    <nz-form-control>
+                        <nz-switch formControlName="isSalaryHourly" nzCheckedChildren="Hourly"
+                        nzUnCheckedChildren="Monthly"></nz-switch>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+
+        <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+                <nz-form-item>
                     <nz-form-label>Salary</nz-form-label>
                     <nz-form-control>
                         <input formControlName="salary" nz-input placeholder="please enter user salary" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+                <nz-form-item>
+                    <nz-form-label>Working Hours</nz-form-label>
+                    <nz-form-control>
+                        <label nz-checkbox formControlName="workingHours"></label>
                     </nz-form-control>
                 </nz-form-item>
             </div>

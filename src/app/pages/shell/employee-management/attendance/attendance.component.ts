@@ -3,6 +3,7 @@ import { AppService } from '../../../../services/app.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Attendance, Employee, EmployeePayments } from '../../../../services/app.interfact';
 import { Subscription } from 'rxjs';
+import { EmployeeManagementService } from '../employee-management.service';
 
 @Component({
   selector: 'app-attendance',
@@ -25,7 +26,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
 
     private router: Router,
-    private appService: AppService
+    private appService: AppService,
+    private employeeManagementService: EmployeeManagementService
   ) { }
 
   ngOnInit(): void {
@@ -95,19 +97,23 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   async signOut() {
+
+    const hours_worked = Math.round(this.employeeManagementService.getDifferenceInHours(this.signInTime, new Date()))
+    const salaryPerHour = this.employeeManagementService.calculateHourlyRate(
+      this.employee.salary,
+      new Date(),
+      this.employee.workingHours || 8,
+      this.employee.isSalaryHourly
+    )
+    const amount = (salaryPerHour * this.employeeManagementService.calculateWorkingHours(this.employee, hours_worked));
     const response: Attendance = await this.appService.updateAttendance({
       id: this.currentDateAttendanceIndex,
       sign_out: new Date(),
       sign_out_corrd: this.latitude + ',' + this.longitude,
-      hours_worked: Math.round(this.getDifferenceInHours(this.signInTime, new Date()))
+      hours_worked,
+      amount
     } as any)
     this.processCurentDayAttendance(response)
-  }
-
-  getDifferenceInHours(date1: Date, date2: Date): number {
-    const diffInMilliseconds = Math.abs(date2.getTime() - date1.getTime());
-    const hours = diffInMilliseconds / (1000 * 60 * 60);
-    return hours;
   }
 
 
@@ -118,7 +124,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     ];
     const subordinates: Employee[] = await this.appService.getCurrentEmployeeSubordinates(this.currentUserId)
 
-    if (subordinates&&subordinates.length) {
+    if (subordinates && subordinates.length) {
       this.supervisorUsers = [...this.supervisorUsers,
       ...subordinates.map((employee) => ({ employee, isSupervisor: true }))
       ]

@@ -252,3 +252,14 @@ a:hover {
     border-color: #BB86FC;
     background: #BB86FC;
 }
+
+.ant-card-body{
+    padding: 10px !important;
+}
+
+.ant-collapse-header{
+    padding: 5px !important;
+}
+.ant-table-footer{
+    padding: 5px;
+}
