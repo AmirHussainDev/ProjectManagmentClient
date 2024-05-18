@@ -30,13 +30,47 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
+          <li nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('customers')>-1 ">
+            <span nz-icon style="font-size: 18px;" nzType="user-switch"></span>
+            <span>
+              <a class="nav-link" [routerLink]="['/purchase/customers']"
+                (click)="isMobile()?isCollapsed=true:null">
+                Customers
+              </a>
+            </span>
+          </li>
+          <li nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('sales')>-1 && (currentRoutes.indexOf('status=' + saleState.Quote)>-1 || currentRoutes.join('').indexOf('SALE=')>-1 )">
+            <span nz-icon style="font-size: 18px;" nzType="file-text"></span>
+            <span>
+              <a class="nav-link" [routerLink]="['/purchase/sales']" [queryParams]="{status:saleState.Quote}"
+                (click)="isMobile()?isCollapsed=true:null">
+                Quotes
+              </a>
+            </span>
+          </li>
+          <li nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('sales')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
+            <span nz-icon style="font-size: 18px;" nzType="file-done"></span>
+            <span>
+              <a class="nav-link" [routerLink]="['/purchase/sales']" [queryParams]="{status:saleState.Invoiced  }"
+                (click)="isMobile()?isCollapsed=true:null">
+                Invoices
+              </a>
+            </span>
 
-          <li nz-menu-item [class.selected-route]="currentRoutes.indexOf('purchase')>-1">
+          </li>
+        </ul>
+        <ul nz-menu nzTheme="dark" nzMode="inline">
+
+          <li nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('customers')==-1 && currentRoutes.indexOf('purchase')>-1 && currentRoutes.indexOf('sales')==-1&&currentRoutes.indexOf('sale')==-1&&currentRoutes.indexOf('sales?status=' + saleState.Quote)==-1&&currentRoutes.indexOf('sales?status=' + saleState.Invoiced)==-1">
             <span nz-icon style="font-size: 18px;" nzType="pull-request"></span>
             <span>
               <a class="nav-link" [routerLink]="['/purchase']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Purchase & Sales
+                Purchase Invoices
               </a>
             </span>
           </li>
@@ -71,7 +105,8 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('attendance')===-1&&currentRoutes.indexOf('pay-processing')===-1">
+          <li nz-menu-item style="margin-top: 12px;"
+            [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('attendance')===-1&&currentRoutes.indexOf('pay-processing')===-1">
             <span nz-icon style="font-size: 18px;" nzType="profile" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/employee']" [state]="{tracingId: 123}"
@@ -89,7 +124,8 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('pay-processing')>-1">
+          <li nz-menu-item style="margin-top: 12px;"
+            [class.selected-route]="currentRoutes.indexOf('pay-processing')>-1">
             <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/employee','pay-processing']" [state]="{tracingId: 123}"
@@ -100,7 +136,8 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')==-1">
+          <li nz-menu-item style="margin-top: 12px;"
+            [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')==-1">
             <span nz-icon style="font-size: 18px;" nzType="team" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/team']" [state]="{tracingId: 123}"
@@ -109,7 +146,8 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')>-1">
+          <li nz-menu-item style="margin-top: 12px;"
+            [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')>-1">
             <span nz-icon style="font-size: 18px;" nzType="sliders" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/team/roles']" [state]="{tracingId: 123}"

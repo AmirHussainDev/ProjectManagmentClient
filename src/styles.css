@@ -57,7 +57,7 @@ app-shell {
 
 .ant-layout-header {
     height: 40px;
-    background: #F7F7FE;
+    background: #f1e5ff;
     color: black;
 }
 
@@ -252,7 +252,14 @@ a:hover {
     border-color: #BB86FC;
     background: #BB86FC;
 }
-
+.ant-btn-primary:hover {
+    border-color: #cca4fc;
+    background: #cca4fc;
+}
+.ant-btn-primary:focus{
+    border-color: #cca4fc;
+    background: #cca4fc;
+}
 .ant-card-body{
     padding: 10px !important;
 }
@@ -262,4 +269,39 @@ a:hover {
 }
 .ant-table-footer{
     padding: 5px;
+}
+
+.ant-list-item-meta-title{
+    font-size: 12px;
+    line-height: 1;
+}
+
+.ant-list-item-meta-description {
+    font-size: 12px;
+    line-height: 2;
+}
+
+.ant-btn-round.ant-btn-sm {
+    height: 24px;
+    padding: 0 8px;
+    font-size: 12px;
+    border-radius: 24px;
+    line-height: 1;
+    text-wrap: nowrap;
+}
+
+.ant-form-item-label > label{
+    font-size: 12px;
+}
+
+.ant-select{
+    font-size: 12px;
+
+}
+.ant-picker-input > input{
+    font-size: 12px;
+}
+.ant-input{
+    font-size: 12px;
+    padding: 4px 4px;
 }

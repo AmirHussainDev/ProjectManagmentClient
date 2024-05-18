@@ -50,16 +50,17 @@ export const DefaultPermissions = {
 
 export const SaleStates = {
     Draft: 0,
+    Quote: 1,
     PaymentConfirmation: 2,
     Cancelled: 3,
-    Completed: 4
+    Invoiced: 4
 }
 
 export const SaleStateNames = {
     [SaleStates.Draft]: 'DRAFT',
     [SaleStates.PaymentConfirmation]: 'PAYMENT CONFIRMATION',
-    [SaleStates.Cancelled]: 'CANCELLED',
-    [SaleStates.Completed]: 'COMPLETED'
+    [SaleStates.Invoiced]: 'Invoiced',
+    [SaleStates.Cancelled]: 'CANCELLED'
 }
 
 export const ContractStates = {

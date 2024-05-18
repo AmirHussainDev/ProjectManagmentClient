@@ -16,7 +16,6 @@ import { MediaMatcher } from '@angular/cdk/layout';
 export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   apiUrl = environment.apiUrl;
   pendingInvoices: any[] = [];
-  saleRequests: any[] = [];
   stateNames = InvoiceStateNames
   paymentConfirmations: any[] = [];
   states = POStates;
@@ -57,27 +56,6 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  loadSaleDataFromServer(
-    pageIndex: number = 1,
-    pageSize: number = 1000,
-    sortField: string | null = 'id',
-    sortOrder: string | null = 'asc',
-    filters: Array<{ key: string; value: string[] }> = []
-  ): void {
-    this.loading = true;
-    let params = new HttpParams()
-      .append('page', `${pageIndex}`)
-      .append('results', `${pageSize}`)
-      .append('sortField', `${sortField}`)
-      .append('sortOrder', `${sortOrder}`);
-    filters.forEach(filter => {
-      filter.value.forEach(value => {
-        params = params.append(filter.key, value);
-      });
-    });
-    this.getAndSetSaleRequests(params);
-
-  }
 
   onPurchaseQueryParamsChange(params: NzTableQueryParams): void {
     console.log(params);
@@ -87,18 +65,10 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
     const sortOrder = (currentSort && currentSort.value) || null;
     this.loadPurchaseDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
-  onSaleQueryParamsChange(params: NzTableQueryParams): void {
-    console.log(params);
-    const { pageSize, pageIndex, sort, filter } = params;
-    const currentSort = sort.find(item => item.value !== null);
-    const sortField = (currentSort && currentSort.key) || null;
-    const sortOrder = (currentSort && currentSort.value) || null;
-    this.loadSaleDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
-  }
+  
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       this.loadPurchaseDataFromServer();
-      this.loadSaleDataFromServer();
     });
   }
   ngOnDestroy(): void {
@@ -114,13 +84,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  async getAndSetSaleRequests(params: HttpParams) {
-    this.loading = true;
-    this.saleRequests = await this.appService.retireveSaleByState(params)
-    this.loading = false;
-    this.total = this.pendingInvoices.length; // mock the total data here
-  }
-
+ 
   isMobile(): boolean {
     const isMobile = this.media.matchMedia('(max-width: 600px)');
     return isMobile.matches;

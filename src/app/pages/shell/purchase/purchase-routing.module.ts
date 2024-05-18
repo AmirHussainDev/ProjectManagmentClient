@@ -3,19 +3,37 @@ import { RouterModule, Routes } from '@angular/router';
 import { PurchaseComponent } from './purchase-request/purchase.component';
 import { SaleRequestComponent } from './sale-request/sale-request.component';
 import { ListingComponent } from './listing.component';
+import { SaleListingComponent } from './sale-listing/sale-listing.component';
+import { CustomersComponent } from './customers/customers.component';
 
 const routes: Routes = [
   {
-    path: '', component: ListingComponent,
-    data:{name:' '},
-    children:[
+    path: '',
+    data: { name: ' ' },
+    children: [
+      {
+        path: '', component: ListingComponent,
+        data: { name: ' ' }
+      },
+      {
+        path: 'sales', component: SaleListingComponent,
+        data: { name: ' ' },
+        children: [{
+          path: 'sale', component: SaleRequestComponent,
+          data: { name: ' ' }
+        }]
+      },
       {
         path: 'sale', component: SaleRequestComponent,
-        data:{name:' '}
+        data: { name: ' ' }
       },
       {
         path: 'purchase', component: PurchaseComponent,
-        data:{name:' '}
+        data: { name: ' ' }
+      },
+      {
+        path: 'customers', component: CustomersComponent,
+        data: { name: ' ' }
       },
     ]
   },

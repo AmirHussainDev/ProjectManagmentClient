@@ -7,6 +7,7 @@ import { Subscription, filter, of } from 'rxjs';
 import { SubOrganization } from '../../services/app.interfact';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { SaleStates } from '../../services/app.constants';
 
 @Component({
   selector: 'app-shell',
@@ -26,7 +27,8 @@ export class ShellComponent implements OnInit, OnDestroy {
   currentSubOrganization: SubOrganization
   currentRoutePath: string;
   currentUrl: any;
-  currentRoutes: string[] = []
+  currentRoutes: string[] = [];
+  saleState = SaleStates;
   constructor(private userService: UserService,
     private appService: AppService, private fb: FormBuilder,
     private media: MediaMatcher,
@@ -41,19 +43,20 @@ export class ShellComponent implements OnInit, OnDestroy {
     this.loggedInUser = this.userService.getUserDetails();
     this.setSitesData();
     this.onSiteChange();
-   this.extractRoutePath(this.router.url)
+    this.extractRoutePath(this.router.url)
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.currentUrl = event.url;
-     this.extractRoutePath(this.currentUrl)
+      this.extractRoutePath(this.currentUrl)
     });
 
   }
 
   private extractRoutePath(url: string) {
     url = url.replace(/(https?:\/\/[^\/]+)?\/?/, '');
-    this.currentRoutes =  url.split('/').filter(route => route); // Remove query parameters
+    this.currentRoutes = url.split(/[/?]/).filter(route => route); // Remove query parameters
+    console.log(this.currentRoutes);
   }
 
   toggleOrganizations() {

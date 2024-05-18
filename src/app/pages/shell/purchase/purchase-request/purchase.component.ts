@@ -390,7 +390,7 @@ export class PurchaseComponent implements OnInit {
         if (response) {
           this.notification.create(
             'success',
-            'Purchase Order - ' + this.previousPurchaseDetails.id,
+            'Purchase Order - ' + this.previousPurchaseDetails.purchase_no,
             'Purchase order invoice cancelled successfly.',
           ).onClose.subscribe((resp) => {
             this.router.navigate(['/'])
@@ -429,7 +429,7 @@ export class PurchaseComponent implements OnInit {
     if (response) {
       this.notification.create(
         'success',
-        'Purchase Order - ' + this.previousPurchaseDetails.id,
+        'Purchase Order - ' + this.previousPurchaseDetails.purchase_no,
         'Purchase order invoice submitted successfly. Please proceed next for payment details',
       ).onClose.subscribe((resp) => {
         this.router.navigate(['/'])
@@ -464,7 +464,7 @@ export class PurchaseComponent implements OnInit {
     if (response) {
       this.notification.create(
         'success',
-        'Purchase Order - ' + this.previousPurchaseDetails.id,
+        'Purchase Order - ' + this.previousPurchaseDetails.purchase_no,
         'Purchase order invoice submitted successfly. Please proceed next for payment details',
       ).onClose.subscribe((resp) => {
         this.router.navigate(['/'])

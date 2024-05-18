@@ -1,0 +1,105 @@
+<nz-row>
+    <nz-col [nzSpan]="!isMobile()&&showSide?8:24">
+        <div class="flex space-between" style="margin-bottom:5px">
+            <h3>
+                All Quotes
+            </h3>
+            <a (click)="showSide=true" [routerLink]="['./sale']" [state]="{tracingId: 2}">
+                <button nz-button nzType="primary" [nzSize]="'small'">
+                    <span nz-icon nzType="plus"> </span>
+                    New Quote
+                </button>
+            </a>
+        </div>
+        <nz-table [nzShowPagination]="false" [nzData]="saleRequests" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+            (nzQueryParams)="onSaleQueryParamsChange($event)">
+            <thead>
+                <tr>
+                    <ng-container *ngIf="!showSide">
+                        <th nzColumnKey="date_create" nzWidth="20%" [nzSortFn]="true">Date</th>
+                        <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Subject</th>
+                        <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Quote Number</th>
+                        <th nzColumnKey="customer_name" nzWidth="20%" [nzSortFn]="true">Customer Name</th>
+                        <th nzColumnKey="state" [nzFilters]="filterStates" [nzFilterFn]="true">Status
+                        <th nzColumnKey="amount" nzWidth="20%" [nzSortFn]="true">Amount</th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr *ngFor="let data of saleRequests">
+                    <ng-container *ngIf="!showSide">
+                        <td> {{ data.date_created | date : 'dd MMM yyyy' }} </td>
+                        <td> {{ data.subject }} </td>
+                        <td>
+                            <a (click)="showSide=true" [routerLink]="['/', 'purchase','sales','sale']"
+                                [queryParams]="{ SALE: data.sale_no }" href="">SALE -
+                                {{data.sale_no}}</a>
+                        </td>
+                        <td> {{ data.customer_name }} </td>
+                        <td> <button nz-button nzType="primary"
+                                [className]="data.state===states.Invoiced? 'green-button':'default'"
+                                [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
+                                {{ stateNames[data.state] }}
+                            </button> </td>
+                        <td>
+                            <span>{{data.total | currency :'PKR'}}</span>
+
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="showSide">
+                        <td>
+                            <nz-list nzItemLayout="horizontal">
+                                <nz-list-item>
+                                    <nz-list-item-meta>
+                                        <nz-list-item-meta-title>
+                                            <span class="flex space-between">
+                                                <span>{{ data.subject }}</span>
+                                                <span>{{data.total | currency :'PKR'}}</span>
+                                            </span>
+
+                                        </nz-list-item-meta-title>
+                                        <nz-list-item-meta-description>
+                                            <span class="flex space-between">
+                                                <span>
+                                                    <a (click)="showSide=true"
+                                                        [routerLink]="['/', 'purchase','sales','sale']"
+                                                        [queryParams]="{ SALE: data.sale_no }" href="">SALE -
+                                                        {{data.sale_no}}</a>
+                                                    <nz-divider nzType="vertical"></nz-divider>
+                                                    <span class="dateDisplay"> {{
+                                                        data.date_created | date : 'dd MMM yyyy' }}</span>
+                                                </span>
+                                                <button nz-button nzType="primary"
+                                                    [className]="data.state===states.Invoiced? 'green-button':'default'"
+                                                    [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"
+                                                    nzShape="round">
+                                                    {{ stateNames[data.state] }}
+                                                </button>
+                                            </span>
+                                        </nz-list-item-meta-description>
+                                    </nz-list-item-meta>
+                                </nz-list-item>
+                            </nz-list>
+
+                        </td>
+                    </ng-container>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-col>
+    <nz-col class="sidebarright" [nzSpan]="!isMobile()&&showSide?16:0" *ngIf="!isMobile()&&showSide">
+        <router-outlet></router-outlet>
+    </nz-col>
+</nz-row>
+<div *ngIf="isMobile()&&showSide">
+    <nz-drawer nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]=""
+        (nzOnClose)="showSide=false">
+        <ng-container *nzDrawerContent>
+
+            <router-outlet>
+            </router-outlet>
+        </ng-container>
+    </nz-drawer>
+</div>

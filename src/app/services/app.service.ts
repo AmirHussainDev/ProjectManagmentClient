@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Subject, map } from 'rxjs';
 import { Attendance, ContractDetails, Employee, EmployeePayments, Expense, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
 import { UserService } from './user.service';
+import { Customer, CustomerCreateObj } from '../pages/shell/purchase/customers/customers.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -168,6 +169,52 @@ export class AppService {
       throw error;
     }
   }
+
+  async getOrganizationCustomers(): Promise<Customer[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/customers/${organization_id}/${this.currentSubOrgId}`).toPromise();
+      return response as Customer[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+
+
+  async createCustomer(userObj: CustomerCreateObj): Promise<Customer> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const body = {
+        ...userObj,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id
+      }
+      const response = await this.http.post(`/api/Customers`, body).toPromise();
+      return response as Customer;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+
+  async updateCustomer(userObj: any): Promise<Customer> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.put(`/api/customers`, userObj).toPromise();
+      return response as Customer;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
 
   async getRoles(): Promise<Role[]> {
     try {

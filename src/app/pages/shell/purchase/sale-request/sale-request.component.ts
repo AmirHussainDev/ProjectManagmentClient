@@ -14,6 +14,7 @@ import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
 import { ItemControl, SaleDetails, SaleOrder, SaleItemControl, SaleItemReturnControl, PaymentHistory } from '../../../../services/app.interfact';
 import { SaleStateNames, SaleStates } from '../../../../services/app.constants';
+import { Customer } from '../customers/customers.interface';
 
 interface TreeNode {
   title: string;
@@ -45,7 +46,7 @@ export class SaleRequestComponent implements OnInit {
   loading = false;
   SaleStates = SaleStates;
   stateNames = SaleStateNames
-  listOfData: User[] = [
+  listOfData: Customer[] = [
   ];
   defaultItemValues = {
     id: 0,
@@ -98,14 +99,15 @@ export class SaleRequestComponent implements OnInit {
       sub_organization_id: new FormControl(0),
       invoice_date: new FormControl(new Date()),
       due_date: new FormControl(new Date()),
-      sales_person: new FormControl(0),
-      attachment: new FormControl(),
+      customer: new FormControl(0),
+      attachment: new FormControl(false),
+      new_customer: new FormControl(),
       terms: new FormControl('')
     });
   }
   submitForm() { }
   ngOnInit(): void {
-    this.userService.getOrganizationUsers().then(resp => {
+    this.appService.getOrganizationCustomers().then(resp => {
       this.listOfData = resp;
     });
 
@@ -445,7 +447,7 @@ export class SaleRequestComponent implements OnInit {
         'Sale request - ' + response['id'],
         'Sale request submitted successfly. Please check for invoice and update later'
       ).onClose.subscribe((resp) => {
-        this.router.navigate(['/'])
+        this.router.navigate(['purchase', 'sales'])
       });
     }
   }
@@ -472,10 +474,10 @@ export class SaleRequestComponent implements OnInit {
         if (response) {
           this.notification.create(
             'success',
-            'SaleRequest Order - ' + this.previousSaleRequestDetails.id,
+            'SaleRequest Order - ' + this.previousSaleRequestDetails.sale_no,
             'SaleRequest order invoice cancelled successfly.',
           ).onClose.subscribe((resp) => {
-            this.router.navigate(['/'])
+            this.router.navigate(['purchase', 'sales'])
           });
         }
 
@@ -505,7 +507,7 @@ export class SaleRequestComponent implements OnInit {
     const response: any = await this.appService.updateSaleRequest({
       details: {
         ...{ ..._.omit(body, 'items') } as any,
-        state: !save ? SaleStates.Completed : body.state
+        state: !save ? SaleStates.Invoiced : body.state
       }, products: detailsDifference.items.map((item: any) => ({
         id: item.id,
         return_details: item.return_details
@@ -516,10 +518,10 @@ export class SaleRequestComponent implements OnInit {
     if (response) {
       this.notification.create(
         'success',
-        'SaleRequest Order - ' + this.previousSaleRequestDetails.id,
+        'SaleRequest Order - ' + this.previousSaleRequestDetails.sale_no,
         'SaleRequest order invoice submitted successfly. Please proceed next for payment details',
       ).onClose.subscribe((resp) => {
-        this.router.navigate(['/'])
+        this.router.navigate(['purchase', 'sales'])
       });
     }
   }
@@ -551,10 +553,10 @@ export class SaleRequestComponent implements OnInit {
     if (response) {
       this.notification.create(
         'success',
-        'SaleRequest Order - ' + this.previousSaleRequestDetails.id,
+        'SaleRequest Order - ' + this.previousSaleRequestDetails.sale_no,
         'SaleRequest order invoice submitted successfly. Please proceed next for payment details',
       ).onClose.subscribe((resp) => {
-        this.router.navigate(['/'])
+        this.router.navigate(['purchase', 'sales'])
       });
     }
   }
@@ -609,7 +611,7 @@ export class SaleRequestComponent implements OnInit {
             controlName !== 'shipment_charges' &&
             controlName !== 'additional_cost' &&
             stateControl.value === this.SaleStates.PaymentConfirmation)
-          || stateControl.value === this.SaleStates.Completed || stateControl.value === this.SaleStates.Cancelled)
+          || stateControl.value === this.SaleStates.Invoiced || stateControl.value === this.SaleStates.Cancelled)
         ) {
           control.disable();
         }

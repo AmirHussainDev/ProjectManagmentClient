@@ -1,0 +1,45 @@
+<nz-drawer [nzBodyStyle]="{ overflow: 'auto' }" [nzMaskClosable]="false" [nzWidth]="720" [nzVisible]="visible"
+    nzTitle="Create" [nzFooter]="footerTpl" (nzOnClose)="close()">
+    <nz-form *nzDrawerContent [formGroup]="customerForm">
+        <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Name</nz-form-label>
+                    <nz-form-control>
+                        <input formControlName="name" nz-input placeholder="please enter user name" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Contact no</nz-form-label>
+                    <nz-form-control>
+                        <input formControlName="contact_no" nz-input placeholder="please enter contact no" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Account No</nz-form-label>
+                    <nz-form-control>
+                        <input formControlName="account_no" nz-input placeholder="please enter account no" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Address</nz-form-label>
+                    <nz-form-control>
+                        <textarea nz-input rows="3" formControlName="address"  placeholder="please enter account no" > </textarea>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </nz-form>
+    <ng-template #footerTpl>
+        <div style="float: right">
+            <button nz-button style="margin-right: 8px;" (click)="close()">Cancel</button>
+            <button nz-button nzType="primary" [disabled]="!customerForm.valid" (click)="addCustomer()">Submit</button>
+        </div>
+    </ng-template>
+</nz-drawer>

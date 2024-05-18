@@ -54,7 +54,8 @@ export interface SaleOrder {
     overall_discount: number;
     invoice_date: Date;
     due_date: Date;
-    sales_person: number;
+    customer: number;
+    new_customer: boolean;
     attachment: string;
     terms: string;
 }
@@ -134,9 +135,10 @@ export interface SaleDetails {
     sub_organization_id: FormControl;
     invoice_date: FormControl;
     due_date: FormControl;
-    sales_person: FormControl;
+    customer: FormControl;
     attachment: FormControl;
     terms: FormControl;
+    new_customer:FormControl;
 }
 export interface SaleItemReturnControl {
     reason?: FormControl;

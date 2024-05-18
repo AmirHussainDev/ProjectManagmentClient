@@ -11,6 +11,9 @@ import { NgZorroAntdModule } from '../../../ng-zorro-antd.module';
 import { NgxPrintModule } from 'ngx-print';
 import { SaleRequestComponent } from './sale-request/sale-request.component';
 import { ListingComponent } from './listing.component';
+import { SaleListingComponent } from './sale-listing/sale-listing.component';
+import { CustomersComponent } from './customers/customers.component';
+import { CreateCustomerDrawerComponent } from './customers/create-customer-drawer/create-customer-drawer.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -23,7 +26,10 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
   declarations: [
     ListingComponent,
     PurchaseComponent,
-    SaleRequestComponent
+    SaleRequestComponent,
+    SaleListingComponent,
+    CustomersComponent,
+    CreateCustomerDrawerComponent,
   ],
   imports: [
     PurchaseRoutingModule,
