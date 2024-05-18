@@ -45,6 +45,7 @@ export class PurchaseComponent implements OnInit {
   previousPurchaseDetails: any;
   purchaseDetails: FormGroup<PurchaseDetails> = new FormGroup({
     id: new FormControl(),
+    purchase_no:new FormControl(),
     subject: new FormControl(),
     isSiteBased: new FormControl(),
     site_ids: new FormControl(),
@@ -86,6 +87,7 @@ export class PurchaseComponent implements OnInit {
       id: new FormControl(),
       subject: new FormControl(),
       isSiteBased: new FormControl(),
+      purchase_no:new FormControl(),
       site_ids: new FormControl(),
       items: this.fb.array([]),
       selectedVendor: new FormControl(),
@@ -158,38 +160,39 @@ export class PurchaseComponent implements OnInit {
 
   async getExistingPurchase() {
     const response = await this.appService.retirevePOById(this.purchaseDetails.controls['id'].value)
-    if (response && response.length) {
+    if (response) {
 
       this.purchaseDetails.patchValue({
-        id: response[0].id,
-        subject: response[0].subject,
-        selectedVendor: response[0].selectedVendor,
-        state: response[0].state,
-        isSiteBased: response[0].isSiteBased,
-        notes: response[0].notes,
-        items_discount_total: response[0].items_discount_total,
-        overall_discount_total: response[0].overall_discount_total,
-        item_cost: response[0].item_cost,
-        amount_paid: response[0].amount_paid,
-        additional_cost: response[0].additional_cost,
-        created_by: response[0].created_by,
-        shipment_charges: response[0].shipment_charges,
-        total: response[0].total,
-        balance: response[0].balance,
-        vendor_id: response[0].vendor_id,
-        organization_id: response[0].organization_id,
-        sub_organization_id: response[0].sub_organization_id,
+        id: response.id,
+        purchase_no:response.purchase_no,
+        subject: response.subject,
+        selectedVendor: response.selectedVendor,
+        state: response.state,
+        isSiteBased: response.isSiteBased,
+        notes: response.notes,
+        items_discount_total: response.items_discount_total,
+        overall_discount_total: response.overall_discount_total,
+        item_cost: response.item_cost,
+        amount_paid: response.amount_paid,
+        additional_cost: response.additional_cost,
+        created_by: response.created_by,
+        shipment_charges: response.shipment_charges,
+        total: response.total,
+        balance: response.balance,
+        vendor_id: response.vendor?.id,
+        organization_id: response.organization_id,
+        sub_organization_id: response.sub_organization_id,
       })
 
       this.purchaseDetails.controls.selectedVendor.setValue(this.vendors.find(ven => ven.id == this.purchaseDetails.controls.vendor_id.value));
-      if (response[0].isSiteBased) {
-                 const selectedSites=JSON.parse(response[0].site_ids || '[]')
+      if (response.isSiteBased) {
+                 const selectedSites=JSON.parse(response.site_ids || '[]')
 
         this.purchaseDetails.controls.site_ids.setValue(
           this.sites.filter(site => selectedSites.indexOf(site.id) > -1)?.map((site:any)=>site.id)
         )
       }
-      const items = response[0].items || [];
+      const items = response.items || [];
       items.forEach((item: any) => {
         this.addRow(item)
       });

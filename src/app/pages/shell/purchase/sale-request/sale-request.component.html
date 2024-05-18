@@ -77,7 +77,7 @@
                                 <th nzWidth="15%">Total
                                 </th>
                                 <th nzWidth="2%"
-                                    *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft || SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation">
+                                    *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft || SaleRequestDetails.controls.state.value==SaleStates.Invoiced">
                                 </th>
                             </tr>
                         </thead>
@@ -138,7 +138,7 @@
                                             <h5 [innerHTML]="(control.get('total')?.value *1) | currency:'PKR '"></h5>
                                         </td>
                                         <td
-                                            *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft || SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation">
+                                            *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft || SaleRequestDetails.controls.state.value==SaleStates.Invoiced">
                                             <a *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft "
                                                 (click)="removeProduct(i)">
                                                 <button style="float: right;" nz-button nzType="primary" nzSize="small"
@@ -146,7 +146,7 @@
                                                     <span nz-icon nzTheme="outline" nzType="minus"></span>
                                                 </button>
                                             </a>
-                                            <a *ngIf="SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation && !control.get('returned_now')?.value"
+                                            <a *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Invoiced && !control.get('returned_now')?.value"
                                                 (click)="returnProduct(i)">
                                                 <button style="float: right;" nz-button nzType="primary" nzSize="small"
                                                     nzShape="round">
@@ -336,7 +336,7 @@
                             nz-button nzType="primary" (click)="confirmPaymentDetails()"
                             style="margin-bottom: 12px;float: right;">Confirm
                             Payment</button>
-                        <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation"
+                        <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Invoiced"
                             nz-button nzType="primary" (click)="confirmPaymentDetails(true)"
                             style="margin-bottom: 12px;margin-right: 12px;">
                             Save

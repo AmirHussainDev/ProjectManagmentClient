@@ -4,7 +4,7 @@
             <h3>
                 All Quotes
             </h3>
-            <a (click)="showSide=true" [routerLink]="['./sale']" [state]="{tracingId: 2}">
+            <a (click)="openDetails()" [routerLink]="['./sale']" [state]="{tracingId: 2}">
                 <button nz-button nzType="primary" [nzSize]="'small'">
                     <span nz-icon nzType="plus"> </span>
                     New Quote
@@ -33,7 +33,7 @@
                         <td> {{ data.date_created | date : 'dd MMM yyyy' }} </td>
                         <td> {{ data.subject }} </td>
                         <td>
-                            <a (click)="showSide=true" [routerLink]="['/', 'purchase','sales','sale']"
+                            <a (click)="openDetails()" [routerLink]="['/', 'purchase','sales','sale']"
                                 [queryParams]="{ SALE: data.sale_no }" href="">SALE -
                                 {{data.sale_no}}</a>
                         </td>
@@ -63,7 +63,7 @@
                                         <nz-list-item-meta-description>
                                             <span class="flex space-between">
                                                 <span>
-                                                    <a (click)="showSide=true"
+                                                    <a (click)="openDetails()"
                                                         [routerLink]="['/', 'purchase','sales','sale']"
                                                         [queryParams]="{ SALE: data.sale_no }" href="">SALE -
                                                         {{data.sale_no}}</a>

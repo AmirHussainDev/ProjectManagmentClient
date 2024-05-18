@@ -244,8 +244,14 @@ export class AppService {
 
   }
 
-  async addSaleRequest(po: { details: SaleOrder, products: PurchaseItem[] }): Promise<any[]> {
+  async addSaleRequest(po: { details: any, products: PurchaseItem[] }): Promise<any[]> {
     try {
+      po.details = {
+        ...po.details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id
+      }
       const response = await this.http.post(`/api/inventory-purchase/sale`, po, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
@@ -264,8 +270,14 @@ export class AppService {
     }
   }
 
-  async addPurchaseRequest(po: { details: PurchaseOrder, products: PurchaseItem[] }): Promise<any[]> {
+  async addPurchaseRequest(po: { details: any, products: PurchaseItem[] }): Promise<any[]> {
     try {
+      po.details = {
+        ...po.details,
+        organization: parseInt(localStorage.getItem('organization_id') || '0'),
+        subOrganization: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id
+      }
       const response = await this.http.post(`/api/inventory-purchase`, po, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
@@ -306,22 +318,22 @@ export class AppService {
       throw error;
     }
   }
-  async retirevePOById(id: any): Promise<any[]> {
+  async retirevePOById(id: any): Promise<any> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/inventory-purchase/purchase-request-by-id/${organization_id}/${id}`, { headers: this.header }).toPromise()
-      return response as any[];
+      const response = await this.http.get(`/api/inventory-purchase/purchase-request-by-id/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response ;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);
       throw error;
     }
   }
-  async retireveSaleById(id: any): Promise<any[]> {
+  async retireveSaleById(id: any): Promise<any> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/inventory-purchase/sale-request-by-id/${organization_id}/${id}`, { headers: this.header }).toPromise()
-      return response as any[];
+      const response = await this.http.get(`/api/inventory-purchase/sale-request-by-id/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      return response as any;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);

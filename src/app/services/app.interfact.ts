@@ -139,6 +139,7 @@ export interface SaleDetails {
     attachment: FormControl;
     terms: FormControl;
     new_customer:FormControl;
+    sale_no: FormControl,
 }
 export interface SaleItemReturnControl {
     reason?: FormControl;
@@ -199,6 +200,7 @@ export interface PurchaseDetails {
     due_date: FormControl;
     sales_person: FormControl;
     attachment: FormControl;
+    purchase_no:FormControl;
     terms: FormControl;
 }
 export interface ItemControl {

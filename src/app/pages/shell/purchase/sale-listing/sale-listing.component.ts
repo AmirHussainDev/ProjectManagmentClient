@@ -37,6 +37,7 @@ export class SaleListingComponent {
         this.currentOrganizationId=change.id;
         this.route.queryParams.subscribe((params: Params) => {
           // Do something with the query parameters
+          this.showSide=false
           this.status = params['status'];
           if(this.status){
             this.loadSaleDataFromServer();
@@ -95,5 +96,13 @@ export class SaleListingComponent {
   isMobile(): boolean {
     const isMobile = this.media.matchMedia('(max-width: 600px)');
     return isMobile.matches;
+  }
+
+  openDetails(){
+   
+     this.showSide=false;
+      setTimeout(() => {
+        this.showSide=true
+  },1000)
   }
 }

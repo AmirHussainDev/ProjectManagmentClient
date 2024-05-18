@@ -79,6 +79,7 @@ export class SaleRequestComponent implements OnInit {
     private modal: NzModalService) {
     this.SaleRequestDetails = this.fb.group({
       id: new FormControl(),
+      sale_no:new FormControl(),
       subject: new FormControl(),
       items: this.fb.array<FormGroup<SaleItemControl>>([]),
       state: new FormControl(SaleStates.Draft),
@@ -107,19 +108,24 @@ export class SaleRequestComponent implements OnInit {
   }
   submitForm() { }
   ngOnInit(): void {
-    this.appService.getOrganizationCustomers().then(resp => {
-      this.listOfData = resp;
+    this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
+      if (change && change.id > 0) {
+        this.appService.getOrganizationCustomers().then(resp => {
+          this.listOfData = resp;
+        });
+    
+        this.route.queryParams.subscribe(params => {
+          // Use this queryParams object to load data
+          this.SaleRequestDetails.reset({ state: SaleStates.Draft, id: 0 ,items:[]});
+          this.SaleRequestDetails.enable();
+          this.SaleRequestDetails.updateValueAndValidity();
+          this.SaleRequestDetails.controls['id'].setValue(params['SALE'] || 0);
+          this.setSaleRequestRequestDetails();
+        });
+            this.SaleRequestDetails.controls['sub_organization_id'].setValue(change.id);
+          
+        }
     });
-
-    this.route.queryParams.subscribe(params => {
-      // Use this queryParams object to load data
-      this.SaleRequestDetails.reset({ state: SaleStates.Draft, id: 0 });
-      this.SaleRequestDetails.enable();
-      this.SaleRequestDetails.updateValueAndValidity();
-      this.SaleRequestDetails.controls['id'].setValue(params['SALE'] || 0);
-      this.setSaleRequestRequestDetails();
-    });
-
   }
   getReturnItemFormGroup(form: FormGroup) {
     return form.get('return_details') as FormArray
@@ -135,12 +141,9 @@ export class SaleRequestComponent implements OnInit {
       await this.getExistingSaleRequest();
     } else {
       this.SaleRequestDetails.controls['organization_id'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
-      this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(async (resp) => {
-        this.SaleRequestDetails.controls['sub_organization_id'].setValue(resp.id);
         this.vendorItems = await this.appService.getInventory()
         this.nodes = this.transformToNodeStructure(this.vendorItems)
         this.expandableKey = this.nodes.map(res => res.key);
-      });
       this.SaleRequestDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
     }
     this.disableAndEnableSpecificControls()
@@ -165,31 +168,32 @@ export class SaleRequestComponent implements OnInit {
 
   async getExistingSaleRequest() {
     const response = await this.appService.retireveSaleById(this.SaleRequestDetails.controls['id'].value)
-    if (response && response.length) {
+    if (response && response) {
 
       this.SaleRequestDetails.patchValue({
-        id: response[0].id,
-        subject: response[0].subject,
-        state: response[0].state,
-        notes: response[0].notes,
-        items_discount_total: response[0].items_discount_total,
-        due_date: new Date(response[0].due_date),
-        invoice_date: new Date(response[0].invoice_date),
-        overall_discount_total: response[0].overall_discount_total,
-        item_cost: response[0].item_cost,
-        amount_paid: response[0].amount_paid,
-        additional_cost: response[0].additional_cost,
-        created_by: response[0].created_by,
-        shipment_charges: response[0].shipment_charges,
-        total: response[0].total,
-        balance: response[0].balance,
-        vendor_id: response[0].vendor_id,
-        organization_id: response[0].organization_id,
-        sub_organization_id: response[0].sub_organization_id,
+        id: response.id,
+        subject: response.subject,
+        state: response.state,
+        sale_no:response.sale_no,
+        notes: response.notes,
+        items_discount_total: response.items_discount_total,
+        due_date: new Date(response.due_date),
+        invoice_date: new Date(response.invoice_date),
+        overall_discount_total: response.overall_discount_total,
+        item_cost: response.item_cost,
+        amount_paid: response.amount_paid,
+        additional_cost: response.additional_cost,
+        created_by: response.created_by,
+        shipment_charges: response.shipment_charges,
+        total: response.total,
+        balance: response.balance,
+        vendor_id: response.vendor_id,
+        organization_id: response.organization_id,
+        sub_organization_id: response.sub_organization_id,
       })
 
-      const items = response[0].items || [];
-      const paymentHistory = response[0].payment_history || [];
+      const items = response.items || [];
+      const paymentHistory = response.payment_history || [];
       items.forEach((item: any) => {
         this.addRow(item)
       });
