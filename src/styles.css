@@ -252,26 +252,30 @@ a:hover {
     border-color: #BB86FC;
     background: #BB86FC;
 }
+
 .ant-btn-primary:hover {
     border-color: #cca4fc;
     background: #cca4fc;
 }
-.ant-btn-primary:focus{
+
+.ant-btn-primary:focus {
     border-color: #cca4fc;
     background: #cca4fc;
 }
-.ant-card-body{
+
+.ant-card-body {
     padding: 10px !important;
 }
 
-.ant-collapse-header{
+.ant-collapse-header {
     padding: 5px !important;
 }
-.ant-table-footer{
+
+.ant-table-footer {
     padding: 5px;
 }
 
-.ant-list-item-meta-title{
+.ant-list-item-meta-title {
     font-size: 12px;
     line-height: 1;
 }
@@ -290,18 +294,24 @@ a:hover {
     text-wrap: nowrap;
 }
 
-.ant-form-item-label > label{
+.ant-form-item-label>label {
     font-size: 12px;
 }
 
-.ant-select{
+.ant-select {
     font-size: 12px;
 
 }
-.ant-picker-input > input{
+
+.ant-picker-input>input {
     font-size: 12px;
 }
-.ant-input{
+
+.ant-input {
     font-size: 12px;
     padding: 4px 4px;
+}
+
+.cdk-overlay-pane>.ant-select-dropdown>div {
+    max-height: 50vh;
 }

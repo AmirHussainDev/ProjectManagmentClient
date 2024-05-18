@@ -360,7 +360,7 @@ export class PurchaseComponent implements OnInit {
     if (response) {
       this.notification.create(
         'success',
-        'Purchase Order - ' + response['id'],
+        'Purchase Order - ' + response['purchase_no'],
         'Purchase order submitted successfly. Please check for invoice and update later'
       ).onClose.subscribe((resp) => {
         this.router.navigate(['/'])

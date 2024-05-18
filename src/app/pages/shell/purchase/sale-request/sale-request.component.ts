@@ -444,7 +444,7 @@ export class SaleRequestComponent implements OnInit {
     if (response) {
       this.notification.create(
         'success',
-        'Sale request - ' + response['id'],
+        'Sale request - ' + response['sale_no'],
         'Sale request submitted successfly. Please check for invoice and update later'
       ).onClose.subscribe((resp) => {
         this.router.navigate(['purchase', 'sales'])
