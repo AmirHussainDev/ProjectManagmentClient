@@ -9,6 +9,7 @@ export interface User {
     reportTo?:string;
     roleName?:string;
     password?:string;
+    role:any;
 }
 
 export type UserCreateObj = Omit<User, "id">

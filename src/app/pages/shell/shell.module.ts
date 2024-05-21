@@ -19,6 +19,7 @@ import { OrganizationSelectorComponent } from './components/organization-selecto
 import { AuthInterceptor } from '../../auth-interceptor.service';
 import { UsernamePipe } from '../../pipes/username.pipe';
 import { EmployeeContractComponent } from './employee-management/employee-contract/employee-contract.component';
+import { HasPermissionDirective } from '../../directives/permissions.directive';
 
 registerLocaleData(en);
 
@@ -34,6 +35,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     NullToStringPipe,
     BreadcrumbComponent,
     OrganizationSelectorComponent,
+    HasPermissionDirective,
     ],
   imports: [
     CommonModule,
@@ -44,6 +46,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     ShellRoutingModule,
     NgZorroAntdModule
   ],
+  exports:[HasPermissionDirective],
   providers: [{ provide: NZ_I18N, useValue: en_US },
   { provide: NZ_ICONS, useValue: icons },
 ]

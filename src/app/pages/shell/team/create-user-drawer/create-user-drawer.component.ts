@@ -24,7 +24,7 @@ export class CreateUserDrawerComponent implements OnInit {
     this.userForm = this.fb.group({
       name: ['', [Validators.required]],
       reports_to: [0, [Validators.required]],
-      role_id: [null, [Validators.required]],
+      role: [null, [Validators.required]],
       sub_organization_id: [null, [Validators.required]],
       organization_id: [parseInt(localStorage.getItem('organization_id') || '0')],
       password: ['p@ssw0rD']

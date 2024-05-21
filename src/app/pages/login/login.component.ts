@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
+import { AppService } from '../../services/app.service';
 
 @Component({
   selector: 'app-login',
@@ -22,9 +23,11 @@ export class LoginComponent {
     remember: [true]
   });
 
-  constructor(private fb: NonNullableFormBuilder, private http: HttpClient,
+  constructor(private fb: NonNullableFormBuilder, 
+    private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router) {
+    private router: Router,
+    private appService:AppService) {
     if (isPlatformBrowser(this.platformId)) {
       this.organization_id = parseInt(localStorage.getItem('organization_id') || '');
     }
@@ -45,6 +48,7 @@ export class LoginComponent {
         if (isPlatformBrowser(this.platformId) && data.access_token) {
           localStorage.setItem('token', data.access_token);
           localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('permissions', JSON.stringify(data.user.role_permissions));
           localStorage.setItem('sub_organization_id', JSON.stringify(data.user.sub_organization_id));
           this.router.navigate(['/']);
         }

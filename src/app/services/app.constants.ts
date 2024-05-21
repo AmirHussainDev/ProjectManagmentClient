@@ -11,7 +11,12 @@ export const AppPermissions = {
     MainDashboardView: 9,
     SupervisorDashboardView: 10,
     AddSites: 11,
-    ManageUsers: 12
+    ManageSites: 15,
+    ManageUsers: 12,
+    ManagePermissions: 13,
+    ManagePayments: 14,
+    ManageVendors:16,
+    ManageSales:17
 }
 
 

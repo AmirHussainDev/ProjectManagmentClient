@@ -30,7 +30,7 @@
                 <nz-form-item>
                     <nz-form-label>Role Name</nz-form-label>
                     <nz-form-control>
-                        <nz-select id="role_id" formControlName="role_id" placeholder="Select role">
+                        <nz-select id="role" formControlName="role" placeholder="Select role">
                             <nz-option *ngFor="let role of userRoles"
                                 [nzValue]="role?.value" [nzLabel]="role?.key"></nz-option>
                         </nz-select>

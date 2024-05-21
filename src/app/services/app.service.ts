@@ -16,6 +16,7 @@ export class AppService {
   currentSite = new Subject<any>();
   currentSiteId = 0;
   currentSubOrgId = 0;
+  user_permissions=[];
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
   constructor(private http: HttpClient, private userService: UserService) { }
   header: HttpHeaders = new HttpHeaders({

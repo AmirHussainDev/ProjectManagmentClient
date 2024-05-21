@@ -19,7 +19,8 @@
       </span>
       <div class="sideMenuItems">
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item [class.selected-route]="currentRoutes.length==0">
+          <li nz-menu-item [class.selected-route]="currentRoutes.length==0"
+            *appHasPermission="appPermissions.MainDashboardView">
             <span nz-icon style="font-size: 18px;" nzType="bar-chart"></span>
             <span>
               <a class="nav-link" [routerLink]="['/']" [state]="{tracingId: 123}"
@@ -29,13 +30,12 @@
             </span>
           </li>
         </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item
-            [class.selected-route]="currentRoutes.indexOf('customers')>-1 ">
+        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.ManageSales">
+          <li
+          nz-menu-item [class.selected-route]="currentRoutes.indexOf('customers')>-1 ">
             <span nz-icon style="font-size: 18px;" nzType="user-switch"></span>
             <span>
-              <a class="nav-link" [routerLink]="['/purchase/customers']"
-                (click)="isMobile()?isCollapsed=true:null">
+              <a class="nav-link" [routerLink]="['/purchase/customers']" (click)="isMobile()?isCollapsed=true:null">
                 Customers
               </a>
             </span>
@@ -50,7 +50,7 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item
+          <li nz-menu-item 
             [class.selected-route]="currentRoutes.indexOf('sales')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
             <span nz-icon style="font-size: 18px;" nzType="file-done"></span>
             <span>
@@ -63,8 +63,7 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-
-          <li nz-menu-item
+          <li nz-menu-item *appHasPermission="appPermissions.InventoryUpdates"
             [class.selected-route]="currentRoutes.indexOf('customers')==-1 && currentRoutes.indexOf('purchase')>-1 && currentRoutes.indexOf('sales')==-1&&currentRoutes.indexOf('sale')==-1&&currentRoutes.indexOf('sales?status=' + saleState.Quote)==-1&&currentRoutes.indexOf('sales?status=' + saleState.Invoiced)==-1">
             <span nz-icon style="font-size: 18px;" nzType="pull-request"></span>
             <span>
@@ -74,7 +73,8 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item [class.selected-route]="currentRoutes.indexOf('inventory')>-1">
+          <li *appHasPermission="appPermissions.InventoryUpdates" nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('inventory')>-1">
             <span nz-icon style="font-size: 18px;" nzType="appstore"></span>
             <span>
               <a class="nav-link" [routerLink]="['/inventory']" [state]="{tracingId: 123}"
@@ -83,7 +83,8 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item [class.selected-route]="currentRoutes.indexOf('vendor')>-1">
+          <li *appHasPermission="appPermissions.ManageVendors" nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('vendor')>-1">
             <span nz-icon style="font-size: 18px;" nzType="profile"></span>
             <span>
               <a class="nav-link" [routerLink]="['/vendor']" [state]="{tracingId: 123}"
@@ -94,7 +95,8 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('sites')>-1">
+          <li *appHasPermission="appPermissions.ManageSites" nz-menu-item style="margin-top: 12px;"
+            [class.selected-route]="currentRoutes.indexOf('sites')>-1">
             <span nz-icon style="font-size: 18px;" nzType="build" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/sites']" [state]="{tracingId: 123}"
@@ -124,7 +126,7 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item style="margin-top: 12px;"
+          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.ManagePayments"
             [class.selected-route]="currentRoutes.indexOf('pay-processing')>-1">
             <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
             <span>
@@ -136,7 +138,7 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li nz-menu-item style="margin-top: 12px;"
+          <li *appHasPermission="appPermissions.ManageUsers" nz-menu-item style="margin-top: 12px;"
             [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')==-1">
             <span nz-icon style="font-size: 18px;" nzType="team" size></span>
             <span>
@@ -146,7 +148,7 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item style="margin-top: 12px;"
+          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.ManagePermissions"
             [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')>-1">
             <span nz-icon style="font-size: 18px;" nzType="sliders" size></span>
             <span>

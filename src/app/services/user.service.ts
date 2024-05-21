@@ -4,6 +4,7 @@ import { User, UserCreateObj, UserUpdateObj } from '../pages/shell/team/users/us
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SubOrganization } from './app.interfact';
+import { AppService } from './app.service';
 
 
 
@@ -12,11 +13,15 @@ import { SubOrganization } from './app.interfact';
 })
 export class UserService {
   users: User[]
+  loggedInUser: any = {}
+
   constructor(
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
   ) {
-
+    if (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '{}')) {
+      this.loggedInUser = JSON.parse(localStorage.getItem('user') || '{}');
+    }
   }
   logout() {
     localStorage.setItem('user', '{}')
@@ -24,7 +29,6 @@ export class UserService {
     this.router.navigate(['/login']);
   }
 
-  loggedInUser: any = {}
   getUserDetails(): any {
     if (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '{}')) {
       this.loggedInUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -69,6 +73,10 @@ export class UserService {
       console.error('Error fetching organization users:', error);
       throw error;
     }
+  }
+
+  hasPermission(permission: string): boolean {
+    return this.loggedInUser && this.loggedInUser.role_permissions[permission];
   }
 
 }

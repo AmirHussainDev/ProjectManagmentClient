@@ -83,7 +83,7 @@ export class UsersComponent implements OnInit {
     console.log('userRoles', this.userRoles)
     this.listOfData = this.listOfData.map(data => {
       const roleName = '';
-      const currentRole = this.userRoles.find(role => (data.role_id === role.value.toString()))
+      const currentRole = this.userRoles.find(role => (data.role.id === role.value))
       const reportToUser = this.listOfData.find(user => user.id == data.reports_to)
       data.reports_to = reportToUser?.id;
       data.role_id = currentRole?.value;

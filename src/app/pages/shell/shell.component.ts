@@ -7,7 +7,7 @@ import { Subscription, filter, of } from 'rxjs';
 import { SubOrganization } from '../../services/app.interfact';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { SaleStates } from '../../services/app.constants';
+import { AppPermissions, SaleStates } from '../../services/app.constants';
 
 @Component({
   selector: 'app-shell',
@@ -29,6 +29,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   currentUrl: any;
   currentRoutes: string[] = [];
   saleState = SaleStates;
+  appPermissions=AppPermissions;
   constructor(private userService: UserService,
     private appService: AppService, private fb: FormBuilder,
     private media: MediaMatcher,
