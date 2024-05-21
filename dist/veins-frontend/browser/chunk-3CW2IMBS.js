@@ -1,0 +1,1 @@
+import{K as c,Za as o,u as n}from"./chunk-R4PMELZD.js";var p=(()=>{let r=class r{constructor(e){this.userService=e}transform(e,...i){let s=this.userService.users?.find(a=>a.id==e);return s?s.name:e}};r.\u0275fac=function(i){return new(i||r)(c(o,16))},r.\u0275pipe=n({name:"username",type:r,pure:!0,standalone:!0});let t=r;return t})();export{p as a};
