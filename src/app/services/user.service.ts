@@ -76,7 +76,7 @@ export class UserService {
   }
 
   hasPermission(permission: string): boolean {
-    return this.loggedInUser && this.loggedInUser.role_permissions[permission];
+    return this.loggedInUser && this.loggedInUser.role_permissions&& this.loggedInUser.role_permissions[permission];
   }
 
 }

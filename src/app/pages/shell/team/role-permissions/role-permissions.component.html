@@ -17,15 +17,54 @@
 
 <!-- Sections for each role with permissions checkboxes -->
 <div>
+    <nz-collapse>
+        @for (role of roles; track role) {
+        <nz-collapse-panel #p [nzHeader]="role.role_name">
+          <div *ngIf="editCache[role.id]?.edit">
+            <nz-form-item>
+                <nz-form-label nzFor="terms">Role Name</nz-form-label>
+                <nz-form-control nzErrorTip="">
+                    <input type="text" nz-input [(ngModel)]="editCache[role.id].data.role_name" />
+                </nz-form-control>
+            </nz-form-item>
+            </div> 
+            <nz-row nzGutter="8">
+                <nz-col *ngFor="let item of appPermissions | keyvalue" [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6"
+                    [nzXXl]="4">
+                    <label nz-checkbox [disabled]="!editCache[role.id]?.edit" [(ngModel)]="role.role_permissions[item.value]"></label> 
+                    {{
+                    permissionNames[item.value]}}
 
-    <nz-table #editRowTable #fixedTable [nzData]="roles" [nzScroll]="{ x: '1000px' }">
+                </nz-col>
+            </nz-row>
+            <div *ngIf="!editCache[role.id]?.edit">
+                <a (click)="startEdit(role.id)">Edit</a>
+            </div>
+            <div *ngIf="editCache[role.id]?.edit">
+                <a (click)="saveEdit(role.id)" class="save">Save</a> &nbsp;
+                <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?"
+                    (nzOnConfirm)="cancelEdit(role.id)">Cancel</a>
+          
+            </div>
+            <ng-template #expandedIcon let-active>
+                {{ active }}
+                <span nz-icon nzType="caret-right" class="ant-collapse-arrow" [nzRotate]="p.nzActive ? 90 : -90"></span>
+            </ng-template>
+        </nz-collapse-panel>
+        }
+    </nz-collapse>
+
+    <!-- <nz-table #editRowTable #fixedTable [nzData]="roles" [nzScroll]="{ x: '1000px' }">
         <thead>
             <tr>
                 <th nzLeft>Role Name</th>
 
-                <th *ngFor="let item of appPermissions | keyvalue"> {{
-                    permissionNames[item.value]}}</th>
-<th>Actions</th>
+                <th *ngFor="let item of appPermissions | keyvalue">
+
+                    <label nz-checkbox disabled [(ngModel)]="role.role_permissions[item.value]"></label> {{
+                    permissionNames[item.value]}}
+                </th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -52,6 +91,6 @@
                 </ng-template>
             </tr>
         </tbody>
-    </nz-table>
+    </nz-table> -->
 
 </div>

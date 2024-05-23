@@ -315,3 +315,19 @@ a:hover {
 .cdk-overlay-pane>.ant-select-dropdown>div {
     max-height: 50vh;
 }
+
+.ant-collapse{
+    border: 0px !important;
+    background-color: inherit;
+}
+
+.ant-collapse > .ant-collapse-item {
+    border: 1px solid #F1E5FF;
+    padding: 0px;
+    margin: 14px;
+    background: #F1E5FF;
+    border-radius: 10px !important;
+}
+.ant-collapse-content {
+    border-radius: 12px !important;
+}
