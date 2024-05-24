@@ -16,6 +16,12 @@
       </nz-input-group>
     </nz-form-control>
   </nz-form-item>
+  <nz-form-item *ngIf="showErrorMessage">
+    <nz-form-control [nzSpan]="24" >
+      <nz-alert nzType="error" nzMessage="Incorrect credentials !"></nz-alert>
+    </nz-form-control>
+  </nz-form-item>
+
   <div nz-row class="login-form-margin">
     <div nz-col [nzSpan]="12">
       <label nz-checkbox formControlName="remember">

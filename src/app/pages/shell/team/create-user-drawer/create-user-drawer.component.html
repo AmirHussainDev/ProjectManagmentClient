@@ -1,8 +1,8 @@
 <nz-drawer [nzBodyStyle]="{ overflow: 'auto' }" [nzMaskClosable]="false" [nzWidth]="720" [nzVisible]="visible"
-    nzTitle="Create" [nzFooter]="footerTpl" (nzOnClose)="close()">
+    [nzTitle]="!isEdit? 'Create User':'Edit User'" [nzFooter]="footerTpl" (nzOnClose)="close()">
     <nz-form *nzDrawerContent [formGroup]="userForm">
         <div nz-row [nzGutter]="8">
-            <div nz-col nzSpan="12">
+            <div nz-col nzSpan="24">
                 <nz-form-item>
                     <nz-form-label>Name</nz-form-label>
                     <nz-form-control>
@@ -12,7 +12,7 @@
             </div>
         </div>
         <div nz-row [nzGutter]="8">
-            <div nz-col nz-col nzSpan="12">
+            <div nz-col nz-col nzSpan="24">
                 <nz-form-item>
                     <nz-form-label>Reports To</nz-form-label>
                     <nz-form-control>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div nz-row [nzGutter]="8">
-            <div nz-col nzSpan="12">
+            <div nz-col nzSpan="24">
                 <nz-form-item>
                     <nz-form-label>Role Name</nz-form-label>
                     <nz-form-control>
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div nz-row [nzGutter]="8">
-            <div nz-col nz-col nzSpan="12">
+            <div nz-col nz-col nzSpan="24">
                 <nz-form-item>
                     <nz-form-label>Organization </nz-form-label>
                     <nz-form-control>
@@ -52,6 +52,51 @@
                 </nz-form-item>
             </div>
         </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Email </nz-form-label>
+                    <nz-form-control>
+                        <input formControlName="email" nz-input placeholder="Add email" />
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Contact No </nz-form-label>
+                    <nz-form-control>
+                        <input formControlName="contact_no" nz-input placeholder="Add contact no" />
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Address </nz-form-label>
+                    <nz-form-control>
+                        <textarea nz-input rows="2" formControlName="address" nz-input placeholder="Add address" ></textarea>
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+            <div nz-col nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Is Admin </nz-form-label>
+                    <nz-form-control>
+                        <label nz-checkbox formControlName="is_admin" placeholder="Add is admin" ></label>
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+      
     </nz-form>
 
     <ng-template #footerTpl>

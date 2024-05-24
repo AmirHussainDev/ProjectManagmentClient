@@ -1,4 +1,8 @@
 export interface User {
+    email: any;
+    contact_no: any;
+    address: any;
+    is_admin: any;
     id:any;
     name: any;
     reports_to: number;

@@ -5,7 +5,7 @@
     <div *ngIf="signInTime"> {{signInTime | date : 'hh:mm a'}}</div>
     <button nz-button nzType="primary" *ngIf="!signInTime" mat-button (click)="signIn()">Sign In</button>
     <div *ngIf="signOutTime"> {{signOutTime | date : 'hh:mm a'}}</div>
-    <button nz-button nzType="primary" *ngIf="signInTime&&signOutTime" mat-button (click)="signOut()">Sign Out</button>
+    <button nz-button nzType="primary" *ngIf="signInTime&&!signOutTime" mat-button (click)="signOut()">Sign Out</button>
 </div>
 
 <!-- Tabs for users belonging to supervisor -->

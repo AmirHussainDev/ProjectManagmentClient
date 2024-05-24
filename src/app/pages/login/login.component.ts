@@ -13,6 +13,7 @@ import { AppService } from '../../services/app.service';
 })
 export class LoginComponent {
   organization_id = 0;
+  showErrorMessage=false;
   validateForm: FormGroup<{
     username: FormControl<string>;
     password: FormControl<string>;
@@ -33,33 +34,41 @@ export class LoginComponent {
     }
   }
   async submitForm() {
-    if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
-      const saltOrRounds = 20;
-      const password = this.validateForm.value.password || '';
-      const username = this.validateForm.value.username || '';
-      this.http.post<any>(`/api/auth/login`,
-        {
-          organization_id: this.organization_id,
-          username,
-          password
-        }
-      ).toPromise().then((data: any) => {
-        if (isPlatformBrowser(this.platformId) && data.access_token) {
-          localStorage.setItem('token', data.access_token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-          localStorage.setItem('permissions', JSON.stringify(data.user.role_permissions));
-          localStorage.setItem('sub_organization_id', JSON.stringify(data.user.sub_organization_id));
-          this.router.navigate(['/']);
-        }
-      });;
-    } else {
-      Object.values(this.validateForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
+    this.showErrorMessage=false;
+    try{
+      if (this.validateForm.valid) {
+      
+        console.log('submit', this.validateForm.value);
+        const saltOrRounds = 20;
+        const password = this.validateForm.value.password || '';
+        const username = this.validateForm.value.username || '';
+   const data :any=   await  this.http.post<any>(`/api/auth/login`,
+          {
+            organization_id: this.organization_id,
+            username,
+            password
+          }
+        ).toPromise()
+          if (isPlatformBrowser(this.platformId) && data.access_token) {
+            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('permissions', JSON.stringify(data.user.role_permissions));
+            localStorage.setItem('sub_organization_id', JSON.stringify(data.user.sub_organization_id));
+            this.router.navigate(['/']);
+          }
+        
+      } else {
+        Object.values(this.validateForm.controls).forEach(control => {
+          if (control.invalid) {
+            control.markAsDirty();
+            control.updateValueAndValidity({ onlySelf: true });
+            this.showErrorMessage=true;
+          }
+        });
+      }
+        
+    }catch(err){
+      this.showErrorMessage=true;
     }
   }
 

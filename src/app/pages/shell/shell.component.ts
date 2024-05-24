@@ -8,6 +8,8 @@ import { SubOrganization } from '../../services/app.interfact';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AppPermissions, SaleStates } from '../../services/app.constants';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ChangePasswordComponent } from './shared-components/change-password/change-password.component';
 
 @Component({
   selector: 'app-shell',
@@ -34,7 +36,8 @@ export class ShellComponent implements OnInit, OnDestroy {
     private appService: AppService, private fb: FormBuilder,
     private media: MediaMatcher,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modal: NzModalService
   ) {
     this.siteForm = this.fb.group({
       site: []
@@ -104,5 +107,22 @@ export class ShellComponent implements OnInit, OnDestroy {
   isMobile(): boolean {
     const isMobile = this.media.matchMedia('(max-width: 600px)');
     return isMobile.matches;
+  }
+
+  openChangePasswordModal(): void {
+    const modal = this.modal.create({
+      nzTitle: 'Change Password ('+this.userService.loggedInUser.name+')',
+      nzContent: ChangePasswordComponent,
+      nzFooter: null,
+      nzData:{
+        user:this.userService.loggedInUser
+      }
+    });
+
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        console.log('Password changed', result);
+      }
+    });
   }
 }

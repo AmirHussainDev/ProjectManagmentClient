@@ -25,6 +25,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 @NgModule({
   declarations: [LoginComponent],
   imports: [
+    CommonModule,
     FormsModule,
     HttpClientModule,
     HttpClientJsonpModule,

@@ -20,6 +20,7 @@ import { AuthInterceptor } from '../../auth-interceptor.service';
 import { UsernamePipe } from '../../pipes/username.pipe';
 import { EmployeeContractComponent } from './employee-management/employee-contract/employee-contract.component';
 import { HasPermissionDirective } from '../../directives/permissions.directive';
+import { SharedModule } from './shared/shared.module';
 
 registerLocaleData(en);
 
@@ -44,7 +45,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     HttpClientJsonpModule,
     ReactiveFormsModule,
     ShellRoutingModule,
-    NgZorroAntdModule
+    NgZorroAntdModule,
+    SharedModule
   ],
   exports:[HasPermissionDirective],
   providers: [{ provide: NZ_I18N, useValue: en_US },

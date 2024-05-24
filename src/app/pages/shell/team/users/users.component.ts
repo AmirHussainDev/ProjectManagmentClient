@@ -3,6 +3,8 @@ import { UserService } from '../../../../services/user.service';
 import { User } from './users.interface';
 import { AppService } from '../../../../services/app.service';
 import { SubOrganization } from '../../../../services/app.interfact';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ChangePasswordComponent } from '../../shared-components/change-password/change-password.component';
 
 
 
@@ -37,16 +39,24 @@ export class UsersComponent implements OnInit {
       title: 'Action',
       compare: (a: User, b: User) => a.role_id - b.role_id,
       priority: 3
+    },
+    {
+      title: '',
+      compare: (a: User, b: User) => a.role_id - b.role_id,
+      priority: 3
     }
   ];
   listOfData: User[] = [
   ];
 
   visible = false;
+  isEdit=false;
   userRoles: any[];
+  selectedUser:User;
   subOrganizations: SubOrganization[];
   constructor(private userService: UserService,
-    private appService: AppService) {
+    private appService: AppService,
+    private modal: NzModalService) {
 
   }
 
@@ -56,12 +66,14 @@ export class UsersComponent implements OnInit {
 
 
 
-  open(): void {
+  open(isEdit=false): void {
     this.visible = true;
+    this.isEdit  = isEdit;
   }
 
   close(refresh = false): void {
     this.visible = false;
+    this.isEdit=false;
     if (refresh) {
       this.populateUserData();
     }
@@ -75,7 +87,6 @@ export class UsersComponent implements OnInit {
     this.userRoles = this.userRoles.map(role => ({ key: role.role_name, value: role.id }))
     this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
     this.mapUserData();
-    this.updateEditCache();
   }
 
   mapUserData() {
@@ -83,7 +94,7 @@ export class UsersComponent implements OnInit {
     console.log('userRoles', this.userRoles)
     this.listOfData = this.listOfData.map(data => {
       const roleName = '';
-      const currentRole = this.userRoles.find(role => (data.role.id === role.value))
+      const currentRole = this.userRoles.find(role => (data.role?.id === role.value))
       const reportToUser = this.listOfData.find(user => user.id == data.reports_to)
       data.reports_to = reportToUser?.id;
       data.role_id = currentRole?.value;
@@ -97,40 +108,25 @@ export class UsersComponent implements OnInit {
     }
     )
   }
-  editCache: { [key: string]: { edit: boolean; data: User } } = {};
-  startEdit(id: string): void {
-    this.editCache[id].edit = true;
+  startEdit(id: any): void {
+    this.open(true);
+    this.selectedUser=this.listOfData[id];
   }
 
-  cancelEdit(id: string): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    this.editCache[id] = {
-      data: { ...this.listOfData[index] },
-      edit: false
-    };
-  }
-
-  async saveEdit(id: string) {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    await this.userService.updateUser({
-      id,
-      organization_id: this.editCache[id].data.organization_id,
-      role_id: this.editCache[id].data.role_id,
-      reports_to: this.editCache[id].data.reports_to,
-      name: this.editCache[id].data.name
+  openChangePasswordModal(index:number): void {
+    const modal = this.modal.create({
+      nzTitle: 'Change Password ('+this.listOfData[index].name+')',
+      nzContent: ChangePasswordComponent,
+      nzFooter: null,
+      nzData:{
+        user:this.listOfData[index]
+      }
     });
-    this.editCache[id].edit = false;
-    Object.assign(this.listOfData[index], this.editCache[id].data);
-    this.populateUserData();
-  }
 
-  updateEditCache(): void {
-    this.listOfData.forEach(item => {
-      this.editCache[item.id] = {
-        edit: false,
-        data: { ...item }
-      };
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        console.log('Password changed', result);
+      }
     });
   }
-
 }
