@@ -13,7 +13,13 @@ const routes: Routes = [
     children: [
       {
         path: '', component: ListingComponent,
-        data: { name: ' ' }
+        data: { name: ' ' },
+        children:[
+          {
+            path: 'purchase', component: PurchaseComponent,
+            data: { name: ' ' }
+          },
+        ]
       },
       {
         path: 'sales', component: SaleListingComponent,
@@ -25,10 +31,6 @@ const routes: Routes = [
       },
       {
         path: 'sale', component: SaleRequestComponent,
-        data: { name: ' ' }
-      },
-      {
-        path: 'purchase', component: PurchaseComponent,
         data: { name: ' ' }
       },
       {

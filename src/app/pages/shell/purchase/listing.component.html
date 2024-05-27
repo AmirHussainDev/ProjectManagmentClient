@@ -4,7 +4,9 @@
             <div class="section">
                 <div class="card-container">
                            <div class="flex space-between" style="margin-bottom:5px"><span></span>
-                                <a (click)="showSide=true" [routerLink]="['./purchase']" [state]="{tracingId: 2}">
+                                <a (click)="showSide=true" [routerLink]="['./purchase']" 
+                                [queryParams]="{ PO: 'new' }"
+                                [state]="{tracingId: 2}">
                                     <button nz-button nzType="primary" [nzSize]="'small'">
                                         <span nz-icon nzType="plus"> </span>
                                         New Purchase

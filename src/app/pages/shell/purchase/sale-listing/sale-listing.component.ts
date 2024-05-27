@@ -35,9 +35,16 @@ export class SaleListingComponent {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.currentOrganizationId=change.id;
-        this.route.queryParams.subscribe((params: Params) => {
+          this.route.queryParams.subscribe(async(params) => {
+            // Use this queryParams object to load data
+            if (!params['SALE']) {
+            this.showSide=false
+            this.loadSaleDataFromServer();
+
+            }else{
+              this.showSide=true
+            }
           // Do something with the query parameters
-          this.showSide=false
           this.status = params['status'];
           if(this.status){
             this.loadSaleDataFromServer();
@@ -99,10 +106,6 @@ export class SaleListingComponent {
   }
 
   openDetails(){
-   
-     this.showSide=false;
-      setTimeout(() => {
-        this.showSide=true
-  },1000)
+    this.showSide=true
   }
 }

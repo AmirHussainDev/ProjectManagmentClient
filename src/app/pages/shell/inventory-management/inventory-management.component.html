@@ -108,8 +108,16 @@
             <tbody>
                 <ng-container *ngFor="let subData of data.subDetails; let i = index">
                     <tr [className]="subData.stock_in?'purchase-row':'sale-row'">
-                        <td> {{subData.stock_in ?'PO- ':'SALE -'}}
-                            {{subData.stock_in?subData.purchase_id:subData.sale_id}} </td>
+                        <td> 
+                            <a *ngIf="subData.stock_in"
+                            [routerLink]="['/', 'purchase','purchase']"
+                            [queryParams]="{ PO: subData.purchase_no }"
+                            href="">PO -{{subData.purchase_no}}</a>
+                            <a *ngIf="!subData.stock_in"
+                            [routerLink]="['/', 'sales','sale']"
+                            [queryParams]="{ PO: subData.sale_no }"
+                            href="">SALE -{{subData.sale_no||subData.sale_id}}</a>
+
                         <td> {{subData.stock_in ?'+':'-'}} {{subData.qty}} </td>
                         <td> {{subData.unit_price | currency : 'PKR ' }} </td>
                         <td> {{subData.total | currency : 'PKR '}} </td>

@@ -19,6 +19,7 @@ import { Customer } from '../customers/customers.interface';
 interface TreeNode {
   title: string;
   key: any;
+  isLeaf: boolean;
   children?: TreeNode[];
 }
 
@@ -67,7 +68,7 @@ export class SaleRequestComponent implements OnInit {
   currentSubOrganizationSubscription: Subscription;
   previousSaleRequestDetails: any;
   SaleRequestDetails: FormGroup<SaleDetails>;
-
+  isSpinning=false;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -114,17 +115,33 @@ export class SaleRequestComponent implements OnInit {
           this.listOfData = resp;
         });
     
-        this.route.queryParams.subscribe(params => {
+        this.route.queryParams.subscribe(async(params) => {
           // Use this queryParams object to load data
+          this.isSpinning=true;
+          let id=0
+      if (!params['SALE']||params['SALE']==='new') {
+      }else{
+        id=params['SALE']
+      }
+      this.clearItems();
+
           this.SaleRequestDetails.reset({ state: SaleStates.Draft, id: 0 ,items:[]});
           this.SaleRequestDetails.enable();
           this.SaleRequestDetails.updateValueAndValidity();
-          this.SaleRequestDetails.controls['id'].setValue(params['SALE'] || 0);
-          this.setSaleRequestRequestDetails();
+          this.SaleRequestDetails.controls['id'].setValue(id || 0);
+         await this.setSaleRequestRequestDetails();
+         setTimeout(()=>{
+          this.isSpinning=false;
+         },1000)
         });
             this.SaleRequestDetails.controls['sub_organization_id'].setValue(change.id);
           
         }
+    });
+  }
+  clearItems(){
+    this.SaleRequestDetails.value.items?.forEach((element: any,index: number) => {
+      this.removeProduct(index)
     });
   }
   getReturnItemFormGroup(form: FormGroup) {
@@ -176,6 +193,7 @@ export class SaleRequestComponent implements OnInit {
         state: response.state,
         sale_no:response.sale_no,
         notes: response.notes,
+        customer: response.customer.id,
         items_discount_total: response.items_discount_total,
         due_date: new Date(response.due_date),
         invoice_date: new Date(response.invoice_date),
@@ -218,6 +236,7 @@ export class SaleRequestComponent implements OnInit {
       unit_price: new FormControl(object.unit_price),
       discount: new FormControl(object.discount),
       total: new FormControl(object.total),
+      isCustom: new FormControl(object.isCustom),
       date_created: new FormControl(object.date_created),
       min_unit_price: new FormControl(object.min_unit_price),
       max_qty: new FormControl(object.max_qty),
@@ -677,7 +696,8 @@ export class SaleRequestComponent implements OnInit {
         if (vendorNode?.children) {
           vendorNode?.children.push({
             title: item.item_name,
-            key: item
+            key: item,
+            isLeaf: true 
           });
         }
       } else {
@@ -687,8 +707,10 @@ export class SaleRequestComponent implements OnInit {
           key: `vendor-${item.vendor_id}`,
           children: [{
             title: item.item_name,
-            key: item
-          }]
+            key: item,
+            isLeaf: true
+          }],
+          isLeaf: false
         };
         vendorMap.set(item.vendor_id, vendorNode);
       }

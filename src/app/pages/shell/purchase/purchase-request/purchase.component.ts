@@ -41,6 +41,7 @@ export class PurchaseComponent implements OnInit {
     isCustom: false,
     unit_price: 0
   }
+  isSpinning=false;
   currentSubOrganizationSubscription: Subscription;
   previousPurchaseDetails: any;
   purchaseDetails: FormGroup<PurchaseDetails> = new FormGroup({
@@ -62,7 +63,7 @@ export class PurchaseComponent implements OnInit {
     shipment_charges: new FormControl(0),
     total: new FormControl(0),
     balance: new FormControl(0),
-    vendor_id: new FormControl(0),
+    vendor: new FormControl(0),
     organization_id: new FormControl(0),
     sub_organization_id: new FormControl(0),
     invoice_date: new FormControl(new Date()),
@@ -103,7 +104,7 @@ export class PurchaseComponent implements OnInit {
       shipment_charges: new FormControl(0),
       total: new FormControl(0),
       balance: new FormControl(0),
-      vendor_id: new FormControl(0),
+      vendor: new FormControl(0),
       organization_id: new FormControl(0),
       sub_organization_id: new FormControl(0),
       invoice_date: new FormControl(new Date()),
@@ -125,17 +126,34 @@ export class PurchaseComponent implements OnInit {
 
   async setUpPurchaseForm() {
     await this.loadSitesVendorsAndUsers();
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(async(params) => {
       // Use this queryParams object to load data
-      if (!params['PO']) {
-        this.purchaseDetails.reset({ state: POStates.Draft, id: 0 });
+      this.isSpinning=true;
+      let id=0
+      if (!params['PO']||params['PO']==='new') {
         this.purchaseDetails.enable();
         this.purchaseDetails.updateValueAndValidity();
+      }else{
+        id=params['PO']
       }
-      this.purchaseDetails.controls['id'].setValue(params['PO'] || 0);
-      this.setPurchaseRequestDetails();
+      this.purchaseDetails.reset({ state: POStates.Draft, id: 0 });
+     this.clearItems();
+        this.purchaseDetails.controls['id'].setValue(id || 0);
+     
+        await  this.setPurchaseRequestDetails();
+          
+        setTimeout(async()=>{
+          this.isSpinning=false;
+    
+      },1000)
     });
 
+    
+  }
+  clearItems(){
+    this.purchaseDetails.value.items.forEach((element: any,index: number) => {
+      this.removeProduct(index)
+    });
   }
   async setSitesData() {
     const resp: any = await this.appService.getAndSetSites();
@@ -170,6 +188,7 @@ export class PurchaseComponent implements OnInit {
         state: response.state,
         isSiteBased: response.isSiteBased,
         notes: response.notes,
+        sales_person:response.sales_person,
         items_discount_total: response.items_discount_total,
         overall_discount_total: response.overall_discount_total,
         item_cost: response.item_cost,
@@ -179,12 +198,14 @@ export class PurchaseComponent implements OnInit {
         shipment_charges: response.shipment_charges,
         total: response.total,
         balance: response.balance,
-        vendor_id: response.vendor?.id,
+        vendor: response.vendor?.id,
+        invoice_date:response.invoice_date,
+        due_date:response.due_date,
         organization_id: response.organization_id,
         sub_organization_id: response.sub_organization_id,
       })
 
-      this.purchaseDetails.controls.selectedVendor.setValue(this.vendors.find(ven => ven.id == this.purchaseDetails.controls.vendor_id.value));
+      this.purchaseDetails.controls.selectedVendor.setValue(this.vendors.find(ven => ven.id == this.purchaseDetails.controls.vendor.value));
       if (response.isSiteBased) {
                  const selectedSites=JSON.parse(response.site_ids || '[]')
 
@@ -220,13 +241,13 @@ export class PurchaseComponent implements OnInit {
   }
 
   async onVendorSelect() {
-    this.purchaseDetails.controls['items'].setValue([])
+this.clearItems();
     if (this.purchaseDetails.controls.selectedVendor.value && !this.loading) {
       this.addRow();
       this.vendorItems = await this.appService.getVendorItems(this.purchaseDetails.controls.selectedVendor.value?.id)
-      this.purchaseDetails.controls['vendor_id'].setValue(this.purchaseDetails.controls.selectedVendor.value?.id)
+      this.purchaseDetails.controls['vendor'].setValue(this.purchaseDetails.controls.selectedVendor.value?.id)
     } else {
-      this.purchaseDetails.controls['vendor_id'].setValue(0)
+      this.purchaseDetails.controls['vendor'].setValue(0)
     }
 
   }
@@ -355,7 +376,7 @@ export class PurchaseComponent implements OnInit {
   async submitRequest() {
     const response: any = await this.appService.addPurchaseRequest({
       details: {
-        ...this.purchaseDetails.value as PurchaseOrder,
+        ...this.purchaseDetails.getRawValue() as PurchaseOrder,
         state: POStates.PendingInvoice,
         site_ids: JSON.stringify(this.purchaseDetails.value.site_ids)
       }, products: this.purchaseDetails.controls['items'].value
@@ -366,7 +387,7 @@ export class PurchaseComponent implements OnInit {
         'Purchase Order - ' + response['purchase_no'],
         'Purchase order submitted successfly. Please check for invoice and update later'
       ).onClose.subscribe((resp) => {
-        this.router.navigate(['/'])
+        this.router.navigate(['/purchase'])
       });
     }
   }
@@ -396,7 +417,7 @@ export class PurchaseComponent implements OnInit {
             'Purchase Order - ' + this.previousPurchaseDetails.purchase_no,
             'Purchase order invoice cancelled successfly.',
           ).onClose.subscribe((resp) => {
-            this.router.navigate(['/'])
+            this.router.navigate(['/purchase'])
           });
         }
 
@@ -435,7 +456,7 @@ export class PurchaseComponent implements OnInit {
         'Purchase Order - ' + this.previousPurchaseDetails.purchase_no,
         'Purchase order invoice submitted successfly. Please proceed next for payment details',
       ).onClose.subscribe((resp) => {
-        this.router.navigate(['/'])
+        this.router.navigate(['/purchase'])
       });
     }
   }
@@ -470,7 +491,7 @@ export class PurchaseComponent implements OnInit {
         'Purchase Order - ' + this.previousPurchaseDetails.purchase_no,
         'Purchase order invoice submitted successfly. Please proceed next for payment details',
       ).onClose.subscribe((resp) => {
-        this.router.navigate(['/'])
+        this.router.navigate(['/purchase'])
       });
     }
   }

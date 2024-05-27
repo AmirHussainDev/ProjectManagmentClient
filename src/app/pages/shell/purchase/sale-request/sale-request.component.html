@@ -1,7 +1,8 @@
-<div class="container">
+<nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+    <div class="container">
     <div class="detailBar">
         <span>
-            <h4> SALE - {{SaleRequestDetails.get('id')?.value || 'New Quote'}} /
+            <h4> SALE - {{SaleRequestDetails.get('sale_no')?.value || 'New Quote'}} /
                 {{stateNames[SaleRequestDetails.get('state')?.value]}}
             </h4>
         </span>
@@ -66,18 +67,18 @@
                         style="margin-bottom: 12px;">
                         <thead>
                             <tr>
-                                <th nzWidth="16%">Item</th>
-                                <th nzWidth="15%">Quantity</th>
-                                <th nzWidth="15%">Unit
+                                <th *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">Custom</th>
+                                <th >Item</th>
+                                <th >Quantity</th>
+                                <th >Unit
                                     Price
                                 </th>
-                                <th nzWidth="15%">
+                                <th >
                                     Discount %
                                 </th>
-                                <th nzWidth="15%">Total
+                                <th >Total
                                 </th>
-                                <th nzWidth="2%"
-                                    *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft || SaleRequestDetails.controls.state.value==SaleStates.Invoiced">
+                                <th *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft || SaleRequestDetails.controls.state.value==SaleStates.Invoiced">
                                 </th>
                             </tr>
                         </thead>
@@ -92,9 +93,7 @@
                                 </td>
                                 <td></td>
                                 <td></td>
-                                <td>
-
-                                </td>
+                                <td></td>
                                 <td>
                                     <h5 [innerHTML]="SaleRequestDetails.get('item_cost')?.value| currency:'PKR '">
                                     </h5>
@@ -106,13 +105,15 @@
                                 <ng-container [formGroupName]="i"
                                     *ngFor="let control of SaleRequestDetails.controls.items.controls; let i = index">
                                     <tr>
+                                        <td *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">
+                                            <label nz-checkbox formControlName="isCustom"  *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft"> </label>
+                                        </td>
                                         <td>
-                                            <input *ngIf="SaleRequestDetails.controls.state.value!==SaleStates.Draft"
+                                            <input *ngIf="(SaleRequestDetails.controls.state.value!==SaleStates.Draft ||control.controls.isCustom?.value)"
                                                 nz-input-number formControlName="name"
                                                 (ngModelChange)="onQuantityChange(i)">
-
                                             <nz-tree-select
-                                                *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft"
+                                                *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
                                                 [nzExpandedKeys]="expandableKey" [nzNodes]="nodes" nzShowSearch
                                                 nzPlaceHolder="Please select" formControlName="selected_item"
                                                 (ngModelChange)="onItemChange(i)"></nz-tree-select>
@@ -361,3 +362,4 @@
 
     </ng-template>
 </div>
+</nz-spin>

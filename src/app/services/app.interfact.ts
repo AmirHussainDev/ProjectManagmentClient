@@ -86,7 +86,7 @@ export interface PurchaseOrder {
     shipment_charges: number;
     total: number;
     balance: number;
-    vendor_id: number;
+    vendor: number;
     organization_id: number;
     sub_organization_id: number;
     items: PurchaseItem[],
@@ -193,7 +193,7 @@ export interface PurchaseDetails {
     shipment_charges: FormControl;
     total: FormControl;
     balance: FormControl;
-    vendor_id: FormControl;
+    vendor: FormControl;
     organization_id: FormControl;
     sub_organization_id: FormControl;
     invoice_date: FormControl;
