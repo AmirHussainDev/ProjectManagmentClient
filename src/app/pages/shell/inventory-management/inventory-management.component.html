@@ -113,10 +113,15 @@
                             [routerLink]="['/', 'purchase','purchase']"
                             [queryParams]="{ PO: subData.purchase_no }"
                             href="">PO -{{subData.purchase_no}}</a>
-                            <a *ngIf="!subData.stock_in"
+                            <a *ngIf="!subData.stock_in && subData.sale_no"
                             [routerLink]="['/', 'sales','sale']"
                             [queryParams]="{ PO: subData.sale_no }"
                             href="">SALE -{{subData.sale_no||subData.sale_id}}</a>
+
+                            <a *ngIf="!subData.stock_in && (subData.site_no||subData.site_id)"
+                            [routerLink]="['/', 'sites',subData.site_id]"
+                            [queryParams]="{ PO: subData.sale_no }"
+                            href="">SITE -{{subData.site_no||subData.site_id}}</a>
 
                         <td> {{subData.stock_in ?'+':'-'}} {{subData.qty}} </td>
                         <td> {{subData.unit_price | currency : 'PKR ' }} </td>
