@@ -1,4 +1,4 @@
-<div>
+<div *appHasPermission="appPermissions.UpdateVendors">
     <button nz-button nzType="primary" (click)="showModal()">Add Vendor</button>
 </div>
 <app-vendor-details *ngIf="drawerVisible" [vendor]="selectedVendor" (closeDrawer)="drawerVisible=false"
@@ -54,7 +54,7 @@
                     </div>
                 </td>
                 <td>
-                    <a (click)="startEdit(data.id)">Edit</a>
+                    <a *appHasPermission="appPermissions.UpdateVendors" (click)="startEdit(data.id)">Edit</a>
                 </td>
             </ng-container>
             <ng-template #editTemplate>

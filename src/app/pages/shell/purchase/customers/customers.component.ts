@@ -3,6 +3,7 @@ import { Customer } from './customers.interface';
 import { AppService } from '../../../../services/app.service';
 import { SubOrganization } from '../../../../services/app.interfact';
 import { Subscription } from 'rxjs';
+import { AppPermissions } from '../../../../services/app.constants';
 
 
 
@@ -45,6 +46,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   visible = false;
   subOrgSubscription:Subscription;
+  appPermissions=AppPermissions;
   constructor( private appService: AppService) {
 
   }

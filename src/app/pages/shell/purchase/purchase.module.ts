@@ -14,6 +14,7 @@ import { ListingComponent } from './listing.component';
 import { SaleListingComponent } from './sale-listing/sale-listing.component';
 import { CustomersComponent } from './customers/customers.component';
 import { CreateCustomerDrawerComponent } from './customers/create-customer-drawer/create-customer-drawer.component';
+import { SharedModule } from '../shared/shared.module';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -37,7 +38,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     NgZorroAntdModule,
     ReactiveFormsModule,
     NgxPrintModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ], providers: [{ provide: NZ_I18N, useValue: en_US },
   { provide: NZ_ICONS, useValue: icons }]
   

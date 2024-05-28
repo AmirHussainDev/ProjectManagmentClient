@@ -5,6 +5,8 @@ import { SaleRequestComponent } from './sale-request/sale-request.component';
 import { ListingComponent } from './listing.component';
 import { SaleListingComponent } from './sale-listing/sale-listing.component';
 import { CustomersComponent } from './customers/customers.component';
+import { AppPermissions } from '../../../services/app.constants';
+import { AuthGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,20 +15,24 @@ const routes: Routes = [
     children: [
       {
         path: '', component: ListingComponent,
-        data: { name: ' ' },
+        data: { name: ' ' , permission:AppPermissions.InventoryUpdates},
+        canActivate:[AuthGuard],
         children:[
           {
             path: 'purchase', component: PurchaseComponent,
-            data: { name: ' ' }
+            data: { name: ' ' , permission:AppPermissions.AddPurchaseRequest},
+            canActivate:[AuthGuard]
           },
         ]
       },
       {
         path: 'sales', component: SaleListingComponent,
-        data: { name: ' ' },
+        data: { name: ' ' , permission:AppPermissions.ManageSales},
+        canActivate:[AuthGuard],
         children: [{
           path: 'sale', component: SaleRequestComponent,
-          data: { name: ' ' }
+          data: { name: ' ' , permission:AppPermissions.AddSales},
+          canActivate:[AuthGuard]
         }]
       },
       {

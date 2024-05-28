@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NzDrawerPlacement } from 'ng-zorro-antd/drawer';
 import { AppService } from '../../../../services/app.service';
+import { AppPermissions } from '../../../../services/app.constants';
 
 @Component({
   selector: 'app-vendor-details',
@@ -16,7 +17,7 @@ export class VendorDetailsComponent {
   placement: NzDrawerPlacement = 'right';
   products: { name: string }[] = [];
   newProduct: string = '';
-
+  appPermissions=AppPermissions;
   constructor(private appService: AppService) { }
 
   ngOnInit() {

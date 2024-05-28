@@ -1,4 +1,4 @@
-<button nz-button nzType="primary" (click)="open()">Add</button>
+<button *appHasPermission="appPermissions.AddEmployees" nz-button nzType="primary" (click)="open()">Add</button>
 <app-employee-contract *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible" [users]="users"
     (closeDrawer)="close($event)"></app-employee-contract>
 <nz-table #editRowTable #sortTable nzShowPagination="false" [nzData]="listOfData" nzTableLayout="fixed">
@@ -19,7 +19,7 @@
                 <td>{{ data.overtime }}</td>
                 <td>{{ data.siginout_required }}</td>
                 <td>{{ data.workingHours }}</td>
-                <td><a (click)="startEdit(data.id)">Edit</a></td>
+                <td><a *appHasPermission="appPermissions.AddEmployees" (click)="startEdit(data.id)" >Edit</a></td>
             </ng-container>
             <ng-template #editTemplate>
                 <td>{{ data.employee|username }}</td>

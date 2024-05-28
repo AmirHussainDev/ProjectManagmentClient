@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { Observable, Observer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { AppPermissions } from '../../../services/app.constants';
 
 
 
@@ -20,6 +21,7 @@ export class VendorComponent implements OnInit {
   drawerVisible = false;
   selectedVendor: any = {};
   addVendorForm: FormGroup;
+  appPermissions=AppPermissions;
   listOfColumn = [
 
     {

@@ -11,6 +11,7 @@ import { VendorRoutingModule } from '../vendor/vendor-routing.module';
 
 import * as AllIcons from '@ant-design/icons-angular/icons';
 import { IconDefinition } from '@ant-design/icons-angular';
+import { SharedModule } from '../shared/shared.module';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -30,7 +31,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     VendorRoutingModule,
     NgZorroAntdModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    SharedModule,
   ], providers: [{ provide: NZ_I18N, useValue: en_US },
   { provide: NZ_ICONS, useValue: icons }]
 })

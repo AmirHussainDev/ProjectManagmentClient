@@ -4,6 +4,7 @@ import { AppService } from '../../../services/app.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { User } from '../team/users/users.interface';
+import { AppPermissions } from '../../../services/app.constants';
 
 @Component({
   selector: 'app-employee-management',
@@ -62,6 +63,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   EmployeeRoles: any[];
   subOrganizations: SubOrganization[];
   subOrgSubscription: Subscription;
+  appPermissions=AppPermissions;
   constructor(
     private appService: AppService,
     private userService: UserService) {

@@ -5,6 +5,7 @@ import { AppService } from '../../../../services/app.service';
 import { SubOrganization } from '../../../../services/app.interfact';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ChangePasswordComponent } from '../../shared-components/change-password/change-password.component';
+import { AppPermissions } from '../../../../services/app.constants';
 
 
 
@@ -54,6 +55,7 @@ export class UsersComponent implements OnInit {
   userRoles: any[];
   selectedUser:User;
   subOrganizations: SubOrganization[];
+  appPermissions=AppPermissions;
   constructor(private userService: UserService,
     private appService: AppService,
     private modal: NzModalService) {

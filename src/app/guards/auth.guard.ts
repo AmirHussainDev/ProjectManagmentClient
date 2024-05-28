@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 import { AuthService } from './../services/auth.service';
 import { UserService } from '../services/user.service';
 import { AppPermissions } from '../services/app.constants';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService,private userService:UserService, private router: Router) {}
+  constructor(private authService: AuthService,private userService:UserService, private router: Router,    private modal: NzModalService
+    ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -24,10 +26,16 @@ export class AuthGuard implements CanActivate {
         // Redirect to not authorized page
         if(requiredPermission==AppPermissions.MainDashboardView){
           this.router.navigate(['/employee']);
-
         }else{
-          this.router.navigate(['/']);
-
+          const modal = this.modal.create({
+            nzTitle: 'Insufficient Permission!',
+            nzContent: 'You do not have permission to view this content. Please contact with admin for queries.',
+            nzFooter: null,
+            
+          });
+          modal.afterClose.subscribe(()=>{
+            this.router.navigate([this.router.lastSuccessfulNavigation?.previousNavigation]);
+          })
         }
         return false;
       }

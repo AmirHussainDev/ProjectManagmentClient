@@ -4,6 +4,7 @@ import { AppService } from '../../../../services/app.service';
 import { Employee } from '../../../../services/app.interfact';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { EmployeeManagementService } from '../employee-management.service';
+import { AppPermissions } from '../../../../services/app.constants';
 
 @Component({
   selector: 'app-pay-processing',
@@ -18,6 +19,7 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
     private media: MediaMatcher,
     private employeeManagementService: EmployeeManagementService
   ) { }
+  appPermissions=AppPermissions;
   subOrganizationSubscription: Subscription;
   activeSalaryHistory: boolean;
   activeAdvanceHistory: boolean;

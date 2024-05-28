@@ -14,6 +14,7 @@ import { IconDefinition } from '@ant-design/icons-angular';
 import { EmployeeContractComponent } from './employee-contract/employee-contract.component';
 import { SafePipe } from '../../../pipes/safe.pipe';
 import { AttendanceDetailsComponent } from './attendance/attendance-details/attendance-details.component';
+import { SharedModule } from '../shared/shared.module';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -46,6 +47,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     FormsModule,
     UsernamePipe,
     SafePipe,
+    SharedModule
   ]
 })
 export class EmployeeManagementModule { }
