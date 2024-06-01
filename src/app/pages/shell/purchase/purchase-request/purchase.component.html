@@ -9,11 +9,7 @@
         </span>
         <span>
             <button nz-button nzType="primary" (click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
-            <button style="margin-left: 12px;" nz-button nzType="primary" printSectionId="print-section" ngxPrint
-                printTitle="MyTitle">
-
-                <span nz-icon nzType="printer" nzTheme="outline"></span>
-            </button>
+            <button style="margin-left: 12px;" nz-button nzType="primary" (click)="printCard()"> <span nz-icon nzType="printer"></span></button>
         </span>
     </div>
 

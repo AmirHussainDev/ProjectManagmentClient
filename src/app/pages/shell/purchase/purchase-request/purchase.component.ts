@@ -14,6 +14,7 @@ import html2canvas from 'html2canvas';
 import _ from 'lodash'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InvoiceStateNames, POStates } from '../../../../services/app.constants';
+import { PdfGeneratorService } from '../../../../services/pdf-generator.service';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
@@ -83,7 +84,8 @@ export class PurchaseComponent implements OnInit {
     private notification: NzNotificationService,
     private router: Router,
     private msg: NzMessageService,
-    private modal: NzModalService) {
+    private modal: NzModalService,
+    private pdfGeneratorService: PdfGeneratorService) {
     this.purchaseDetails = this.fb.group({
       id: new FormControl(),
       subject: new FormControl(),
@@ -497,39 +499,29 @@ this.clearItems();
   }
 
   printCard() {
-    let printContents = this.content.nativeElement.innerHTML;
-    let popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    if (popupWin) {
-      popupWin.document.open();
-      popupWin.document.write(`
-      <html>
-        <head>
-          <title>Print</title>
-          <style>
-            /* Define print styles here */
-          </style>
-        </head>
-        <body onload="window.print();window.close()">
-          ${printContents}
-        </body>
-      </html>
-    `);
-      popupWin.print();
-
-      // popupWin.document.close();
-    }
+    this.makePdf('print')
   }
   generatePDF() {
-    const element = this.content.nativeElement;
-    html2canvas(element).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jspdf.jsPDF();
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('your-component.pdf');
-    });
+    this.makePdf('download')
+  }
+
+  makePdf(action:string){
+    const details=this.purchaseDetails.getRawValue()
+    this.pdfGeneratorService.invoice={
+      ...details,
+      type:'purchase',
+      status:this.stateNames[details.state],
+      invoiceDetailLabel: 'Purchase Details',
+      personName: details.vendor.name,
+      address: details.vendor.address||'',
+      contactNo: details.vendor.contact_no||'',
+      terms: details.terms,
+      email: details.vendor.email||'',
+      additionalDetails: details.notes||'',
+    }
+    this.pdfGeneratorService.generatePDF(action)
+    return;
+
   }
 
   disableAndEnableSpecificControls() {

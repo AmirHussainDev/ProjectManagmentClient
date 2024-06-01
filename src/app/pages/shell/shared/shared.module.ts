@@ -4,6 +4,7 @@ import { ChangePasswordComponent } from '../shared-components/change-password/ch
 import { NgZorroAntdModule } from '../../../ng-zorro-antd.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HasPermissionDirective } from '../../../directives/permissions.directive';
+import { PdfGeneratorService } from '../../../services/pdf-generator.service';
 
 
 
@@ -14,6 +15,9 @@ import { HasPermissionDirective } from '../../../directives/permissions.directiv
     NgZorroAntdModule,
     ReactiveFormsModule,
     FormsModule
+  ],
+  providers:[
+    PdfGeneratorService,
   ],
   exports:[ChangePasswordComponent,HasPermissionDirective]
 })

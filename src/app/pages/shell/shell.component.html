@@ -62,6 +62,16 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
+          <li *appHasPermission="appPermissions.ViewVendors" nz-menu-item
+          [class.selected-route]="currentRoutes.indexOf('vendor')>-1">
+          <span nz-icon style="font-size: 18px;" nzType="profile"></span>
+          <span>
+            <a class="nav-link" [routerLink]="['/vendor']" [state]="{tracingId: 123}"
+              (click)="isMobile()?isCollapsed=true:null">
+              Vendors
+            </a>
+          </span>
+        </li>
           <li nz-menu-item *appHasPermission="appPermissions.InventoryUpdates"
             [class.selected-route]="currentRoutes.indexOf('customers')==-1 && currentRoutes.indexOf('purchase')>-1 && currentRoutes.indexOf('sales')==-1&&currentRoutes.indexOf('sale')==-1&&currentRoutes.indexOf('sales?status=' + saleState.Quote)==-1&&currentRoutes.indexOf('sales?status=' + saleState.Invoiced)==-1">
             <span nz-icon style="font-size: 18px;" nzType="pull-request"></span>
@@ -82,16 +92,7 @@
               </a>
             </span>
           </li>
-          <li *appHasPermission="appPermissions.ViewVendors" nz-menu-item
-            [class.selected-route]="currentRoutes.indexOf('vendor')>-1">
-            <span nz-icon style="font-size: 18px;" nzType="profile"></span>
-            <span>
-              <a class="nav-link" [routerLink]="['/vendor']" [state]="{tracingId: 123}"
-                (click)="isMobile()?isCollapsed=true:null">
-                Vendors
-              </a>
-            </span>
-          </li>
+         
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
           <li *appHasPermission="appPermissions.ManageSites" nz-menu-item style="margin-top: 12px;"

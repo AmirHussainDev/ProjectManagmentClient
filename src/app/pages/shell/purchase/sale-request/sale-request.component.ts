@@ -15,6 +15,7 @@ import { User } from '../../team/users/users.interface';
 import { ItemControl, SaleDetails, SaleOrder, SaleItemControl, SaleItemReturnControl, PaymentHistory } from '../../../../services/app.interfact';
 import { SaleStateNames, SaleStates } from '../../../../services/app.constants';
 import { Customer } from '../customers/customers.interface';
+import { PdfGeneratorService } from '../../../../services/pdf-generator.service';
 
 interface TreeNode {
   title: string;
@@ -77,7 +78,8 @@ export class SaleRequestComponent implements OnInit {
     private notification: NzNotificationService,
     private router: Router,
     private msg: NzMessageService,
-    private modal: NzModalService) {
+    private modal: NzModalService,
+    private pdfGeneratorService:PdfGeneratorService) {
     this.SaleRequestDetails = this.fb.group({
       id: new FormControl(),
       sale_no:new FormControl(),
@@ -585,41 +587,31 @@ export class SaleRequestComponent implements OnInit {
   }
 
   printCard() {
-    let printContents = this.content.nativeElement.innerHTML;
-    let popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    if (popupWin) {
-      popupWin.document.open();
-      popupWin.document.write(`
-      <html>
-        <head>
-          <title>Print</title>
-          <style>
-            /* Define print styles here */
-          </style>
-        </head>
-        <body onload="window.print();window.close()">
-          ${printContents}
-        </body>
-      </html>
-    `);
-      popupWin.print();
-
-      // popupWin.document.close();
-    }
+    this.makePdf('print')
   }
   generatePDF() {
-    const element = this.content.nativeElement;
-    html2canvas(element).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jspdf.jsPDF();
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('your-component.pdf');
-    });
+    this.makePdf('download')
   }
 
+  makePdf(action:string){
+    const details=this.SaleRequestDetails.getRawValue()
+    this.pdfGeneratorService.invoice={
+      ...details,
+      type:'Sale',
+      status:this.stateNames[details.state],
+      invoiceDetailLabel: 'Sale Details',
+      personName: details.customer.name,
+      address: details.customer.address||'',
+      contactNo: details.customer.contact_no||'',
+      terms: details.terms,
+      email: details.customer.email||'',
+      additionalDetails: details.notes||'',
+      customer:this.listOfData.find(item=>item.id==details.customer)
+    }
+    this.pdfGeneratorService.generatePDF(action)
+    return;
+
+  }
   disableAndEnableSpecificControls() {
     const stateControl = this.SaleRequestDetails.get('state');
 

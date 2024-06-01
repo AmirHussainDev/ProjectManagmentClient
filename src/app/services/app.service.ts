@@ -319,6 +319,18 @@ export class AppService {
       throw error;
     }
   }
+  async retireveSaleByCustomer(customerId: string): Promise<any[]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/inventory-purchase/sale-request-by-customer/${organization_id}/${this.currentSubOrgId}/${customerId}`, { headers: this.header }).toPromise()
+      return response as any[];
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
   async retirevePOById(id: any): Promise<any> {
     try {
       const organization_id = localStorage.getItem('organization_id');

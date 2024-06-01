@@ -18,7 +18,7 @@
         <tr *ngFor="let row of paymentData">
             <td>{{ row.employee?.employee?.name}}
             <td>{{ row.employee?.salary | currency :' '}} </td>
-            <td><span>{{ row.paymentObject?.minDateCreated | date : 'dd-mm-yyyy' }}
+            <td><span>{{ row.paymentObject?.minDateCreated | date : 'dd MMM yyyy' }}
                 </span>
             </td>
             <td>{{ row.paymentObject?.totalAmount|| 0 | currency :' ' }}</td>
@@ -83,7 +83,7 @@
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let row of payments">
-                                            <td>{{ row.date_created | date : 'EEEE d MMM yyyy' }}
+                                            <td>{{ row.date_created | date : 'dd MMM yyyy' }}
                                             </td>
                                             <td>{{ row.amount | currency : ' ' }}
                                             </td>

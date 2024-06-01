@@ -15,7 +15,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let row of supervisorData">
-            <td>{{ row.date | date : 'EEEE d MMM yyyy' }}
+            <td>{{ row.date | date : ' dd MMM yyyy' }}
 
             <td><span class="flex space-between" *ngIf="!editCache[row.id]?.edit"> {{ row.attendanceObj?.sign_in | date
                     : 'hh:mm a' }}
@@ -24,7 +24,7 @@
                         <span nz-icon nzType="environment" nzTheme="outline"></span>
                     </a>
                 </span>
-                <nz-time-picker *ngIf="editCache[row.id]?.edit" (ngModelChange)="signIn(row.id)"
+                <nz-time-picker [nzUse12Hours]="true" *ngIf="editCache[row.id]?.edit" (ngModelChange)="signIn(row.id)"
                     [(ngModel)]="editCache[row.id].data.attendanceObj.sign_in" nzFormat="HH:mm"></nz-time-picker>
             </td>
             <td><span class="flex space-between" *ngIf="!editCache[row.id]?.edit">{{ row.attendanceObj?.sign_out | date
@@ -35,7 +35,7 @@
                         <span nz-icon nzType="environment" nzTheme="outline"></span>
                     </a>
                 </span>
-                <nz-time-picker *ngIf="editCache[row.id]?.edit" (ngModelChange)="signOut(row.id)"
+                <nz-time-picker [nzUse12Hours]="true" *ngIf="editCache[row.id]?.edit" (ngModelChange)="signOut(row.id)"
                     [(ngModel)]="editCache[row.id].data.attendanceObj.sign_out" nzFormat="HH:mm"></nz-time-picker>
             </td>
             <td>{{ row.attendanceObj?.hours_worked }}</td>
