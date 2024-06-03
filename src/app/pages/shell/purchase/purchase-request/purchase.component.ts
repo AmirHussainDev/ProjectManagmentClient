@@ -209,10 +209,10 @@ export class PurchaseComponent implements OnInit {
 
       this.purchaseDetails.controls.selectedVendor.setValue(this.vendors.find(ven => ven.id == this.purchaseDetails.controls.vendor.value));
       if (response.isSiteBased) {
-                 const selectedSites=JSON.parse(response.site_ids || '[]')
+        const selectedSites=JSON.parse(response.site_ids || '[]')
 
         this.purchaseDetails.controls.site_ids.setValue(
-          this.sites.filter(site => selectedSites.indexOf(site.id) > -1)?.map((site:any)=>site.id)
+          this.sites.filter(site => selectedSites?.indexOf(site.id) > -1)?.map((site:any)=>site.id)
         )
       }
       const items = response.items || [];
