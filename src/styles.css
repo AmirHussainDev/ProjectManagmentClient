@@ -66,12 +66,17 @@ app-shell {
 }
 
 .smallIcon {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
 }
 
 .inputField {
     width: 100% !important;
+    border-radius: 13px !important;
+    background: white;
+    color: #4f4d4d !important;
+    margin-left: 14px !important;
+    border: 0.5px solid #d0cfcf;
 }
 
 .ant-form-item-control-input {
@@ -330,4 +335,8 @@ a:hover {
 }
 .ant-collapse-content {
     border-radius: 12px !important;
+}
+
+ul {
+    border-bottom: 1px solid;
 }

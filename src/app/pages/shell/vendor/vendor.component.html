@@ -33,7 +33,7 @@
 </nz-modal>
 <!-- <app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible"
     [userVendors]="userVendors" [users]="listOfData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
-<nz-table #editRowTable #sortTable [nzData]="listOfData" nzTableLayout="fixed">
+<nz-table #editRowTable #sortTable nzShowPagination="false" [nzData]="listOfData" nzTableLayout="fixed">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
@@ -47,12 +47,15 @@
 
                 <td>
                     <div>
-                        <span nz-button (click)="viewDetails(data)" nz-icon nzType="profile" nzTheme="outline"></span>
-                        <img  class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
+                        <span nz-button (click)="viewDetails(data)" nz-icon nzType="profile" nzSize="large"
+                            nzTheme="outline"></span>
+                        <img class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
                         <span> {{ data.name }}</span>
-
                     </div>
                 </td>
+                <td>{{data.contact_no}}</td>
+                <td>{{data.address}}</td>
+                <td>{{data.email}}</td>
                 <td>
                     <a *appHasPermission="appPermissions.UpdateVendors" (click)="startEdit(data.id)">Edit</a>
                 </td>
@@ -60,6 +63,15 @@
             <ng-template #editTemplate>
                 <td>
                     <input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" />
+                </td>
+                <td>
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.contact_no" />
+                </td>
+                <td>
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.address" />
+                </td>
+                <td>
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.email" />
                 </td>
 
                 <td>

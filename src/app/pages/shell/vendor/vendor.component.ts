@@ -30,6 +30,21 @@ export class VendorComponent implements OnInit {
       priority: false
     },
     {
+      title: 'Contact No',
+      compare: (a: any, b: any) => a.contact_no.localeCompare(b.contact_no),
+      priority: false
+    },
+    {
+      title: 'Address',
+      compare: (a: any, b: any) => a.address.localeCompare(b.address),
+      priority: false
+    },
+    {
+      title: 'Email',
+      compare: (a: any, b: any) => a.email.localeCompare(b.email),
+      priority: false
+    },
+    {
       title: 'Action',
       compare: (a: any, b: any) => a.role_id - b.role_id,
       priority: false
@@ -103,6 +118,7 @@ export class VendorComponent implements OnInit {
     const index = this.listOfData.findIndex(item => item.id === id);
     await this.appService.updateVendor({
       id,
+      ...this.editCache[id].data,
       organization_id: this.editCache[id].data.organization_id,
       role_id: this.editCache[id].data.role_id,
       reports_to: this.editCache[id].data.reports_to,

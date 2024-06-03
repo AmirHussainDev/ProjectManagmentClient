@@ -153,7 +153,7 @@ export class PurchaseComponent implements OnInit {
     
   }
   clearItems(){
-    this.purchaseDetails.value.items.forEach((element: any,index: number) => {
+    this.purchaseDetails.value.items?.forEach((element: any,index: number) => {
       this.removeProduct(index)
     });
   }

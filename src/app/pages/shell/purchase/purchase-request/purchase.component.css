@@ -18,3 +18,8 @@ nz-select {
   input{
     width: 66px;
   }
+
+  .container{
+    background: #F1E5FF;
+    padding: 5px;
+}
