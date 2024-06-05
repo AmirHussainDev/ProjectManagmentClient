@@ -34,7 +34,7 @@ export class SaleListingComponent {
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-        this.currentOrganizationId=change.id;
+          this.currentOrganizationId=change.id;
           this.route.queryParams.subscribe(async(params) => {
             // Use this queryParams object to load data
             if (!params['SALE']) {

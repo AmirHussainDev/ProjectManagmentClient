@@ -1,7 +1,7 @@
 <button *appHasPermission="appPermissions.UpdateUsers" nz-button nzType="primary" (click)="open()">Add</button>
 <app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible" [userRoles]="userRoles" [users]="listOfData"
     (closeDrawer)="close($event)" [isEdit]="isEdit" [selectedUser]="selectedUser"></app-create-user-drawer>
-<nz-table #editRowTable #sortTable [nzData]="listOfData" nzTableLayout="fixed" nzShowPagination="false">
+<nz-table #editRowTable #sortTable [nzData]="listOfData" [nzPageSize]="1000" nzShowPagination="false">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">

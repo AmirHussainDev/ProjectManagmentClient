@@ -24,6 +24,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   subOrgSubscription: Subscription;
   showSide=false;
   tabs = ['Purchase Request', 'Purchase Returns', 'Sale Requests', 'Sale Return'];
+  currentOrganizationId: number;
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
@@ -71,7 +72,9 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
-      this.route.queryParams.subscribe(async(params) => {
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        this.currentOrganizationId = change.id
+        this.route.queryParams.subscribe(async(params) => {
         // Use this queryParams object to load data
         if (!params['PO']) {
         this.showSide=false;
@@ -86,6 +89,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         
       });
+    }
     });
   }
   ngOnDestroy(): void {

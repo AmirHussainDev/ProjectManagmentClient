@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppService } from '../../../services/app.service';
 import { SubOrganization } from '../../../services/app.interfact';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AppPermissions } from '../../../services/app.constants';
 
@@ -14,7 +14,7 @@ import { AppPermissions } from '../../../services/app.constants';
   templateUrl: './vendor.component.html',
   styleUrl: './vendor.component.css'
 })
-export class VendorComponent implements OnInit {
+export class VendorComponent implements OnInit , OnDestroy {
   apiUrl = environment.apiUrl;
 
   isModalVisible = false;
@@ -59,6 +59,7 @@ export class VendorComponent implements OnInit {
   loading: boolean;
   avatarUrl: string;
   msg: any;
+  currentSubOrganizationSubscription:Subscription;
   constructor(private appService: AppService,
     private fb: FormBuilder
   ) {
@@ -79,9 +80,18 @@ export class VendorComponent implements OnInit {
   handleCancel() { this.isModalVisible = false; }
 
   ngOnInit(): void {
-    this.populateVendorData();
-  }
+    this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
+      if (change && change.id > 0) {
+        this.populateVendorData();
 
+      }
+    });
+  }
+ngOnDestroy(): void {
+  if(this.currentSubOrganizationSubscription){
+    this.currentSubOrganizationSubscription.unsubscribe()
+  }
+}
 
 
   open(): void {

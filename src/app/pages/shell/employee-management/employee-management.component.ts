@@ -64,6 +64,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   subOrganizations: SubOrganization[];
   subOrgSubscription: Subscription;
   appPermissions=AppPermissions;
+  currentOrganizationId: number;
   constructor(
     private appService: AppService,
     private userService: UserService) {
@@ -72,7 +73,10 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
-      this.populateEmployeeData();
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        this.populateEmployeeData();
+        this.currentOrganizationId = change.id
+      }
     });
     this.getUsers();
   }

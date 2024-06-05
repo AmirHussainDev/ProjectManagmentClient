@@ -32,6 +32,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   currentRoutes: string[] = [];
   saleState = SaleStates;
   appPermissions=AppPermissions;
+  currentOrganizationId: number;
   constructor(private userService: UserService,
     private appService: AppService, private fb: FormBuilder,
     private media: MediaMatcher,
@@ -72,7 +73,10 @@ export class ShellComponent implements OnInit, OnDestroy {
       this.setCurrentSite(change.site);
     });
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
-      this.currentSubOrganization = change;
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        this.currentSubOrganization = change;
+        this.currentOrganizationId=change.id
+      }
     });
   }
 

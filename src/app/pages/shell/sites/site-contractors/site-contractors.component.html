@@ -8,7 +8,7 @@
             </button>
         </a>
     </div>
-    <nz-table [nzShowPagination]="false" [nzData]="contracts" [nzFrontPagination]="false" [nzLoading]="loading"
+    <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="contracts" [nzFrontPagination]="false" [nzLoading]="loading"
         (nzQueryParams)="onContractsQueryParamsChange($event)">
         <!-- <thead>
             <tr>

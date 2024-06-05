@@ -234,9 +234,13 @@ export class AppService {
       const organization_id = localStorage.getItem('organization_id');
       const sub_organization_id = localStorage.getItem('sub_organization_id');
       const response = await this.http.get(`/api/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
-      const subOrg = response as SubOrganization
-      this.currentSubOrganization.next(subOrg);
-      this.currentSubOrgId = subOrg.id;
+      let subOrg = response as SubOrganization
+     const selectedOrg=localStorage.getItem('selectedOrganzation')
+     if(selectedOrg){
+      subOrg= JSON.parse(selectedOrg);
+     }
+     this.currentSubOrganization.next(subOrg);
+     this.currentSubOrgId = subOrg.id;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);

@@ -6,7 +6,7 @@
             <button nz-button nzType="primary" (click)="handleAddProduct()" style="margin-bottom: 12px;">Add
                 Product</button>
         </span>
-        <nz-table [nzData]="products" nzShowPagination="false" nzBordered>
+        <nz-table [nzPageSize]="1000" [nzData]="products" nzShowPagination="false" nzBordered>
             <thead>
                 <tr>
                     <th nzWidth="50%">Product Name</th>

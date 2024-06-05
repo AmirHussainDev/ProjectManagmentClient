@@ -10,7 +10,7 @@
 </div>
 <app-create-customer-drawer *ngIf="visible" [visible]="visible" [customers]="listOfData"
     (closeDrawer)="close($event)"></app-create-customer-drawer>
-<nz-table #nestedTable #editRowTable #sortTable [nzData]="listOfData" nzTableLayout="fixed">
+<nz-table #nestedTable [nzPageSize]="1000" nzShowPagination="false" #editRowTable #sortTable [nzData]="listOfData" nzTableLayout="fixed">
     <thead>
         <tr>
             <th [width]="'2%'"></th>
@@ -62,7 +62,7 @@
                     </span>
                 </div>
                 <nz-table [nzShowPagination]="false" [nzData]="data.details||[]" [nzFrontPagination]="false"
-                    [nzLoading]="data.loading">
+                [nzPageSize]="1000" [nzLoading]="data.loading">
                     <thead>
                         <tr>
                             <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Quote Number</th>

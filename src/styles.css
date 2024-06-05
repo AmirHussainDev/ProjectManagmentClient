@@ -66,16 +66,18 @@ app-shell {
 }
 
 .smallIcon {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 32px;
 }
-
-.inputField {
+.inputField{
+    width: 100% !important;  
+}
+nz-date-picker,input,textarea,.ant-upload>button,nz-select-top-control {
     width: 100% !important;
-    border-radius: 13px !important;
+    border-radius: 8px !important;
     background: white;
     color: #4f4d4d !important;
-    margin-left: 14px !important;
+    margin-left: 4px !important;
     border: 0.5px solid #d0cfcf;
 }
 

@@ -36,7 +36,8 @@ export class CreateUserDrawerComponent implements OnInit {
       contact_no: ['', [Validators.required]],
       address: [''],
       is_admin: [false],
-
+      is_contractor: [false],
+      is_employee: [false]
     });
   }
 
@@ -52,6 +53,8 @@ export class CreateUserDrawerComponent implements OnInit {
         contact_no: [this.selectedUser.contact_no, [Validators.required]],
         address: [this.selectedUser.address],
         is_admin: [this.selectedUser.is_admin],
+        is_contractor: [this.selectedUser.is_contractor],
+        is_employee: [this.selectedUser.is_employee]
       });
     }
   }

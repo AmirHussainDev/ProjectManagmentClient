@@ -1,4 +1,6 @@
 export interface User {
+    is_contractor: any;
+    is_employee: any;
     email: any;
     contact_no: any;
     address: any;

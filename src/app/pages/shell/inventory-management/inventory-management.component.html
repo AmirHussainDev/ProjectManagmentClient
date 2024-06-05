@@ -72,7 +72,7 @@
         </nz-modal>
 
 
-        <nz-table [nzShowPagination]="false" [nzData]="inventory" [nzFrontPagination]="false" [nzLoading]="loading">
+        <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="inventory" [nzFrontPagination]="false" [nzLoading]="loading">
             <thead>
                 <tr>
                     <th nzWidth="60px"></th>
@@ -95,7 +95,7 @@
                         <td> {{(data.qty* data.latest_unit_price) | currency : 'PKR '}} </td>
                     </tr>
                     <tr [nzExpand]="expandSet.has(data.item_name)">
-                        <nz-table [nzShowPagination]="false" [nzData]="data.subDetails" [nzFrontPagination]="false"
+                        <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="data.subDetails" [nzFrontPagination]="false"
                             [nzLoading]="loading">
                             <thead>
                                 <tr>

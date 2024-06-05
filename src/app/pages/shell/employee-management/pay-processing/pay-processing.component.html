@@ -2,7 +2,7 @@
 
 <h3>Employee Payments</h3>
 
-<nz-table #basicTable nzShowPagination="false" [nzData]="paymentData" [nzBordered]="true">
+<nz-table #basicTable [nzPageSize]="1000" nzShowPagination="false" [nzData]="paymentData" [nzBordered]="true">
     <thead>
         <tr>
             <th>Employee</th>
@@ -72,6 +72,7 @@
                         <nz-collapse-panel (nzActiveChange)="getEmployeePayments($event)" [nzHeader]="expandTitle" [nzActive]="activeSalaryHistory">
                             <p style="margin:0;">
                                 <nz-table #basicTable nzShowPagination="false"
+                                [nzPageSize]="1000"
                                 [nzData]="payments" [nzBordered]="true">
                                     <thead>
                                         <tr>

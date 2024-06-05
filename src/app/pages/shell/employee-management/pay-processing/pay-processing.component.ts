@@ -14,6 +14,7 @@ import { AppPermissions } from '../../../../services/app.constants';
 export class PayProcessingComponent implements OnInit, OnDestroy {
   selectedEmployee: { paymentObject: any, employee: Employee };
   paymentData: { paymentObject: any, employee: Employee }[]
+  currentOrganizationId: number;
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
@@ -33,8 +34,9 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subOrganizationSubscription = this.appService.currentSubOrganization.subscribe((change) => {
 
-      if (change && change.id > 0) {
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.setEmployeePayments(change.id);
+        this.currentOrganizationId =change.id
       }
     });
 

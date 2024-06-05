@@ -86,7 +86,25 @@
             </div>
         </div>
         <div nz-row [nzGutter]="8">
-            <div nz-col nz-col nzSpan="24">
+            <div nz-col nz-col nzSpan="8">
+                <nz-form-item>
+                    <nz-form-label>Is Employee </nz-form-label>
+                    <nz-form-control>
+                        <label nz-checkbox formControlName="is_employee" placeholder="Add is employee" ></label>
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nz-col nzSpan="8">
+                <nz-form-item>
+                    <nz-form-label>Is Contractor</nz-form-label>
+                    <nz-form-control>
+                        <label nz-checkbox formControlName="is_contractor" placeholder="Add is contractor" ></label>
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nz-col nzSpan="8">
                 <nz-form-item>
                     <nz-form-label>Is Admin </nz-form-label>
                     <nz-form-control>

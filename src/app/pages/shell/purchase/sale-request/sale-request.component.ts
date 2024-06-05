@@ -70,6 +70,7 @@ export class SaleRequestComponent implements OnInit {
   previousSaleRequestDetails: any;
   SaleRequestDetails: FormGroup<SaleDetails>;
   isSpinning=false;
+  currentOrganizationId: number;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -112,7 +113,8 @@ export class SaleRequestComponent implements OnInit {
   submitForm() { }
   ngOnInit(): void {
     this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
-      if (change && change.id > 0) {
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        this.currentOrganizationId = change.id
         this.appService.getOrganizationCustomers().then(resp => {
           this.listOfData = resp;
         });

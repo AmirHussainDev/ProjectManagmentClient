@@ -73,7 +73,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-
+        this.currentOrganizationId = change.id
         this.populateCustomerData();
       }
     });

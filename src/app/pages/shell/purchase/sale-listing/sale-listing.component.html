@@ -11,8 +11,8 @@
                 </button>
             </a>
         </div>
-        <nz-table [nzShowPagination]="false" [nzData]="saleRequests" [nzFrontPagination]="false" [nzLoading]="loading"
-            [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+        <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="saleRequests" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzTotal]="total" [nzPageIndex]="pageIndex"
             (nzQueryParams)="onSaleQueryParamsChange($event)">
             <thead>
                 <tr>

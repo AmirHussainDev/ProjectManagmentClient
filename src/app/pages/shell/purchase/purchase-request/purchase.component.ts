@@ -243,7 +243,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   async onVendorSelect() {
-this.clearItems();
+    this.isSpinning?null: this.clearItems();
     if (this.purchaseDetails.controls.selectedVendor.value && !this.loading) {
       this.addRow();
       this.vendorItems = await this.appService.getVendorItems(this.purchaseDetails.controls.selectedVendor.value?.id)

@@ -31,6 +31,7 @@ export class OrganizationSelectorComponent implements OnInit {
 
   setSubOrganization(item: SubOrganization) {
     this.appService.setSubOrganization(item);
+    localStorage.setItem('selectedOrganzation',JSON.stringify(item))
     this.closeDrawer.emit(true)
   }
 }

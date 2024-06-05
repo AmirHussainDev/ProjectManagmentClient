@@ -21,6 +21,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   subOrganizationSubscription: Subscription;
   latitude: number;
   longitude: number;
+  currentOrganizationId: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +33,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subOrganizationSubscription = this.appService.currentSubOrganization.subscribe((change) => {
-
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        this.currentOrganizationId = change.id
       this.route.paramMap.subscribe(paramMap => {
         // Use this queryParams object to load data
         if (change && change.id > 0 && paramMap.get('userId')) {
@@ -40,7 +42,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
           this.setCurrentUserDetails(change.id);
         }
       })
-
+    }
     })
 
     this.sunscribeToGeoLocation();
