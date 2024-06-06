@@ -232,7 +232,7 @@ export class AppService {
   async getAndSetUserDefaultSubOrganization() {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const sub_organization_id = localStorage.getItem('sub_organization_id');
+      const sub_organization_id = this.currentSubOrgId;
       const response = await this.http.get(`/api/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
       let subOrg = response as SubOrganization
      const selectedOrg=localStorage.getItem('selectedOrganzation')
@@ -714,7 +714,7 @@ export class AppService {
       const body = {
         ...userObj,
         organization: parseInt(localStorage.getItem('organization_id') || '0'),
-        subOrganization: localStorage.getItem('sub_organization_id'),
+        subOrganization: this.currentSubOrgId,
         created_by: this.userService.loggedInUser.id,
       }
       const response = await this.http.post(`/api/employee`, body).toPromise();
@@ -844,7 +844,7 @@ export class AppService {
       const body = {
         ...userObj,
         organization: parseInt(localStorage.getItem('organization_id') || '0'),
-        subOrganization: localStorage.getItem('sub_organization_id'),
+        subOrganization: this.currentSubOrgId,
         created_by: this.userService.loggedInUser.id,
       }
       const response = await this.http.post(`/api/payments`, body).toPromise();
