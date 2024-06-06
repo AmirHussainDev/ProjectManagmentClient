@@ -5,7 +5,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sale-listing',
@@ -28,16 +28,26 @@ export class SaleListingComponent {
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router:Router
   ) { }
 
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        if(this.currentOrganizationId){
+          this.router.navigate(['/','purchase','sales'], {
+            queryParams: {
+              'SALE': null,
+            },
+            queryParamsHandling: 'merge'
+          })
+        }
           this.currentOrganizationId=change.id;
           this.route.queryParams.subscribe(async(params) => {
             // Use this queryParams object to load data
-            if (!params['SALE']) {
+            
+             if (!params['SALE']) {
             this.showSide=false
             this.loadSaleDataFromServer();
 

@@ -148,6 +148,16 @@ export class SaleRequestComponent implements OnInit {
       this.removeProduct(index)
     });
   }
+
+  close(){
+    this.router.navigate(['/','purchase','sales'], {
+      queryParams: {
+        'SALE': null,
+      },
+      queryParamsHandling: 'merge'
+    })
+  }
+ 
   getReturnItemFormGroup(form: FormGroup) {
     return form.get('return_details') as FormArray
   }

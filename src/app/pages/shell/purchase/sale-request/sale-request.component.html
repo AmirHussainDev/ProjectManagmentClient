@@ -7,8 +7,9 @@
             </h4>
         </span>
         <span>
-            <button nz-button nzType="primary" (click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
-            <button style="margin-left: 12px;" nz-button nzType="primary" (click)="printCard()"> <span nz-icon nzType="printer"></span></button>
+            <button nz-button nzType="primary" nz-tooltip="Generate PDF"(click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
+            <button style="margin-left: 12px;" nz-button nz-tooltip="Print request" nzType="primary" (click)="printCard()"> <span nz-icon nzType="printer"></span></button>
+            <button style="margin-left: 12px;" nz-button nz-tooltip="Close request" nzType="default" nzDanger (click)="close()"> <span nz-icon nzType="close"></span></button>
         </span>
     </div>
 

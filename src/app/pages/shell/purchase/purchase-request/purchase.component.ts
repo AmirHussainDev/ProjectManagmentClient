@@ -76,6 +76,7 @@ export class PurchaseComponent implements OnInit {
   })
   sites: any[];
   subOrgSubscription: Subscription;
+  currentOrganizationId: number;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -119,13 +120,21 @@ export class PurchaseComponent implements OnInit {
   submitForm() { }
   ngOnInit(): void {
     this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
-      if (change && change.id > 0) {
+      if (change && change.id > 0 && this.currentOrganizationId != change.id) {
+        this.currentOrganizationId = change.id
         this.setUpPurchaseForm()
 
       }
     });
   }
-
+  close(){
+    this.router.navigate(['/','purchase'], {
+      queryParams: {
+        'PO': null,
+      },
+      queryParamsHandling: 'merge'
+    })
+  }
   async setUpPurchaseForm() {
     await this.loadSitesVendorsAndUsers();
     this.route.queryParams.subscribe(async(params) => {

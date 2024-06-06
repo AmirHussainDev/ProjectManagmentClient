@@ -46,8 +46,8 @@ export class AppService {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/organizations/${organization_id}`).toPromise();
       const subOrgs = response as SubOrganization[]
-      if (subOrgs && subOrgs.length && setDefault && localStorage.getItem('sub_organization_id')) {
-        const subOrg = subOrgs.find((sub) => sub.id == (localStorage.getItem('sub_organization_id') || 0))
+      if (subOrgs && subOrgs.length && setDefault && localStorage.getItem('selectedOrganzation')) {
+        const subOrg = subOrgs.find((sub) => sub.id == JSON.parse(localStorage.getItem('selectedOrganzation')||'{}').id || 0)
         this.setSubOrganization(subOrg || { id: 0, name: '', organization_id: (organization_id || 0) as number })
       }
       return subOrgs;

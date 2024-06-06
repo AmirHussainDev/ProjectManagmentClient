@@ -6,7 +6,7 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
 import { InvoiceStateNames, POStates } from '../../../services/app.constants';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 
 
 @Component({
@@ -29,6 +29,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
     private appService: AppService,
     private media: MediaMatcher,
     private route: ActivatedRoute,
+    private router:Router,
 
   ) { }
   total = 1;
@@ -73,9 +74,17 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-        this.currentOrganizationId = change.id
+        if(this.currentOrganizationId){
+          this.router.navigate(['/','purchase'], {
+            queryParams: {
+              'PO': null,
+            },
+            queryParamsHandling: 'merge'
+          })
+        }
+        this.currentOrganizationId = change.id;
+        this.showSide=false;
         this.route.queryParams.subscribe(async(params) => {
-        // Use this queryParams object to load data
         if (!params['PO']) {
         this.showSide=false;
         this.onPurchaseQueryParamsChange({
