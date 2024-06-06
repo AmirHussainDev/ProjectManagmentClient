@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SubOrganization } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
+import { AppPermissions } from '../../../../services/app.constants';
 
 @Component({
   selector: 'app-organization-selector',
@@ -12,6 +13,7 @@ export class OrganizationSelectorComponent implements OnInit {
   data: SubOrganization[] = []
   @Input() visible = false;
   @Output() closeDrawer = new EventEmitter<boolean>();
+  appPermissions=AppPermissions
   constructor(private appService: AppService) {
 
   }

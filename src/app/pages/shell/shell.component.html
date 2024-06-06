@@ -175,9 +175,9 @@
             <span>
               <button nz-button class="header-button" (click)="toggleOrganizations()">
                 {{currentSubOrganization.name}}
-                <span nz-icon style="font-size: 18px;" nzType="down"></span>
+                <span nz-icon style="font-size: 18px;" nzType="down"  *appHasPermission="appPermissions.SwitchOrganization"  ></span>
               </button>
-              <app-organization-selector [visible]="showOrganizations"
+              <app-organization-selector *appHasPermission="appPermissions.SwitchOrganization"  [visible]="showOrganizations"
                 (closeDrawer)="toggleOrganizations()"></app-organization-selector>
 
             </span>
