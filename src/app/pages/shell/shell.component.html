@@ -174,7 +174,7 @@
           <span class="flex center space-between" [style.width]="isMobile()?'100%':'auto'">
             <span>
               <button nz-button class="header-button" (click)="toggleOrganizations()">
-                {{currentSubOrganization.name}}
+                {{currentSubOrganization?.name}}
                 <span nz-icon style="font-size: 18px;" nzType="down"  *appHasPermission="appPermissions.SwitchOrganization"  ></span>
               </button>
               <app-organization-selector *appHasPermission="appPermissions.SwitchOrganization"  [visible]="showOrganizations"

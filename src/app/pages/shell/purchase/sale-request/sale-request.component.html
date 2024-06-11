@@ -112,7 +112,7 @@
                                                 (ngModelChange)="onQuantityChange(i)">
                                             <nz-tree-select
                                                 *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
-                                                [nzExpandedKeys]="expandableKey" [nzNodes]="nodes" nzShowSearch
+                                                [nzExpandedKeys]="expandableKey" [nzNodes]="nodes||[]" nzShowSearch
                                                 nzPlaceHolder="Please select" formControlName="selected_item"
                                                 (ngModelChange)="onItemChange(i)"></nz-tree-select>
                                         </td>
@@ -307,20 +307,39 @@
                         </nz-form-item>
                         <nz-form-item>
                             <nz-form-label nzRequired nzFor="due_date">Attachments</nz-form-label>
-                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
-                                nzErrorTip="The input is not valid date!">
-                                <nz-upload nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                                    [nzHeaders]="{ authorization: 'authorization-text' }"
-                                    (nzChange)="handleChange($event)">
-                                    <button nz-button>
-                                        <span nz-icon nzType="upload"></span>
-                                        Click to Upload
-                                    </button>
-                                </nz-upload>
+                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24" nzHasFeedback nzErrorTip="Please input Organization name">
+                                <nz-upload
+                                nzAction="null"
+                                nzListType="picture-card"
+                                [nzDisabled]="SaleRequestDetails.controls.attachment.disabled"
+                                [(nzFileList)]="fileList"
+                                [nzShowUploadList]="{showPreviewIcon:true,showRemoveIcon:!SaleRequestDetails.controls.attachment.disabled,showDownloadIcon:true}"
+
+                                [nzShowButton]="!SaleRequestDetails.controls.attachment.disabled && fileList.length < 4"
+                                [nzPreview]="handlePreview"
+                                [nzDownload]="donwnloadFile"
+                                [nzBeforeUpload]="beforeUpload"
+                                (nzChange)="handleChange($event)"
+                              >
+                                <div>
+                                  <span nz-icon nzType="plus"></span>
+                                  <div style="margin-top: 8px">Upload</div>
+                                </div>
+                              </nz-upload>
                             </nz-form-control>
                         </nz-form-item>
                     </nz-card>
                 </div>
+                <nz-modal
+                [nzVisible]="previewVisible"
+                [nzContent]="modalContent"
+                [nzFooter]="null"
+                (nzOnCancel)="previewVisible = false"
+              >
+                <ng-template #modalContent>
+                  <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+                </ng-template>
+              </nz-modal>
                 <span class="flex space-between">
                     <span>
                         <button *ngIf="(SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation)"
@@ -329,14 +348,14 @@
                     </span>
                     <span>
                         <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft" nz-button
-                            nzType="primary" (click)="submitRequest()"
+                            nzType="primary" [disabled]="SaleRequestDetails.invalid" (click)="submitRequest()"
                             style="margin-bottom: 12px;float: right;">Submit</button>
                         <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation"
-                            nz-button nzType="primary" (click)="confirmPaymentDetails()"
+                            nz-button nzType="primary" [disabled]="SaleRequestDetails.invalid" (click)="confirmPaymentDetails()"
                             style="margin-bottom: 12px;float: right;">Confirm
                             Payment</button>
-                        <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Invoiced"
-                            nz-button nzType="primary" (click)="confirmPaymentDetails(true)"
+                        <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Invoiced||SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation"
+                            nz-button nzType="primary" [disabled]="SaleRequestDetails.invalid" (click)="confirmPaymentDetails(true)"
                             style="margin-bottom: 12px;margin-right: 12px;">
                             Save
                         </button>

@@ -30,6 +30,7 @@
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "ng-zorro-antd": "^17.2.0",
+    "ngx-image-compress": "^15.1.6",
     "ngx-print": "^1.5.1",
     "pdfmake": "^0.2.10",
     "rxjs": "~7.8.0",

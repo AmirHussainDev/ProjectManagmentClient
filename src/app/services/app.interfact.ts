@@ -7,6 +7,7 @@ export interface SubOrganization {
     name: string;
     key?: string;
     value?: number;
+    filename?: string;
 }
 
 export interface Role {

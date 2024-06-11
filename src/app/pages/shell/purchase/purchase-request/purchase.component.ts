@@ -5,7 +5,7 @@ import { ItemControl, PurchaseDetails, PurchaseItem, PurchaseOrder } from '../..
 import { Observable, Observer, Subscription } from 'rxjs';
 import { UserService } from '../../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { User } from '../../team/users/users.interface';
@@ -15,6 +15,7 @@ import _ from 'lodash'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { InvoiceStateNames, POStates } from '../../../../services/app.constants';
 import { PdfGeneratorService } from '../../../../services/pdf-generator.service';
+import { DataUrl, NgxImageCompressService, UploadResponse } from 'ngx-image-compress';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
@@ -42,12 +43,12 @@ export class PurchaseComponent implements OnInit {
     isCustom: false,
     unit_price: 0
   }
-  isSpinning=false;
+  isSpinning = false;
   currentSubOrganizationSubscription: Subscription;
   previousPurchaseDetails: any;
   purchaseDetails: FormGroup<PurchaseDetails> = new FormGroup({
     id: new FormControl(),
-    purchase_no:new FormControl(),
+    purchase_no: new FormControl(),
     subject: new FormControl(),
     isSiteBased: new FormControl(),
     site_ids: new FormControl(),
@@ -77,6 +78,7 @@ export class PurchaseComponent implements OnInit {
   sites: any[];
   subOrgSubscription: Subscription;
   currentOrganizationId: number;
+  fileList: NzUploadFile[] = []
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -86,15 +88,17 @@ export class PurchaseComponent implements OnInit {
     private router: Router,
     private msg: NzMessageService,
     private modal: NzModalService,
-    private pdfGeneratorService: PdfGeneratorService) {
+    private pdfGeneratorService: PdfGeneratorService,
+    private imageCompress: NgxImageCompressService
+  ) {
     this.purchaseDetails = this.fb.group({
       id: new FormControl(),
-      subject: new FormControl(),
+      subject: new FormControl(null, [Validators.required]),
       isSiteBased: new FormControl(),
-      purchase_no:new FormControl(),
+      purchase_no: new FormControl(),
       site_ids: new FormControl(),
       items: this.fb.array([]),
-      selectedVendor: new FormControl(),
+      selectedVendor: new FormControl(null, [Validators.required]),
       state: new FormControl(POStates.Draft),
       notes: new FormControl(),
       items_discount_total: new FormControl(0),
@@ -127,8 +131,8 @@ export class PurchaseComponent implements OnInit {
       }
     });
   }
-  close(){
-    this.router.navigate(['/','purchase'], {
+  close() {
+    this.router.navigate(['/', 'purchase'], {
       queryParams: {
         'PO': null,
       },
@@ -137,34 +141,34 @@ export class PurchaseComponent implements OnInit {
   }
   async setUpPurchaseForm() {
     await this.loadSitesVendorsAndUsers();
-    this.route.queryParams.subscribe(async(params) => {
+    this.route.queryParams.subscribe(async (params) => {
       // Use this queryParams object to load data
-      this.isSpinning=true;
-      let id=0
-      if (!params['PO']||params['PO']==='new') {
+      this.isSpinning = true;
+      let id = 0
+      if (!params['PO'] || params['PO'] === 'new') {
         this.purchaseDetails.enable();
         this.purchaseDetails.updateValueAndValidity();
-      }else{
-        id=params['PO']
+      } else {
+        id = params['PO']
       }
       this.purchaseDetails.reset({ state: POStates.Draft, id: 0 });
-     this.clearItems();
-        this.purchaseDetails.controls['id'].setValue(id || 0);
-     
-        await  this.setPurchaseRequestDetails();
-          
-        setTimeout(async()=>{
-          this.isSpinning=false;
-    
-      },1000)
+      this.clearItems();
+      this.purchaseDetails.controls['id'].setValue(id || 0);
+
+      await this.setPurchaseRequestDetails();
+
+      setTimeout(async () => {
+        this.isSpinning = false;
+
+      }, 1000)
     });
 
-    
+
   }
-  clearItems(){
-    this.purchaseDetails.value.items?.forEach((element: any,index: number) => {
-      this.removeProduct(index)
-    });
+  clearItems() {
+    while ((this.purchaseDetails.get('items') as FormArray).value?.length !== 0) {
+      this.purchaseDetails.controls.items.removeAt(0)
+    }
   }
   async setSitesData() {
     const resp: any = await this.appService.getAndSetSites();
@@ -193,13 +197,13 @@ export class PurchaseComponent implements OnInit {
 
       this.purchaseDetails.patchValue({
         id: response.id,
-        purchase_no:response.purchase_no,
+        purchase_no: response.purchase_no,
         subject: response.subject,
         selectedVendor: response.selectedVendor,
         state: response.state,
         isSiteBased: response.isSiteBased,
         notes: response.notes,
-        sales_person:response.sales_person,
+        sales_person: response.sales_person,
         items_discount_total: response.items_discount_total,
         overall_discount_total: response.overall_discount_total,
         item_cost: response.item_cost,
@@ -210,18 +214,29 @@ export class PurchaseComponent implements OnInit {
         total: response.total,
         balance: response.balance,
         vendor: response.vendor?.id,
-        invoice_date:response.invoice_date,
-        due_date:response.due_date,
+        invoice_date: response.invoice_date,
+        due_date: response.due_date,
         organization_id: response.organization_id,
         sub_organization_id: response.sub_organization_id,
+        attachment: response.attachment,
       })
-
+      if (response.attachment && response.attachment.length) {
+        this.fileList = response.attachment.map((file: any) => (
+          {
+            name: 'image.png',
+            status: 'done',
+            url: file,
+            message: '',
+            thumbUrl: file
+          }
+        ))
+      }
       this.purchaseDetails.controls.selectedVendor.setValue(this.vendors.find(ven => ven.id == this.purchaseDetails.controls.vendor.value));
       if (response.isSiteBased) {
-        const selectedSites=JSON.parse(response.site_ids || '[]')
+        const selectedSites = JSON.parse(response.site_ids || '[]')
 
         this.purchaseDetails.controls.site_ids.setValue(
-          this.sites.filter(site => selectedSites?.indexOf(site.id) > -1)?.map((site:any)=>site.id)
+          this.sites.filter(site => selectedSites?.indexOf(site.id) > -1)?.map((site: any) => site.id)
         )
       }
       const items = response.items || [];
@@ -252,7 +267,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   async onVendorSelect() {
-    this.isSpinning?null: this.clearItems();
+    this.isSpinning ? null : this.clearItems();
     if (this.purchaseDetails.controls.selectedVendor.value && !this.loading) {
       this.addRow();
       this.vendorItems = await this.appService.getVendorItems(this.purchaseDetails.controls.selectedVendor.value?.id)
@@ -438,8 +453,8 @@ export class PurchaseComponent implements OnInit {
     });
 
   }
-  async confirmPaymentDetails() {
-    if (!this.purchaseDetails.value.amount_paid || Number(this.purchaseDetails.value.amount_paid) !== Number(this.purchaseDetails.get('total')?.value)) {
+  async confirmPaymentDetails(save = false) {
+    if (!save && !this.purchaseDetails.value.amount_paid || Number(this.purchaseDetails.value.amount_paid) !== Number(this.purchaseDetails.get('total')?.value)) {
       this.notification.create(
         'error',
         'Balance exists',
@@ -458,7 +473,7 @@ export class PurchaseComponent implements OnInit {
     const response: any = await this.appService.updatePurchaseRequest({
       details: {
         ...{ ..._.omit(body, 'items') } as any,
-        state: POStates.Completed
+        state: save ? POStates.PaymentProcessing : POStates.Completed
       }, products: []
     })
     if (response) {
@@ -514,19 +529,19 @@ export class PurchaseComponent implements OnInit {
     this.makePdf('download')
   }
 
-  makePdf(action:string){
-    const details=this.purchaseDetails.getRawValue()
-    this.pdfGeneratorService.invoice={
+  makePdf(action: string) {
+    const details = this.purchaseDetails.getRawValue()
+    this.pdfGeneratorService.invoice = {
       ...details,
-      type:'purchase',
-      status:this.stateNames[details.state],
+      type: 'purchase',
+      status: this.stateNames[details.state],
       invoiceDetailLabel: 'Purchase Details',
       personName: details.vendor.name,
-      address: details.vendor.address||'',
-      contactNo: details.vendor.contact_no||'',
+      address: details.vendor.address || '',
+      contactNo: details.vendor.contact_no || '',
       terms: details.terms,
-      email: details.vendor.email||'',
-      additionalDetails: details.notes||'',
+      email: details.vendor.email || '',
+      additionalDetails: details.notes || '',
     }
     this.pdfGeneratorService.generatePDF(action)
     return;
@@ -596,6 +611,64 @@ export class PurchaseComponent implements OnInit {
       this.purchaseDetails.updateValueAndValidity();
     }
   }
+  private getBase64(img: File, callback: (img: string) => void): void {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result!.toString()));
+    reader.readAsDataURL(img);
+  }
+
+  handleChange(info: {
+    file: NzUploadFile,
+    type?: any, fileList?: NzUploadFile[]
+  }) {
+    this.getBase64(info.file!.originFileObj!, async (img: string) => {
+      this.loading = false;
+      if (info['type'] === 'error') {
+        const orientation = await this.imageCompress.getOrientation(info.file.originFileObj || new File([], ''))
+        this.imageCompress
+          .compressFile(img,
+            orientation
+            , 50, 80, 800, 800)
+          .then((result: DataUrl) => {
+            console.warn(
+              `Compressed: ${result.substring(0, 50)}... (${result.length
+              } characters)`
+            );
+            console.warn(
+              'Size in bytes is now:',
+              this.imageCompress.byteCount(result)
+            );
+
+
+            info.fileList?.forEach(fileItem => {
+
+              if (fileItem.uid == info.file.uid) {
+                fileItem.name = 'image.png';
+                fileItem.status = 'done';
+                fileItem.url = result;
+                fileItem['message'] = '';
+                fileItem.thumbUrl = result;
+              }
+
+            })
+            Object.assign(this.fileList, info.fileList)
+
+            this.purchaseDetails.patchValue({
+              attachment: info.fileList?.map(fileItem => fileItem.url)
+            })
+          });
+      }
+    });
+
+
+  }
+
+
+
+  previewImage: string | undefined = '';
+  previewVisible = false;
+
+
   beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
     new Observable((observer: Observer<boolean>) => {
 
@@ -611,23 +684,24 @@ export class PurchaseComponent implements OnInit {
         observer.complete();
         return;
       }
-      this.purchaseDetails.patchValue({
-        attachment: file
-      })
       observer.next(isJpgOrPng && isLt2M);
       observer.complete();
     });
 
-  private getBase64(img: File, callback: (img: string) => void): void {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result!.toString()));
-    reader.readAsDataURL(img);
-  }
 
-  handleChange(info: { file: NzUploadFile }): void {
+  handlePreview = async (file: NzUploadFile): Promise<void> => {
+    this.previewImage = file.url || file['preview'];
+    this.previewVisible = true;
+  };
 
-    this.getBase64(info.file!.originFileObj!, (img: string) => {
-      this.loading = false;
-    });
+  donwnloadFile = (file: NzUploadFile): void => {
+    console.log(file)
+    const src = `${file.url}`;
+    const link = document.createElement("a")
+    link.href = src
+    link.download = file.filename || ''
+    link.click()
+
+    link.remove()
   }
 }

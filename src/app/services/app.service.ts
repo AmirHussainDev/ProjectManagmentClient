@@ -80,7 +80,19 @@ export class AppService {
       throw error;
     }
   }
+  async createSubOrganization(body:any): Promise<Role> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      body={...body,organization_id }
 
+      const response = await this.http.post(`/api/organizations/subOrg`, body).toPromise();
+      return response as Role;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error creating organization vendor:', error);
+      throw error;
+    }
+  }
   async createVendor(name: string, file: File): Promise<Role> {
     try {
       const body = new FormData();

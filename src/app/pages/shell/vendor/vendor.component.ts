@@ -65,6 +65,9 @@ export class VendorComponent implements OnInit , OnDestroy {
   ) {
     this.addVendorForm = this.fb.group({
       name: ['', [Validators.required]],
+      contact_no: ['', [Validators.required]],
+      email: ['', [Validators.required]],
+      address: ['', [Validators.required]],
       file: ['', [Validators.required]]
     })
   }

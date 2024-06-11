@@ -23,6 +23,7 @@ export const AppPermissions = {
     ViewPermissions: 20,
     UpdatePermissions: 21,
     SwitchOrganization: 23,
+    CreateOrganization:24
 }
 
 export const PermissionName = {
@@ -49,6 +50,7 @@ export const PermissionName = {
     [AppPermissions.ViewPermissions]: "View Permissions",
     [AppPermissions.UpdatePermissions]: "Update Permissions",
     [AppPermissions.SwitchOrganization]: "Switch Organization",
+    [AppPermissions.CreateOrganization]: "Create Organization",
     
 }
 
@@ -76,6 +78,7 @@ export const DefaultPermissions = {
     [AppPermissions.ViewPermissions]: false,
     [AppPermissions.UpdatePermissions]: false,
     [AppPermissions.SwitchOrganization]: false,
+    [AppPermissions.CreateOrganization]: false,
 }
 
 export const SaleStates = {

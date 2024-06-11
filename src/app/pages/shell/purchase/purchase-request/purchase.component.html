@@ -1,305 +1,325 @@
 <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
-   
-<div class="container">
-    <div class="detailBar">
-        <span>
-            <h4> PO - {{purchaseDetails.get('purchase_no')?.value || 'New'}} /
-                {{stateNames[purchaseDetails.get('state')?.value]}}
-            </h4>
-        </span>
-        <span>
-            <button nz-button nzType="primary" nz-tooltip="Generate PDF"(click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
-            <button style="margin-left: 12px;" nz-button nz-tooltip="Print request" nzType="primary" (click)="printCard()"> <span nz-icon nzType="printer"></span></button>
-            <button style="margin-left: 12px;" nz-button nz-tooltip="Close request" nzType="default" nzDanger (click)="close()"> <span nz-icon nzType="close"></span></button>
-        </span>
-    </div>
 
-    <div class="purchase-request" id="print-section">
-        <nz-card style="width:100%" nzBordered="false">
-            <form nz-form [formGroup]="purchaseDetails" (ngSubmit)="submitForm()">
-                <div #content>
-                    <nz-form-item>
-                        <nz-form-control nzErrorTip="Please select a vendor">
-                            <div nz-col>
-                                <label nz-checkbox [nzChecked]="purchaseDetails.get('isSiteBased')?.value"
-                                    formControlName="isSiteBased">
-                                    <span>Site Based</span>
-                                </label>
-                            </div>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item *ngIf="purchaseDetails.get('isSiteBased')?.value">
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sites</nz-form-label>
-                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-select nzMode="multiple" class="inputField" formControlName="site_ids"
-                                placeholder="Select sites">
-                                <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem.id"
-                                    [nzLabel]="siteItem.label"></nz-option>
-                            </nz-select>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="selectedVendor">Vendor</nz-form-label>
-                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select a vendor">
-                            <nz-select class="inputField" formControlName="selectedVendor"
-                                (ngModelChange)="onVendorSelect()" nzAllowClear nzPlaceHolder="Select a vendor"
-                                style="width: 200px; margin-bottom: 12px;">
-                                <nz-option *ngFor="let vendor of vendors" [nzLabel]="vendor.name"
-                                    [nzValue]="vendor"></nz-option>
-                            </nz-select>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sales
-                            Person</nz-form-label>
-                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-select id="reports_to" formControlName="sales_person" placeholder="Select user">
-                                <nz-option *ngFor="let user of listOfData" [nzValue]="user?.id"
-                                    [nzLabel]="user?.name"></nz-option>
-                            </nz-select> </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="invoice_date">Invoice
-                            Date</nz-form-label>
-                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-date-picker class="inputField" formControlName="invoice_date"></nz-date-picker>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="due_date">Due Date</nz-form-label>
-                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-date-picker class="inputField" formControlName="due_date"></nz-date-picker>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="subject">Subject</nz-form-label>
-                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <input nz-input class="inputField" formControlName="subject">
-                        </nz-form-control>
-                    </nz-form-item>
+    <div class="container">
+        <div class="detailBar">
+            <span>
+                <h4> PO - {{purchaseDetails.get('purchase_no')?.value || 'New'}} /
+                    {{stateNames[purchaseDetails.get('state')?.value]}}
+                </h4>
+            </span>
+            <span>
+                <button nz-button nzType="primary" nz-tooltip="Generate PDF" (click)="generatePDF()"> <span nz-icon
+                        nzType="download"></span></button>
+                <button style="margin-left: 12px;" nz-button nz-tooltip="Print request" nzType="primary"
+                    (click)="printCard()"> <span nz-icon nzType="printer"></span></button>
+                <button style="margin-left: 12px;" nz-button nz-tooltip="Close request" nzType="default" nzDanger
+                    (click)="close()"> <span nz-icon nzType="close"></span></button>
+            </span>
+        </div>
 
-                    <nz-table [nzNoResult]="customNoDataTemplate" [nzPageSize]="1000" [nzBordered]="true" [nzShowPagination]="false"
-                        style="margin-bottom: 12px;">
-                        <thead>
-                            <tr>
-                                <th nzWidth="25%">Item</th>
-                                <th nzWidth="15%">Quantity</th>
-                                <th nzWidth="15%" *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">Unit
-                                    Price
-                                </th>
-                                <th nzWidth="15%" *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                                    Discount
-                                    (%)</th>
-                                <th nzWidth="15%" *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">Total
-                                </th>
-                                <th nzWidth="10%" *ngIf="purchaseDetails.controls.state.value==POStates.Draft"></th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <td><button *ngIf="purchaseDetails.controls.state.value==POStates.Draft"
-                                        style="float: left;" nz-button nzType="primary" nzSize="small" nzShape="round"
-                                        (click)="addProductRow()">
-                                        <span nz-icon nzTheme="outline" nzType="plus"></span>
+        <div class="purchase-request" id="print-section">
+            <nz-card style="width:100%" nzBordered="false">
+                <form nz-form [formGroup]="purchaseDetails" (ngSubmit)="submitForm()">
+                    <div #content>
+                        <nz-form-item>
+                            <nz-form-control nzErrorTip="Please select a vendor">
+                                <div nz-col>
+                                    <label nz-checkbox [nzChecked]="purchaseDetails.get('isSiteBased')?.value"
+                                        formControlName="isSiteBased">
+                                        <span>Site Based</span>
+                                    </label>
+                                </div>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item *ngIf="purchaseDetails.get('isSiteBased')?.value">
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sites</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-select nzMode="multiple" class="inputField" formControlName="site_ids"
+                                    placeholder="Select sites">
+                                    <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem.id"
+                                        [nzLabel]="siteItem.label"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired
+                                nzFor="selectedVendor">Vendor</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select a vendor">
+                                <nz-select class="inputField" formControlName="selectedVendor"
+                                    (ngModelChange)="onVendorSelect()" nzAllowClear nzPlaceHolder="Select a vendor"
+                                    style="width: 200px; margin-bottom: 12px;">
+                                    <nz-option *ngFor="let vendor of vendors" [nzLabel]="vendor.name"
+                                        [nzValue]="vendor"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sales
+                                Person</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-select id="reports_to" formControlName="sales_person" placeholder="Select user">
+                                    <nz-option *ngFor="let user of listOfData" [nzValue]="user?.id"
+                                        [nzLabel]="user?.name"></nz-option>
+                                </nz-select> </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="invoice_date">Invoice
+                                Date</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-date-picker class="inputField" formControlName="invoice_date"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="due_date">Due Date</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-date-picker class="inputField" formControlName="due_date"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="subject">Subject</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <input nz-input class="inputField" formControlName="subject">
+                            </nz-form-control>
+                        </nz-form-item>
 
-                                    </button>
-                                </td>
-                                <td></td>
-                                <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft"></td>
-                                <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                                    <h5
-                                        [innerHTML]="purchaseDetails.get('items_discount_total')?.value| currency:'PKR '">
-                                    </h5>
-                                </td>
-                                <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                                    <h5 [innerHTML]="purchaseDetails.get('item_cost')?.value| currency:'PKR '">
-                                    </h5>
-                                </td>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            <ng-container formArrayName="items">
-                                <tr [formGroupName]="i"
-                                    *ngFor="let control of purchaseDetails.controls.items.controls; let i = index">
-                                    <td>
-                                        <nz-select formControlName="name" [nzDropdownRender]="renderTemplate"
-                                            nzAllowClear nzPlaceHolder="Select item">
-                                            <nz-option *ngFor="let item of vendorItems" [nzLabel]="item.name"
-                                                [nzValue]="item.name"></nz-option>
-                                        </nz-select>
+                        <nz-table [nzNoResult]="customNoDataTemplate" [nzPageSize]="1000" [nzBordered]="true"
+                            [nzShowPagination]="false" style="margin-bottom: 12px;">
+                            <thead>
+                                <tr>
+                                    <th nzWidth="25%">Item</th>
+                                    <th nzWidth="15%">Quantity</th>
+                                    <th nzWidth="15%" *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">Unit
+                                        Price
+                                    </th>
+                                    <th nzWidth="15%" *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                        Discount
+                                        (%)</th>
+                                    <th nzWidth="15%" *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                        Total
+                                    </th>
+                                    <th nzWidth="10%" *ngIf="purchaseDetails.controls.state.value==POStates.Draft"></th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <td><button *ngIf="purchaseDetails.controls.state.value==POStates.Draft"
+                                            style="float: left;" nz-button nzType="primary" nzSize="small"
+                                            nzShape="round" (click)="addProductRow()">
+                                            <span nz-icon nzTheme="outline" nzType="plus"></span>
+
+                                        </button>
                                     </td>
-                                    <td>
-                                        <input nz-input-number formControlName="qty"
-                                            (ngModelChange)="onQuantityChange(i)">
+                                    <td></td>
+                                    <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft"></td>
+                                    <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                        <h5
+                                            [innerHTML]="purchaseDetails.get('items_discount_total')?.value| currency:'PKR '">
+                                        </h5>
                                     </td>
                                     <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                                        <input nz-input-number formControlName="unit_price"
-                                            (ngModelChange)="onPriceChange(i)">
-                                    </td>
-                                    <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                                        <input nz-input-number formControlName="discount"
-                                            (ngModelChange)="onDiscountChange(i)">
-                                    </td>
-                                    <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                                        <h5> {{ (control.value.total * 1)| currency:'PKR ' }}</h5>
-                                    </td>
-                                    <td *ngIf="purchaseDetails.controls.state.value==POStates.Draft">
-                                        <a (click)="removeProduct(i)">
-                                            <button style="float: right;" nz-button nzType="primary" nzSize="small"
-                                                nzShape="round">
-                                                <span nz-icon nzTheme="outline" nzType="minus"></span>
-                                            </button>
-                                        </a>
+                                        <h5 [innerHTML]="purchaseDetails.get('item_cost')?.value| currency:'PKR '">
+                                        </h5>
                                     </td>
                                 </tr>
-                            </ng-container>
+                            </tfoot>
+                            <tbody>
+                                <ng-container formArrayName="items">
+                                    <tr [formGroupName]="i"
+                                        *ngFor="let control of purchaseDetails.controls.items.controls; let i = index">
+                                        <td>
+                                            <nz-select formControlName="name" [nzDropdownRender]="renderTemplate"
+                                                nzAllowClear nzPlaceHolder="Select item">
+                                                <nz-option *ngFor="let item of vendorItems" [nzLabel]="item.name"
+                                                    [nzValue]="item.name"></nz-option>
+                                            </nz-select>
+                                        </td>
+                                        <td>
+                                            <input nz-input-number formControlName="qty"
+                                                (ngModelChange)="onQuantityChange(i)">
+                                        </td>
+                                        <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                            <input nz-input-number formControlName="unit_price"
+                                                (ngModelChange)="onPriceChange(i)">
+                                        </td>
+                                        <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                            <input nz-input-number formControlName="discount"
+                                                (ngModelChange)="onDiscountChange(i)">
+                                        </td>
+                                        <td *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                            <h5> {{ (control.value.total * 1)| currency:'PKR ' }}</h5>
+                                        </td>
+                                        <td *ngIf="purchaseDetails.controls.state.value==POStates.Draft">
+                                            <a (click)="removeProduct(i)">
+                                                <button style="float: right;" nz-button nzType="primary" nzSize="small"
+                                                    nzShape="round">
+                                                    <span nz-icon nzTheme="outline" nzType="minus"></span>
+                                                </button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-container>
 
-                        </tbody>
-                    </nz-table>
-                    <nz-row nzGutter="2" style="margin-bottom: 12px;">
-                        <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
+                            </tbody>
+                        </nz-table>
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                            <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
 
 
-                            <!-- <button nz-button *ngIf="purchaseDetails.controls.state.value==POStates.Draft"
+                                <!-- <button nz-button *ngIf="purchaseDetails.controls.state.value==POStates.Draft"
                     nzType="primary"  style="margin-bottom: 12px;">Add
                     Product</button> -->
-                        </nz-col>
-                        <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
-                            <nz-card *ngIf="purchaseDetails.controls.state.value!==POStates.Draft"
-                                [nzActions]="[totalLabel, totalAmount]">
+                            </nz-col>
+                            <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
+                                <nz-card *ngIf="purchaseDetails.controls.state.value!==POStates.Draft"
+                                    [nzActions]="[totalLabel, totalAmount]">
 
-                                <nz-form-item>
-                                    <nz-form-label nzFor="shipment_charges">Shipping Charges
-                                    </nz-form-label>
-                                    <nz-form-control nzErrorTip="The input is not valid date!">
-                                        <input nz-input class="inputField" formControlName="shipment_charges">
-                                    </nz-form-control>
-                                </nz-form-item>
-                                <nz-form-item>
-                                    <nz-form-label nzFor="additional_cost">Additional Cost
-                                    </nz-form-label>
-                                    <nz-form-control nzErrorTip="The input is not valid date!">
-                                        <input nz-input class="inputField" formControlName="additional_cost">
-                                    </nz-form-control>
-                                </nz-form-item>
-                                <nz-form-item>
-                                    <nz-form-label nzFor="additional_cost">Discount %
-                                    </nz-form-label>
-                                    <nz-form-control nzErrorTip="The input is not valid date!">
-                                        <input nz-input class="inputField" formControlName="overall_discount"
-                                            (change)="calculateOverAllDiscountAndTotal()">
-                                    </nz-form-control>
-                                </nz-form-item>
-                                <div>
-                                </div>
-                            </nz-card>
-                            <nz-card style="margin-top: 12px !important;"
-                                *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing"
-                                nzTitle="Payment Details" [nzActions]="[balanceLabel, balanceAmount]">
-                                <nz-form-item>
-                                    <nz-form-label nzFor="amount_paid">Amount Paid
-                                    </nz-form-label>
-                                    <nz-form-control nzErrorTip="">
-                                        <input nz-input class="inputField" formControlName="amount_paid"
-                                            (change)="calculateBalance()">
-                                    </nz-form-control>
-                                </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="shipment_charges">Shipping Charges
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="The input is not valid date!">
+                                            <input nz-input class="inputField" formControlName="shipment_charges">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="additional_cost">Additional Cost
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="The input is not valid date!">
+                                            <input nz-input class="inputField" formControlName="additional_cost">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="additional_cost">Discount %
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="The input is not valid date!">
+                                            <input nz-input class="inputField" formControlName="overall_discount"
+                                                (change)="calculateOverAllDiscountAndTotal()">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <div>
+                                    </div>
+                                </nz-card>
+                                <nz-card style="margin-top: 12px !important;"
+                                    *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing"
+                                    nzTitle="Payment Details" [nzActions]="[balanceLabel, balanceAmount]">
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="amount_paid">Amount Paid
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="">
+                                            <input nz-input class="inputField" formControlName="amount_paid"
+                                                (change)="calculateBalance()">
+                                        </nz-form-control>
+                                    </nz-form-item>
 
-                            </nz-card>
-                        </nz-col>
-                    </nz-row>
-                    <ng-template #totalLabel>
-                        <h5>Discount</h5>
-                        <h3>Total</h3>
-                    </ng-template>
-                    <ng-template #totalAmount>
-                        <p
-                            [innerHTML]="(((purchaseDetails.get('items_discount_total')?.value) * 1)+((purchaseDetails.get('overall_discount_total')?.value) * 1) )| currency:'PKR '">
-                        </p>
-                        <h4 [innerHTML]="purchaseDetails.get('total')?.value| currency:'PKR '">
-                        </h4>
-                    </ng-template>
-                    <ng-template #balanceLabel>
-                        <h3>Balance</h3>
-                    </ng-template>
-                    <ng-template #balanceAmount>
-                        <h4 [innerHTML]="purchaseDetails.get('balance')?.value| currency:'PKR '">
-                        </h4>
-                    </ng-template>
+                                </nz-card>
+                            </nz-col>
+                        </nz-row>
+                        <ng-template #totalLabel>
+                            <h5>Discount</h5>
+                            <h3>Total</h3>
+                        </ng-template>
+                        <ng-template #totalAmount>
+                            <p
+                                [innerHTML]="(((purchaseDetails.get('items_discount_total')?.value) * 1)+((purchaseDetails.get('overall_discount_total')?.value) * 1) )| currency:'PKR '">
+                            </p>
+                            <h4 [innerHTML]="purchaseDetails.get('total')?.value| currency:'PKR '">
+                            </h4>
+                        </ng-template>
+                        <ng-template #balanceLabel>
+                            <h3>Balance</h3>
+                        </ng-template>
+                        <ng-template #balanceAmount>
+                            <h4 [innerHTML]="purchaseDetails.get('balance')?.value| currency:'PKR '">
+                            </h4>
+                        </ng-template>
 
-                    <nz-card style="width:100%;margin-bottom: 12px;"
-                        *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
-                        <nz-form-item>
-                            <nz-form-label nzFor="notes">Customer Notes</nz-form-label>
-                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24" nzErrorTip="">
-                                <textarea nz-input formControlName="notes"
-                                    placeholder="textarea with clear icon"></textarea>
+                        <nz-card style="width:100%;margin-bottom: 12px;"
+                            *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                            <nz-form-item>
+                                <nz-form-label nzFor="notes">Customer Notes</nz-form-label>
+                                <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                    nzErrorTip="">
+                                    <textarea nz-input formControlName="notes"
+                                        placeholder="textarea with clear icon"></textarea>
 
-                            </nz-form-control>
-                        </nz-form-item>
-                        <nz-form-item>
-                            <nz-form-label nzFor="terms">Terms & Conditions</nz-form-label>
-                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24" nzErrorTip="">
-                                <textarea nz-input formControlName="terms"
-                                    placeholder="textarea with clear icon"></textarea>
-                            </nz-form-control>
-                        </nz-form-item>
-                        <nz-form-item>
-                            <nz-form-label nzRequired nzFor="due_date">Attachments</nz-form-label>
-                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
-                                nzErrorTip="The input is not valid date!">
-                                <nz-upload nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                                    [nzHeaders]="{ authorization: 'authorization-text' }"
-                                    (nzChange)="handleChange($event)">
-                                    <button nz-button>
-                                        <span nz-icon nzType="upload"></span>
-                                        Click to Upload
-                                    </button>
-                                </nz-upload>
-                            </nz-form-control>
-                        </nz-form-item>
-                    </nz-card>
-                </div>
-                <span class="flex space-between">
-                    <span>
-                        <button
-                            *ngIf="(purchaseDetails.controls.state.value==POStates.PaymentProcessing|| purchaseDetails.controls.state.value==POStates.PendingInvoice)"
-                            nz-button nzType="primary" (click)="cancelPaymentDetails()" nzDanger
-                            style="margin-bottom: 12px;float: right;">Cancel</button>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label nzFor="terms">Terms & Conditions</nz-form-label>
+                                <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                    nzErrorTip="">
+                                    <textarea nz-input formControlName="terms"
+                                        placeholder="textarea with clear icon"></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label nzRequired nzFor="due_date">Attachments</nz-form-label>
+
+                                <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                    nzHasFeedback nzErrorTip="Please input Organization name">
+                                    <nz-upload nzAction="null" nzListType="picture-card" [(nzFileList)]="fileList"
+                                        [nzDisabled]="purchaseDetails.controls.attachment.disabled"
+                                        [nzShowButton]="!purchaseDetails.controls.attachment.disabled && fileList.length < 4"
+                                        [nzPreview]="handlePreview" [nzDownload]="donwnloadFile"
+                                        [nzShowUploadList]="{showPreviewIcon:true,showRemoveIcon:!purchaseDetails.controls.attachment.disabled,showDownloadIcon:true}"
+                                        [nzBeforeUpload]="beforeUpload" (nzChange)="handleChange($event)">
+                                        <div>
+                                            <span nz-icon nzType="plus"></span>
+                                            <div style="margin-top: 8px">Upload</div>
+                                        </div>
+                                    </nz-upload>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </nz-card>
+                    </div>
+                    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+                        (nzOnCancel)="previewVisible = false">
+                        <ng-template #modalContent>
+                            <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+                        </ng-template>
+                    </nz-modal>
+                    <span class="flex space-between">
+                        <span>
+                            <button
+                                *ngIf="(purchaseDetails.controls.state.value==POStates.PaymentProcessing|| purchaseDetails.controls.state.value==POStates.PendingInvoice)"
+                                nz-button nzType="primary" (click)="cancelPaymentDetails()" nzDanger
+                                style="margin-bottom: 12px;float: right;">Cancel</button>
+                        </span>
+                        <span>
+                            <button *ngIf="purchaseDetails.controls.state.value==POStates.Draft" nz-button
+                                nzType="primary" (click)="submitRequest()" [disabled]="purchaseDetails.invalid"
+                                style="margin-bottom: 12px;float: right;">Submit</button>
+
+                            <button *ngIf="purchaseDetails.controls.state.value==POStates.PendingInvoice" nz-button
+                                nzType="primary" [disabled]="purchaseDetails.invalid" (click)="confirmInvoiceDetails()"
+                                style="margin-bottom: 12px;float: right;">Confirm
+                                Invoice</button>
+                            <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing" nz-button
+                                nzType="primary" [disabled]="purchaseDetails.invalid"
+                                (click)="confirmPaymentDetails(true)" style="margin-bottom: 12px;margin-right: 10px;">Save
+                            </button>
+                            <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing" nz-button
+                                nzType="primary" [disabled]="purchaseDetails.invalid" (click)="confirmPaymentDetails()"
+                                style="margin-bottom: 12px;float: right;">Confirm
+                                Payment</button>
+                        </span>
                     </span>
-                    <span>
-                        <button *ngIf="purchaseDetails.controls.state.value==POStates.Draft" nz-button nzType="primary"
-                            (click)="submitRequest()" style="margin-bottom: 12px;float: right;">Submit</button>
-
-                        <button *ngIf="purchaseDetails.controls.state.value==POStates.PendingInvoice" nz-button
-                            nzType="primary" (click)="confirmInvoiceDetails()"
-                            style="margin-bottom: 12px;float: right;">Confirm
-                            Invoice</button>
-
-                        <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing" nz-button
-                            nzType="primary" (click)="confirmPaymentDetails()"
-                            style="margin-bottom: 12px;float: right;">Confirm
-                            Payment</button>
-
-                    </span>
-                </span>
-            </form>
-        </nz-card>
-    </div>
-
-    <ng-template #renderTemplate>
-        <div class="container">
-            <input type="text" nz-input #inputElement />
-            <a class="add-item" (click)="addItem(inputElement)">
-                <span nz-icon nzType="plus"></span>
-                Add item
-            </a>
+                </form>
+            </nz-card>
         </div>
-    </ng-template>
 
-    <ng-template #customNoDataTemplate>
+        <ng-template #renderTemplate>
+            <div class="container">
+                <input type="text" nz-input #inputElement />
+                <a class="add-item" (click)="addItem(inputElement)">
+                    <span nz-icon nzType="plus"></span>
+                    Add item
+                </a>
+            </div>
+        </ng-template>
 
-    </ng-template>
+        <ng-template #customNoDataTemplate>
 
-</div>
+        </ng-template>
+
+    </div>
 </nz-spin>

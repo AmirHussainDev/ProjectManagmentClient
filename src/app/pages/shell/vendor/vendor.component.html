@@ -14,7 +14,25 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label nzRequired>Vendor Name</nz-form-label>
+            <nz-form-label nzRequired>Contact No</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input Vendor contact no">
+                <input nz-input formControlName="contact_no" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>Email</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input Vendor email">
+                <input nz-input formControlName="email" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>Address</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input vendor address">
+                <input nz-input formControlName="address" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>Vendor Image</nz-form-label>
             <nz-form-control nzHasFeedback nzErrorTip="Please input Vendor name">
 
                 <nz-upload class="avatar-uploader" nzAction="null" nzName="avatar" nzListType="picture-card"

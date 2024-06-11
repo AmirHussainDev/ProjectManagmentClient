@@ -16,6 +16,7 @@ import { ItemControl, SaleDetails, SaleOrder, SaleItemControl, SaleItemReturnCon
 import { SaleStateNames, SaleStates } from '../../../../services/app.constants';
 import { Customer } from '../customers/customers.interface';
 import { PdfGeneratorService } from '../../../../services/pdf-generator.service';
+import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 
 interface TreeNode {
   title: string;
@@ -42,7 +43,7 @@ export class SaleRequestComponent implements OnInit {
   @ViewChild('content', { static: false }) content: ElementRef;
   vendorItems: any[] = [];
   nodes: TreeNode[];
-  expandableKey: string[];
+  expandableKey: string[] = [];
   discountTotal: number = 0;
   SaleRequestTotal: number = 0;
   loading = false;
@@ -69,8 +70,9 @@ export class SaleRequestComponent implements OnInit {
   currentSubOrganizationSubscription: Subscription;
   previousSaleRequestDetails: any;
   SaleRequestDetails: FormGroup<SaleDetails>;
-  isSpinning=false;
+  isSpinning = false;
   currentOrganizationId: number;
+  fileList: NzUploadFile[] = []
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -80,11 +82,13 @@ export class SaleRequestComponent implements OnInit {
     private router: Router,
     private msg: NzMessageService,
     private modal: NzModalService,
-    private pdfGeneratorService:PdfGeneratorService) {
+    private pdfGeneratorService: PdfGeneratorService,
+    private imageCompress: NgxImageCompressService
+  ) {
     this.SaleRequestDetails = this.fb.group({
       id: new FormControl(),
-      sale_no:new FormControl(),
-      subject: new FormControl(),
+      sale_no: new FormControl(),
+      subject: new FormControl(null, [Validators.required]),
       items: this.fb.array<FormGroup<SaleItemControl>>([]),
       state: new FormControl(SaleStates.Draft),
       notes: new FormControl(),
@@ -104,7 +108,7 @@ export class SaleRequestComponent implements OnInit {
       sub_organization_id: new FormControl(0),
       invoice_date: new FormControl(new Date()),
       due_date: new FormControl(new Date()),
-      customer: new FormControl(0),
+      customer: new FormControl(0, [Validators.required]),
       attachment: new FormControl(false),
       new_customer: new FormControl(),
       terms: new FormControl('')
@@ -118,46 +122,49 @@ export class SaleRequestComponent implements OnInit {
         this.appService.getOrganizationCustomers().then(resp => {
           this.listOfData = resp;
         });
-    
-        this.route.queryParams.subscribe(async(params) => {
-          // Use this queryParams object to load data
-          this.isSpinning=true;
-          let id=0
-      if (!params['SALE']||params['SALE']==='new') {
-      }else{
-        id=params['SALE']
-      }
-      this.clearItems();
 
-          this.SaleRequestDetails.reset({ state: SaleStates.Draft, id: 0 ,items:[]});
+        this.route.queryParams.subscribe(async (params) => {
+          // Use this queryParams object to load data
+          this.isSpinning = true;
+          let id = 0
+          if (!params['SALE'] || params['SALE'] === 'new') {
+          } else {
+            id = params['SALE']
+          }
           this.SaleRequestDetails.enable();
+          this.clearItems();
+          this.SaleRequestDetails.reset({ state: SaleStates.Draft, id: 0, items: [], payment_history: [] });
           this.SaleRequestDetails.updateValueAndValidity();
           this.SaleRequestDetails.controls['id'].setValue(id || 0);
-         await this.setSaleRequestRequestDetails();
-         setTimeout(()=>{
-          this.isSpinning=false;
-         },1000)
+          await this.setSaleRequestRequestDetails();
+          setTimeout(() => {
+            this.isSpinning = false;
+          }, 1000)
         });
-            this.SaleRequestDetails.controls['sub_organization_id'].setValue(change.id);
-          
-        }
+        this.SaleRequestDetails.controls['sub_organization_id'].setValue(change.id);
+
+      }
     });
   }
-  clearItems(){
-    this.SaleRequestDetails.value.items?.forEach((element: any,index: number) => {
-      this.removeProduct(index)
-    });
+  
+  clearItems() {
+    while ((this.SaleRequestDetails.get('items') as FormArray).value.length !== 0) {
+      this.SaleRequestDetails.controls.items.removeAt(0)
+    }
+    while ((this.SaleRequestDetails.get('payment_history') as FormArray).value.length !== 0) {
+      this.SaleRequestDetails.controls.payment_history.removeAt(0)
+    }
   }
 
-  close(){
-    this.router.navigate(['/','purchase','sales'], {
+  close() {
+    this.router.navigate(['/', 'purchase', 'sales'], {
       queryParams: {
         'SALE': null,
       },
       queryParamsHandling: 'merge'
     })
   }
- 
+
   getReturnItemFormGroup(form: FormGroup) {
     return form.get('return_details') as FormArray
   }
@@ -172,9 +179,9 @@ export class SaleRequestComponent implements OnInit {
       await this.getExistingSaleRequest();
     } else {
       this.SaleRequestDetails.controls['organization_id'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
-        this.vendorItems = await this.appService.getInventory()
-        this.nodes = this.transformToNodeStructure(this.vendorItems)
-        this.expandableKey = this.nodes.map(res => res.key);
+      this.vendorItems = await this.appService.getInventory()
+      this.nodes = this.transformToNodeStructure(this.vendorItems)
+      this.expandableKey = this.nodes.map(res => res.key) || [];
       this.SaleRequestDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
     }
     this.disableAndEnableSpecificControls()
@@ -205,7 +212,7 @@ export class SaleRequestComponent implements OnInit {
         id: response.id,
         subject: response.subject,
         state: response.state,
-        sale_no:response.sale_no,
+        sale_no: response.sale_no,
         notes: response.notes,
         customer: response.customer.id,
         items_discount_total: response.items_discount_total,
@@ -222,8 +229,21 @@ export class SaleRequestComponent implements OnInit {
         vendor_id: response.vendor_id,
         organization_id: response.organization_id,
         sub_organization_id: response.sub_organization_id,
+        attachment: response.attachment,
       })
-
+      if (response.attachment && response.attachment.length) {
+        this.fileList = response.attachment.map((file: any) => (
+          {
+            name: 'image.png',
+            status: 'done',
+            url: file,
+            message: '',
+            thumbUrl: file
+          }
+        ))
+      } else {
+        this.fileList = []
+      }
       const items = response.items || [];
       const paymentHistory = response.payment_history || [];
       items.forEach((item: any) => {
@@ -242,12 +262,12 @@ export class SaleRequestComponent implements OnInit {
     return this.fb.group({
       id: new FormControl(object.id),
       sale_id: new FormControl(object.SaleRequest_id),
-      name: new FormControl(object.name),
+      name: new FormControl(object.name, [Validators.required]),
       selected_item: new FormControl(object.name),
-      qty: new FormControl(object.qty),
+      qty: new FormControl(object.qty, [Validators.required]),
       actualQty: new FormControl(object.actualQty),
       vendor_id: new FormControl(object.vendor_id),
-      unit_price: new FormControl(object.unit_price),
+      unit_price: new FormControl(object.unit_price, [Validators.required]),
       discount: new FormControl(object.discount),
       total: new FormControl(object.total),
       isCustom: new FormControl(object.isCustom),
@@ -359,6 +379,10 @@ export class SaleRequestComponent implements OnInit {
   }
   removeProduct(index: number): void {
     (this.SaleRequestDetails.get('items') as FormArray).removeAt(index);
+    this.calculateTotal();
+  }
+  removePayments(index: number): void {
+    (this.SaleRequestDetails.get('payment_history') as FormArray).removeAt(index);
     this.calculateTotal();
   }
 
@@ -605,20 +629,20 @@ export class SaleRequestComponent implements OnInit {
     this.makePdf('download')
   }
 
-  makePdf(action:string){
-    const details=this.SaleRequestDetails.getRawValue()
-    this.pdfGeneratorService.invoice={
+  makePdf(action: string) {
+    const details = this.SaleRequestDetails.getRawValue()
+    this.pdfGeneratorService.invoice = {
       ...details,
-      type:'Sale',
-      status:this.stateNames[details.state],
+      type: 'Sale',
+      status: this.stateNames[details.state],
       invoiceDetailLabel: 'Sale Details',
       personName: details.customer.name,
-      address: details.customer.address||'',
-      contactNo: details.customer.contact_no||'',
+      address: details.customer.address || '',
+      contactNo: details.customer.contact_no || '',
       terms: details.terms,
-      email: details.customer.email||'',
-      additionalDetails: details.notes||'',
-      customer:this.listOfData.find(item=>item.id==details.customer)
+      email: details.customer.email || '',
+      additionalDetails: details.notes || '',
+      customer: this.listOfData.find(item => item.id == details.customer)
     }
     this.pdfGeneratorService.generatePDF(action)
     return;
@@ -650,40 +674,12 @@ export class SaleRequestComponent implements OnInit {
 
     }
   }
-  beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
-    new Observable((observer: Observer<boolean>) => {
-
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-      if (!isJpgOrPng) {
-        this.msg.error('You can only upload JPG file!');
-        observer.complete();
-        return;
-      }
-      const isLt2M = file.size! / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.msg.error('Image must smaller than 2MB!');
-        observer.complete();
-        return;
-      }
-      this.SaleRequestDetails.patchValue({
-        attachment: file
-      })
-      observer.next(isJpgOrPng && isLt2M);
-      observer.complete();
-    });
-
   private getBase64(img: File, callback: (img: string) => void): void {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result!.toString()));
     reader.readAsDataURL(img);
   }
 
-  handleChange(info: { file: NzUploadFile }): void {
-
-    this.getBase64(info.file!.originFileObj!, (img: string) => {
-      this.loading = false;
-    });
-  }
 
   transformToNodeStructure(items: Item[]): TreeNode[] {
     const vendorMap = new Map<number, TreeNode>(); // Map to store vendors and their items
@@ -701,7 +697,7 @@ export class SaleRequestComponent implements OnInit {
           vendorNode?.children.push({
             title: item.item_name,
             key: item,
-            isLeaf: true 
+            isLeaf: true
           });
         }
       } else {
@@ -722,6 +718,92 @@ export class SaleRequestComponent implements OnInit {
 
     // Convert vendorMap values to array and return
     return Array.from(vendorMap.values());
+  }
+
+  handleChange(info: {
+    file: NzUploadFile,
+    type?: any, fileList?: NzUploadFile[]
+  }) {
+    this.getBase64(info.file!.originFileObj!, async (img: string) => {
+      this.loading = false;
+      if (info['type'] === 'error') {
+        const orientation = await this.imageCompress.getOrientation(info.file.originFileObj || new File([], ''))
+        this.imageCompress
+          .compressFile(img,
+            orientation
+            , 50, 80, 800, 800)
+          .then((result: DataUrl) => {
+            console.warn(
+              `Compressed: ${result.substring(0, 50)}... (${result.length
+              } characters)`
+            );
+            console.warn(
+              'Size in bytes is now:',
+              this.imageCompress.byteCount(result)
+            );
+
+
+            info.fileList?.forEach(fileItem => {
+
+              if (fileItem.uid == info.file.uid) {
+                fileItem.name = 'image.png';
+                fileItem.status = 'done';
+                fileItem.url = result;
+                fileItem['message'] = '';
+                fileItem.thumbUrl = result;
+              }
+
+            })
+            Object.assign(this.fileList, info.fileList)
+
+            this.SaleRequestDetails.patchValue({
+              attachment: info.fileList?.map(fileItem => fileItem.url)
+            })
+          });
+      }
+    });
+
+
+  }
+
+  previewImage: string | undefined = '';
+  previewVisible = false;
+
+
+  beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
+    new Observable((observer: Observer<boolean>) => {
+
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        this.msg.error('You can only upload JPG file!');
+        observer.complete();
+        return;
+      }
+      const isLt2M = file.size! / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.msg.error('Image must smaller than 2MB!');
+        observer.complete();
+        return;
+      }
+      observer.next(isJpgOrPng && isLt2M);
+      observer.complete();
+    });
+
+
+  handlePreview = async (file: NzUploadFile): Promise<void> => {
+    this.previewImage = file.url || file['preview'];
+    this.previewVisible = true;
+  };
+
+  donwnloadFile = (file: NzUploadFile): void => {
+    console.log(file)
+    const src = `${file.url}`;
+    const link = document.createElement("a")
+    link.href = src
+    link.download = file.filename || ''
+    link.click()
+
+    link.remove()
   }
 
 }
