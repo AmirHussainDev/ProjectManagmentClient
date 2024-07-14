@@ -82,6 +82,11 @@ ul {
     padding-bottom: 5px;
 }
 
+.height-greater-than-width .ant-layout-header {
+    height: auto !important;
+    line-height: 22px;
+    padding-bottom: 5px;
+}
 @media (max-width: 600px) {
     .sideMenuItems {
         overflow: auto;

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppService } from '../../../../services/app.service';
 import { Employee } from '../../../../services/app.interfact';
-import { MediaMatcher } from '@angular/cdk/layout';
 import { EmployeeManagementService } from '../employee-management.service';
 import { AppPermissions } from '../../../../services/app.constants';
 
@@ -17,9 +16,9 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
   currentOrganizationId: number;
   constructor(
     private appService: AppService,
-    private media: MediaMatcher,
     private employeeManagementService: EmployeeManagementService
   ) { }
+  isMobile=this.appService.isMobile
   appPermissions=AppPermissions;
   subOrganizationSubscription: Subscription;
   activeSalaryHistory: boolean;
@@ -67,10 +66,7 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
   close(): void {
     this.visible = false;
   }
-  isMobile(): boolean {
-    const isMobile = this.media.matchMedia('(max-width: 600px)');
-    return isMobile.matches;
-  }
+  
 
   async createPayment() {
     const object = {

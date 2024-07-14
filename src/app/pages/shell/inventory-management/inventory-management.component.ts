@@ -23,6 +23,9 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   isVisible = false;
   expandSet = new Set<string>();
   currentOrganizationId=0;
+  searchVisible: boolean;
+  searchValue: any;
+  listOfDisplayData: any[];
   constructor(private fb: FormBuilder,
 
     private appService: AppService) {
@@ -74,6 +77,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   async loadInventory() {
     this.loading = true
     this.inventory = await this.appService.getInventory()
+     this.listOfDisplayData=this.inventory;
     this.loading = false
   }
   async onVendorChange() {
@@ -112,5 +116,17 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
     this.inventoryItemForm.get('total')?.setValue(
       (this.inventoryItemForm.get('qty')?.value * this.inventoryItemForm.get('unit_price')?.value)
     )
+  }
+
+
+  search(): void {
+    this.searchVisible = false;
+    if(this.searchValue){
+      this.listOfDisplayData = this.inventory.filter((item:any) => (item.vendor_name&&item.vendor_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.item_name&&item.item_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      console.log(this.listOfDisplayData)
+  
+    }else{
+      this.listOfDisplayData = this.inventory
+    }
   }
 }

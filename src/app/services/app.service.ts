@@ -5,6 +5,7 @@ import { BehaviorSubject, Subject, map } from 'rxjs';
 import { Attendance, ContractDetails, Employee, EmployeePayments, Expense, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
 import { UserService } from './user.service';
 import { Customer, CustomerCreateObj } from '../pages/shell/purchase/customers/customers.interface';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +18,19 @@ export class AppService {
   currentSiteId = 0;
   currentSubOrgId = 0;
   user_permissions=[];
+  
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
-  constructor(private http: HttpClient, private userService: UserService) { }
+  constructor(private http: HttpClient, private userService: UserService,    private media: MediaMatcher   ) { }
   header: HttpHeaders = new HttpHeaders({
     'accept': 'application/json'
   });
+  isMobile(): boolean {
+    const viewWidth = window.innerWidth;
+  const viewHeight = window.innerHeight;
 
+    const isMobile = this.media.matchMedia('(max-width: 600px)');
+    return isMobile.matches || viewHeight>viewWidth;
+  }
   getAndSetSites() {
     const organization_id = localStorage.getItem('organization_id');
     return this.http.get(`/api/sites/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()

@@ -192,7 +192,7 @@ export class SaleRequestComponent implements OnInit {
     const itemGroup = this.SaleRequestDetails.controls.items.controls[index] as FormGroup<SaleItemControl>
     const itemName = itemGroup.controls.selected_item.value.item_name
     const maxQty = itemGroup.controls.selected_item.value.qty;
-    const minUnitPrice = itemGroup.controls.selected_item.value.latest_unit_price;
+    const minUnitPrice = itemGroup.controls.selected_item.value.avg_unit_price;
     const vendor_id = itemGroup.controls.selected_item.value.vendor_id;
     itemGroup.controls.name.setValue(itemName);
     itemGroup.controls.vendor_id.setValue(vendor_id);
@@ -682,14 +682,14 @@ export class SaleRequestComponent implements OnInit {
 
 
   transformToNodeStructure(items: Item[]): TreeNode[] {
-    const vendorMap = new Map<number, TreeNode>(); // Map to store vendors and their items
+    const vendorMap = new Map<string, TreeNode>(); // Map to store vendors and their items
 
     // Iterate over items to group them by vendor_id
     items.forEach(item => {
       // Check if the vendor exists in the map
-      if (vendorMap.has(item.vendor_id)) {
+      if (vendorMap.has(item.vendor_name)) {
         // If exists, push the item to the vendor's children array
-        const vendorNode = vendorMap.get(item.vendor_id);
+        const vendorNode = vendorMap.get(item.vendor_name);
         if (!vendorNode || !vendorNode.children) {
           vendorNode ? vendorNode.children = [] : null;
         }
@@ -704,7 +704,7 @@ export class SaleRequestComponent implements OnInit {
         // If vendor does not exist, create a new vendor node and add the item as its child
         const vendorNode: TreeNode = {
           title: item.vendor_name,
-          key: `vendor-${item.vendor_id}`,
+          key: `vendor-${item.vendor_name}`,
           children: [{
             title: item.item_name,
             key: item,
@@ -712,7 +712,7 @@ export class SaleRequestComponent implements OnInit {
           }],
           isLeaf: false
         };
-        vendorMap.set(item.vendor_id, vendorNode);
+        vendorMap.set(item.vendor_name, vendorNode);
       }
     });
 

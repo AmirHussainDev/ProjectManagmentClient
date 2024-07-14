@@ -3,7 +3,35 @@
         <div class="container">
             <div class="section">
                 <div class="card-container">
-                           <div class="flex space-between" style="margin-bottom:5px"><span></span>
+                           <div class="flex space-between" style="margin-bottom:5px">
+
+                            <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
+                                Purchases
+                            </h3>
+                          
+                                <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+                                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
+                                    
+                                  </nz-input-group>
+                                  <ng-template #inputClearTpl>
+                                    @if (searchValue) {
+                                      <span
+                                        nz-icon
+                                        class="ant-input-clear-icon"
+                                        nzTheme="fill"
+                                        nzType="close-circle"
+                                        (click)="searchValue = '';search()"
+                                        
+                                      ></span>
+                                    } @else{
+                                        <span nz-icon nzType="search"></span>
+                                    }
+                                  </ng-template>
+                              <ng-template #suffixIconSearch>
+                                <span nz-icon nzType="search"></span>
+                              </ng-template>
+
+                           </span>
                                 <a (click)="showSide=true" [routerLink]="['./purchase']" 
                                 [queryParams]="{ PO: 'new' }"
                                 [state]="{tracingId: 2}">
@@ -13,18 +41,19 @@
                                     </button>
                                 </a>
                             </div>
-                            <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="pendingInvoices" [nzFrontPagination]="false"
+                            <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData" [nzFrontPagination]="false"
                                 [nzLoading]="loading" [nzTotal]="total" 
                                 [nzPageIndex]="pageIndex" (nzQueryParams)="onPurchaseQueryParamsChange($event)">
                                 <thead>
                                     <tr>
-                                        <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Purchase</th>
+                                        <th nzColumnKey="name" nzCustomFilter nzWidth="80%" [nzSortFn]="true">Purchase 
+                                           </th>
                                         <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of pendingInvoices">
+                                    <tr *ngFor="let data of listOfDisplayData">
                                         <td>
                                             <nz-list nzItemLayout="horizontal">
                                                 <nz-list-item>
@@ -66,10 +95,6 @@
                                     </tr>
                                 </tbody>
                             </nz-table>
-
-
-
-                       
                 </div>
             </div>
         </div>

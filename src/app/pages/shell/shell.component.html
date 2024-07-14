@@ -163,8 +163,8 @@
       </div>
       <nz-footer *ngIf="!isCollapsed">Veins system ©2024 Implement By SA3</nz-footer>
     </nz-sider>
-    <nz-layout class="appbackground" *ngIf="!isMobile() || (isCollapsed && isMobile())">
-      <nz-header>
+    <nz-layout [ngClass]="isMobile()?'height-greater-than-width':''" class="appbackground" *ngIf="!isMobile() || (isCollapsed && isMobile())">
+      <nz-header >
         <div class="flex space-between center" style="flex-wrap: wrap;">
           <span class="flex center">
             <span class="trigger" *ngIf="isMobile()" nz-icon style="font-size: 18px;"

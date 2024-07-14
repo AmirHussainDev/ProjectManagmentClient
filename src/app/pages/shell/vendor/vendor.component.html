@@ -1,5 +1,32 @@
-<div *appHasPermission="appPermissions.UpdateVendors">
-    <button nz-button nzType="primary" (click)="showModal()">Add Vendor</button>
+<div *appHasPermission="appPermissions.UpdateVendors" class="flex space-between" style="margin-bottom:5px"> 
+    <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
+        Vendors
+    </h3>
+  
+        <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+            <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
+            
+          </nz-input-group>
+          <ng-template #inputClearTpl>
+            @if (searchValue) {
+              <span
+                nz-icon
+                class="ant-input-clear-icon"
+                nzTheme="fill"
+                nzType="close-circle"
+                (click)="searchValue = '';search()"
+                
+              ></span>
+            } @else{
+                <span nz-icon nzType="search"></span>
+            }
+          </ng-template>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+
+   </span>
+    <button nz-button nzType="primary" nzSize="small" (click)="showModal()">Add Vendor</button>
 </div>
 <app-vendor-details *ngIf="drawerVisible" [vendor]="selectedVendor" (closeDrawer)="drawerVisible=false"
     [visible]="drawerVisible"></app-vendor-details>
@@ -50,8 +77,8 @@
 
 </nz-modal>
 <!-- <app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible"
-    [userVendors]="userVendors" [users]="listOfData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
-<nz-table #editRowTable [nzPageSize]="1000"  #sortTable nzShowPagination="false" [nzData]="listOfData" nzTableLayout="fixed">
+    [userVendors]="userVendors" [users]="listOfDisplayData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
+<nz-table #editRowTable [nzPageSize]="1000"  #sortTable nzShowPagination="false" [nzData]="listOfDisplayData" nzTableLayout="fixed">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">

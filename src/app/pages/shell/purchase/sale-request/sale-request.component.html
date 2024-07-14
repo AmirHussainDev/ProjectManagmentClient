@@ -117,17 +117,18 @@
                                                 (ngModelChange)="onItemChange(i)"></nz-tree-select>
                                         </td>
                                         <td>
-                                            <input nz-input-number formControlName="qty"
+                                            <nz-input-group [nzSuffix]="control.get('max_qty')?.value" >
+    
+                                            <input nz-input-number formControlName="qty" 
                                                 (ngModelChange)="onQuantityChange(i)">
-                                            <div class="error"
-                                                *ngIf="control.get('qty')?.invalid && (control.get('qty')?.dirty || control.get('qty')?.touched)">
-                                                <div *ngIf="control.get('qty')?.errors">Quantity cannot exceed
-                                                    {{control.get('max_qty')?.value}}</div>
-                                            </div>
+                                            </nz-input-group>
+                                            
                                         </td>
                                         <td>
+                                            <nz-input-group [nzSuffix]="control.get('min_unit_price')?.value" >
                                             <input nz-input-number formControlName="unit_price"
                                                 (ngModelChange)="onPriceChange(i)">
+                                                </nz-input-group>
                                         </td>
                                         <td>
                                             <input nz-input-number formControlName="discount"

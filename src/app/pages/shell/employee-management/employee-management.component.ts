@@ -65,6 +65,9 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   subOrgSubscription: Subscription;
   appPermissions=AppPermissions;
   currentOrganizationId: number;
+  searchVisible: boolean;
+  searchValue: any;
+  listOfDisplayData: Employee[]=[];
   constructor(
     private appService: AppService,
     private userService: UserService) {
@@ -104,6 +107,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   async populateEmployeeData() {
     this.listOfData = await this.appService.getOrganizationEmployees(),
+    this.listOfDisplayData=this.listOfData;
       //   this.EmployeeRoles = await this.appService.getRoles();
       // this.subOrganizations = await this.appService.getSubOrganizations();
       this.updateEditCache();
@@ -140,4 +144,15 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     });
   }
 
+  
+  search(): void {
+    this.searchVisible = false;
+    if(this.searchValue){
+      this.listOfDisplayData = this.listOfData.filter((item:any) => (item.position&&item.position.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.employeeName&&item.employeeName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.supervisorName&&item.supervisorName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      console.log(this.listOfDisplayData)
+  
+    }else{
+      this.listOfDisplayData = this.listOfData
+    }
+  }
 }

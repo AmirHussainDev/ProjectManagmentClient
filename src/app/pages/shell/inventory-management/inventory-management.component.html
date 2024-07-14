@@ -3,11 +3,39 @@
         <!-- <h5 nz-typography>
             Pending Invoices
         </h5> -->
-        <div class="flex space-between" style="margin:12px"><span></span> <button (click)="isVisible=!isVisible"
+        <div class="flex space-between" style="margin:12px">
+            <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
+                Inventory
+            </h3>
+          
+                <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
+                    
+                  </nz-input-group>
+                  <ng-template #inputClearTpl>
+                    @if (searchValue) {
+                      <span
+                        nz-icon
+                        class="ant-input-clear-icon"
+                        nzTheme="fill"
+                        nzType="close-circle"
+                        (click)="searchValue = '';search()"
+                        
+                      ></span>
+                    } @else{
+                        <span nz-icon nzType="search"></span>
+                    }
+                  </ng-template>
+              <ng-template #suffixIconSearch>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+        
+           </span> 
+           <!-- <button (click)="isVisible=!isVisible"
                 nz-button nzType="primary" [nzSize]="'small'">
                 <span nz-icon nzType="plus"></span>
 
-            </button>
+            </button> -->
         </div>
         <nz-modal [(nzVisible)]="isVisible" nzTitle="Add inventory item" (nzOnCancel)="handleCancel()"
             (nzOnOk)="submitForm()" [nzOkText]="'Submit'" [nzOkDisabled]="!inventoryItemForm.valid">
@@ -72,19 +100,20 @@
         </nz-modal>
 
 
-        <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="inventory" [nzFrontPagination]="false" [nzLoading]="loading">
+        <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData" [nzFrontPagination]="false" [nzLoading]="loading">
             <thead>
                 <tr>
                     <th nzWidth="60px"></th>
                     <th nzColumnKey="item_name" [nzSortFn]="true">Name</th>
                     <th nzColumnKey="vendor_name">Vendor</th>
                     <th nzColumnKey="qty">Quantity</th>
-                    <th nzColumnKey="latest_unit_price">Unit Price</th>
+                    <th nzColumnKey="latest_unit_price">Latest Unit Price</th>
+                    <th nzColumnKey="latest_unit_price">Average Unit Price</th>
                     <th nzColumnKey="total">Total</th>
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let data of inventory; let i = index">
+                <ng-container *ngFor="let data of listOfDisplayData; let i = index">
                     <tr>
                         <td [nzExpand]="expandSet.has(data.item_name)" [nzExpandIcon]="expandIcon"></td>
 
@@ -92,6 +121,7 @@
                         <td> {{data.vendor_name}} </td>
                         <td> {{data.qty}} </td>
                         <td> {{data.latest_unit_price | currency : 'PKR ' }} </td>
+                        <td> {{data.avg_unit_price | currency : 'PKR ' }} </td>
                         <td> {{(data.qty* data.latest_unit_price) | currency : 'PKR '}} </td>
                     </tr>
                     <tr [nzExpand]="expandSet.has(data.item_name)">

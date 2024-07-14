@@ -108,10 +108,7 @@ export class ShellComponent implements OnInit, OnDestroy {
     return initials.join('').toUpperCase(); // Join the characters and convert to uppercase
   }
 
-  isMobile(): boolean {
-    const isMobile = this.media.matchMedia('(max-width: 600px)');
-    return isMobile.matches;
-  }
+  isMobile=this.appService.isMobile
 
   openChangePasswordModal(): void {
     const modal = this.modal.create({

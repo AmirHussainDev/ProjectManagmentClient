@@ -60,6 +60,9 @@ export class VendorComponent implements OnInit , OnDestroy {
   avatarUrl: string;
   msg: any;
   currentSubOrganizationSubscription:Subscription;
+  searchVisible: boolean;
+  searchValue: any;
+  listOfDisplayData: any[]=[];
   constructor(private appService: AppService,
     private fb: FormBuilder
   ) {
@@ -110,6 +113,7 @@ ngOnDestroy(): void {
 
   async populateVendorData() {
     this.listOfData = await this.appService.getVendors(),
+    this.listOfDisplayData=this.listOfData
       this.updateEditCache();
   }
 
@@ -120,15 +124,15 @@ ngOnDestroy(): void {
   }
 
   cancelEdit(id: string): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
+    const index = this.listOfDisplayData.findIndex(item => item.id === id);
     this.editCache[id] = {
-      data: { ...this.listOfData[index] },
+      data: { ...this.listOfDisplayData[index] },
       edit: false
     };
   }
 
   async saveEdit(id: string) {
-    const index = this.listOfData.findIndex(item => item.id === id);
+    const index = this.listOfDisplayData.findIndex(item => item.id === id);
     await this.appService.updateVendor({
       id,
       ...this.editCache[id].data,
@@ -138,12 +142,12 @@ ngOnDestroy(): void {
       name: this.editCache[id].data.name
     });
     this.editCache[id].edit = false;
-    Object.assign(this.listOfData[index], this.editCache[id].data);
+    Object.assign(this.listOfDisplayData[index], this.editCache[id].data);
     this.populateVendorData();
   }
 
   updateEditCache(): void {
-    this.listOfData.forEach(item => {
+    this.listOfDisplayData.forEach(item => {
       this.editCache[item.id] = {
         edit: false,
         data: { ...item }
@@ -190,5 +194,17 @@ ngOnDestroy(): void {
       this.loading = false;
       this.avatarUrl = img;
     });
+  }
+
+
+  search(): void {
+    this.searchVisible = false;
+    if(this.searchValue){
+      this.listOfDisplayData = this.listOfData.filter((item:any) => (item.name&&item.name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      console.log(this.listOfDisplayData)
+  
+    }else{
+      this.listOfDisplayData = this.listOfData
+    }
   }
 }

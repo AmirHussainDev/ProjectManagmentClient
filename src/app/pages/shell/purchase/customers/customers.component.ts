@@ -17,16 +17,19 @@ import { UserService } from '../../../../services/user.service';
 export class CustomersComponent implements OnInit, OnDestroy {
   currentOrganizationId = 0;
   expandSet = new Set<number>();
+  searchVisible: boolean;
+  searchValue: any;
+  listOfDisplayData: any[]=[];
   onExpandChange(index: number, checked: boolean): void {
     if (checked) {
       this.expandSet.add(index);
-      this.listOfData[index].expand = true;
-      if (!this.listOfData[index].details) {
+      this.listOfDisplayData[index].expand = true;
+      if (!this.listOfDisplayData[index].details) {
         this.retireveCustomerOrders(index);
       }
     } else {
       this.expandSet.delete(index);
-      this.listOfData[index].expand = false;
+      this.listOfDisplayData[index].expand = false;
 
     }
   }
@@ -134,7 +137,8 @@ export class CustomersComponent implements OnInit, OnDestroy {
   }
 
   async populateCustomerData() {
-    this.listOfData = await this.appService.getOrganizationCustomers(),
+    this.listOfData = await this.appService.getOrganizationCustomers();
+    this.listOfDisplayData= this.listOfData 
       this.updateEditCache();
   }
 
@@ -145,13 +149,13 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   cancelEdit(index: any): void {
     this.editCache[index] = {
-      data: { ...this.listOfData[index] },
+      data: { ...this.listOfDisplayData[index] },
       edit: false
     };
   }
 
   async saveEdit(id: any) {
-    const index = this.listOfData.findIndex(item => item.id === id);
+    const index = this.listOfDisplayData.findIndex(item => item.id === id);
     await this.appService.updateCustomer({
       id,
       contact_no: this.editCache[id].data.contact_no,
@@ -160,12 +164,12 @@ export class CustomersComponent implements OnInit, OnDestroy {
       name: this.editCache[id].data.name
     });
     this.editCache[index].edit = false;
-    Object.assign(this.listOfData[index], this.editCache[index].data);
+    Object.assign(this.listOfDisplayData[index], this.editCache[index].data);
     this.populateCustomerData();
   }
 
   updateEditCache(): void {
-    this.listOfData.forEach((item, index) => {
+    this.listOfDisplayData.forEach((item, index) => {
       this.editCache[index] = {
         edit: false,
         data: { ...item }
@@ -173,4 +177,14 @@ export class CustomersComponent implements OnInit, OnDestroy {
     });
   }
 
+  search(): void {
+    this.searchVisible = false;
+    if(this.searchValue){
+      this.listOfDisplayData = this.listOfData.filter((item:any) => (item.name&&item.name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      console.log(this.listOfDisplayData)
+  
+    }else{
+      this.listOfDisplayData = this.listOfData
+    }
+  }
 }

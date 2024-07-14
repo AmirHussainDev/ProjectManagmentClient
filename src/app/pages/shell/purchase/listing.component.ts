@@ -23,7 +23,10 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   partialPayments: any[] = []
   subOrgSubscription: Subscription;
   showSide=false;
+  searchVisible=false;
+  searchValue=''
   tabs = ['Purchase Request', 'Purchase Returns', 'Sale Requests', 'Sale Return'];
+  listOfDisplayData:any[]=[];
   currentOrganizationId: number;
   constructor(
     private appService: AppService,
@@ -109,14 +112,30 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async getAndSetPurchaseOrders(params: HttpParams) {
     this.pendingInvoices = await this.appService.retirevePOByState(params)
+    this.listOfDisplayData = [...this.pendingInvoices];
+
     this.loading = false;
     this.total = this.pendingInvoices.length; // mock the total data here
   }
 
 
  
-  isMobile(): boolean {
-    const isMobile = this.media.matchMedia('(max-width: 600px)');
-    return isMobile.matches;
+  isMobile=this.appService.isMobile
+
+
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  search(): void {
+    this.searchVisible = false;
+    if(this.searchValue){
+      this.listOfDisplayData = this.pendingInvoices.filter((item:any) => (item.subject&&item.subject.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.vendor_name&&item.vendor_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      console.log(this.listOfDisplayData)
+  
+    }else{
+      this.listOfDisplayData = this.pendingInvoices
+    }
   }
 }

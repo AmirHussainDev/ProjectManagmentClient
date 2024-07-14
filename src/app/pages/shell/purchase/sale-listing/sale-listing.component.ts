@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { SaleStates, SaleStateNames } from '../../../../services/app.constants';
 import { AppService } from '../../../../services/app.service';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -25,6 +25,10 @@ export class SaleListingComponent {
   subOrgSubscription: Subscription;
   status = '';
   currentOrganizationId=0;
+  searchVisible=false;
+  searchValue='';
+  listOfDisplayData:any[]=[];
+  suffixIconSearch: string|TemplateRef<void>|undefined;
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
@@ -73,6 +77,8 @@ export class SaleListingComponent {
     this.loading = true;
     this.saleRequests = await this.appService.retireveSaleByState(params)
     this.loading = false;
+    this.listOfDisplayData = this.saleRequests;
+
     this.total = this.saleRequests.length; // mock the total data here
   }
 
@@ -110,12 +116,25 @@ export class SaleListingComponent {
     this.loadSaleDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
 
-  isMobile(): boolean {
-    const isMobile = this.media.matchMedia('(max-width: 600px)');
-    return isMobile.matches;
-  }
+  isMobile=this.appService.isMobile
+
 
   openDetails(){
     this.showSide=true
+  }
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  search(): void {
+    this.searchVisible = false;
+    if(this.searchValue){
+      this.listOfDisplayData = this.saleRequests.filter((item:any) => (item.subject&&item.subject.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      console.log(this.listOfDisplayData)
+  
+    }else{
+      this.listOfDisplayData = this.saleRequests
+    }
   }
 }
