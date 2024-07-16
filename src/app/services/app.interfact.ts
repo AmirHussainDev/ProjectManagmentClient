@@ -131,7 +131,6 @@ export interface SaleDetails {
     shipment_charges: FormControl;
     total: FormControl;
     balance: FormControl;
-    vendor_id: FormControl;
     organization_id: FormControl;
     sub_organization_id: FormControl;
     invoice_date: FormControl;
@@ -162,7 +161,7 @@ export interface SaleItemControl {
     sale_id?: FormControl;
     name: FormControl;
     selected_item: FormControl,
-    vendor_id: FormControl,
+    vendor: FormControl,
     qty: FormControl;
     actualQty: FormControl;
     unit_price: FormControl;
@@ -219,6 +218,7 @@ export interface ItemControl {
 export interface ContractDetails {
     id: FormControl;
     subject: FormControl;
+    details:FormControl;
     contractor: FormControl;
     state: FormControl;
     contract_type: FormControl;

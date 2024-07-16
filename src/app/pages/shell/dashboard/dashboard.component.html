@@ -1,5 +1,14 @@
 <div class="dashboard"><nz-row nzGutter="16" style="margin-bottom: 12px;">
-        <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24">
+    <nz-col  [nzSm]="24" [nzXs]="24" [nzMd]="14" [nzXl]="14" [nzXXl]="14">
+
+        <nz-card style="margin-bottom: 12px;" *ngIf="showChart">
+            <highcharts-chart [Highcharts]="Highcharts" [options]="siteChartOptions"
+                [constructorType]="chartConstructor" style="width: 100%;display: block;"></highcharts-chart>
+
+        </nz-card>
+    </nz-col>
+
+    <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="10" [nzXl]="10" [nzXXl]="10">
 
             <nz-card style="margin-bottom: 12px;" *ngIf="showTopTen">
                 <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions"
@@ -33,25 +42,26 @@
                 <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
                     <nz-card style="margin-top: 12px;;margin-bottom: 12px;" [title]="'Current Stock'">
                         <h3> Current Stock</h3>
-                        <h5> {{2650 | currency:'PKR '}}</h5>
+                        <h5> {{inventoryStats?.currentStock  }} Items</h5>
                     </nz-card>
                 </nz-col>
                 <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
                     <nz-card style="margin-top: 12px;margin-bottom: 12px;" [title]="'Max Sales'">
-                        <h3> Max Sales</h3>
-                        <h5> {{2650 | currency:'PKR '}}</h5>
+                        <h3> Max Sales</h3>                        
+                        <h5> {{inventoryStats?.maxSales | currency:'PKR '}}</h5>
                     </nz-card>
                 </nz-col>
                 <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
                     <nz-card style="margin-top: 12px;margin-bottom: 12px;">
                         <h3> Products Sold</h3>
-                        <h5> {{2650 | currency:'PKR '}}</h5>
+       
+                        <h5> {{inventoryStats?.productsSold }} Items</h5>
                     </nz-card>
                 </nz-col>
                 <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
                     <nz-card style="margin-top: 12px;margin-bottom: 12px;">
-                        <h3> Current Stock Value</h3>
-                        <h5> {{2650 | currency:'PKR '}}</h5>
+                        <h3> Current Stock Value</h3>                        
+                        <h5> {{inventoryStats?.currentStockValue | currency:'PKR '}}</h5>
                     </nz-card>
                 </nz-col>
             </nz-row>

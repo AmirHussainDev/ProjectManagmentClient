@@ -24,7 +24,7 @@ import { DataUrl, NgxImageCompressService, UploadResponse } from 'ngx-image-comp
 export class PurchaseComponent implements OnInit {
   @ViewChild('content', { static: false }) content: ElementRef;
   vendors: any[] = [];
-  vendorItems: { name: string }[] = [];
+  vendorItems: { name: string,isCustom?:boolean}[] = [];
   discountTotal: number = 0;
   purchaseTotal: number = 0;
   loading = false;
@@ -298,7 +298,9 @@ export class PurchaseComponent implements OnInit {
   addProductRow(): void {
     (this.purchaseDetails.controls['items'] as FormArray).push(this.getItemFormGroup());
   }
-
+  onProductChange(name: string,index:number){
+    ((this.purchaseDetails.controls['items']as FormArray).controls[index] as FormGroup).patchValue({isCustom:this.vendorItems.find(item=>item.name===name)?.isCustom})
+  }
   calculateBalance() {
     if (this.loading) {
       return
@@ -395,7 +397,7 @@ export class PurchaseComponent implements OnInit {
   addItem(input: HTMLInputElement): void {
     const value = input.value;
     if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
-      this.vendorItems = [...this.vendorItems, { name: input.value }];
+      this.vendorItems = [...this.vendorItems, { name: input.value,isCustom:true }];
     }
   }
 

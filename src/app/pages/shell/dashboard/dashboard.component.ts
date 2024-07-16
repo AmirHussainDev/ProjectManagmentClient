@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   chartConstructor: string = 'chart';
 
   chartOptions: Highcharts.Options = {};
+  siteChartOptions: Highcharts.Options = {};
   piechartOptions: Highcharts.Options = {};
   lineChartOptions: Highcharts.Options = {};
   subOrgSubscription: Subscription;
@@ -27,6 +28,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   items: any[];
   selectedItem = ''
   showMonthly = false;
+  inventoryStats: any = {};
+  showChart: boolean;
   constructor(private appService: AppService) {
     this.chartOptions = {
       chart: {
@@ -39,6 +42,72 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       title: {
         text: 'Top 10 Products in Hand',
+        align: 'left',
+        style: {
+          fontSize: '12px', // Title font size
+          fontWeight: 'bold' // Title font weight
+        }
+      },
+      subtitle: {
+        text:
+          '',
+        align: 'left',
+        style: {
+          fontSize: '12px' // Subtitle font size
+        }
+      },
+      xAxis: {
+        categories: [],
+        crosshair: true,
+        accessibility: {
+          description: 'Countries'
+        },
+        labels: {
+          style: {
+            fontSize: '11px' // X-axis labels font size
+          }
+        }
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: '',
+          style: {
+            fontSize: '12px' // Y-axis title font size
+          }
+        },
+        labels: {
+          style: {
+            fontSize: '11px' // Y-axis labels font size
+          }
+        }
+      },
+      tooltip: {
+        valueSuffix: ' ',
+        style: {
+          fontSize: '11px' // Tooltip font size
+        }
+      },
+      plotOptions: {
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+        }
+      },
+      series: []
+    };
+
+    this.siteChartOptions = {
+      chart: {
+        type: 'column',
+        backgroundColor: 'transparent', // Set chart background color to transparent
+        height: 300 // Set the height of the chart
+      },
+      credits: {
+        enabled: false
+      },
+      title: {
+        text: 'Site Expenses',
         align: 'left',
         style: {
           fontSize: '12px', // Title font size
@@ -209,8 +278,55 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.currentOrganizationId = change.id;
         this.loadInventory(this.currentOrganizationId);
+        this.getInventoryStats(this.currentOrganizationId)
+        this.loadStatistics(this.currentOrganizationId)
       }
     });
+  }
+  async loadStatistics(subOrgId: number) {
+    this.showChart = false;
+    const stats: any[] = await this.appService.retireveAllSiteStatistics(subOrgId);
+  
+    // Extract site names for the x-axis categories
+    const siteNames = stats.map(stat => stat.siteName);
+  
+    // Initialize an empty array to store series data
+    const series: any[] = [];
+  
+    stats.forEach((serdata, index) => {
+      Object.entries(serdata).forEach(([key, value]) => {
+        if (key !== 'siteId' && key !== 'siteName') {
+          if (index === 0) {
+            series.push({
+              name: key,
+              data: [value]
+            });
+          } else {
+            const seriesItem = series.find(item => item.name === key);
+            if (seriesItem) {
+              seriesItem.data.push(value);
+            }
+          }
+        }
+      });
+    });
+  
+    this.showChart = true;
+  
+    // Assign the series and categories to your chartOptions
+    this.siteChartOptions = {
+      ...this.siteChartOptions,
+      xAxis: {
+        ...this.siteChartOptions.xAxis,
+        categories: siteNames,
+      },
+      series: series as any,
+    };
+  }
+  
+  async getInventoryStats(currentOrganizationId: number = 0) {
+    this.inventoryStats = await this.appService.getInventoryStatsBySubOrganization(currentOrganizationId)
+
   }
 
   async loadInventory(currentOrganizationId: number = 0) {

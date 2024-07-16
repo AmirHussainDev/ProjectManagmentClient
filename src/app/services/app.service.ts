@@ -388,6 +388,17 @@ export class AppService {
       throw error;
     }
   }
+  async getInventoryStatsBySubOrganization(currentSubOrgId: number): Promise<any> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/inventory-purchase/inventoryStats/${organization_id}/${currentSubOrgId}`, { headers: this.header }).toPromise()
+      return response as any;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
   async getInventory(currentOrganizationId = 0): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
@@ -557,6 +568,29 @@ export class AppService {
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);
+      throw error;
+    }
+  }
+
+  async retireveSiteStatisticsById(id: any): Promise<any> {
+    try {
+      const response = await this.http.get(`/api/Sites/${id}/statistics`, { headers: this.header }).toPromise()
+      return response as any;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching site statistics', error);
+      throw error;
+    }
+  }
+
+  async retireveAllSiteStatistics(subOrgId:number): Promise<any> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http.get(`/api/Sites/statistics/all/${organization_id}/${subOrgId||this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      return response as any;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching site statistics', error);
       throw error;
     }
   }

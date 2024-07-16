@@ -62,7 +62,7 @@
                                                         <nz-list-item-meta-title>
                                                             <span class="flex space-between">
                                                                 <span>{{data.vendor_name}} - {{ data.subject }}</span>
-                                                                <span>{{data.total | currency :'PKR'}}</span>
+                                                              
                                                             </span>
 
                                                         </nz-list-item-meta-title>
@@ -85,6 +85,14 @@
                                             </nz-list>
                                         </td>
                                         <td style="text-align: end;">
+                                            <span style="    display: inline-grid;
+                                            width: max-content;">
+                                                <span>{{data.state===states.PendingInvoice?'':
+                                                 data.total | currency :'PKR'}}</span>
+                                                 <span *ngIf="data.state===states.PaymentProcessing&&data.balance" class="remainingAmount">
+                                                Balance: {{data.balance | currency:'PKR'}}
+                                                </span>
+                                            </span>
                                             <button nz-button nzType="primary"
                                                 [className]="data.state===states.Completed? 'green-button':'default'"
                                                 [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"

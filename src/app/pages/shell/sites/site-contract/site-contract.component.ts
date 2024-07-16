@@ -51,6 +51,7 @@ export class SiteContractComponent {
     id: new FormControl(),
     contractor: new FormControl(),
     subject: new FormControl(),
+    details: new FormControl(),
     contract_type: new FormControl(),
     state: new FormControl(this.contractStates.Draft),
     with_material: new FormControl(0),
@@ -82,6 +83,7 @@ export class SiteContractComponent {
       id: new FormControl(),
       contractor: new FormControl(),
       subject: new FormControl(),
+      details: new FormControl(),
       contract_type: new FormControl(),
       state: new FormControl(this.contractStates.Draft),
       with_material: new FormControl(0),
@@ -145,12 +147,13 @@ export class SiteContractComponent {
       this.contractDetails.patchValue({
         id: response.id,
         subject: response.subject,
+        details: response.details,
         state: response.state,
         created_by: response.created_by,
         total: response.total,
         organization: response.organization_id,
         subOrganization: response.sub_organization_id,
-        contractor: response.contractor,
+        contractor: Number(response.contractor||0),
         contract_type: response.contract_type,
         with_material: response.with_material,
         payment_schedule: response.payment_schedule,
@@ -233,7 +236,7 @@ export class SiteContractComponent {
 
     const response: any = await this.appService.updateContractRequest({
       ...body,
-      state: this.contractStates.Completed
+      state: this.contractStates.Approved
     })
     if (response) {
       this.notification.create(

@@ -13,6 +13,8 @@ export class ExpensesComponent implements OnInit {
   addExpenseForm: FormGroup<ExpenseForm>;
   vendorItems: any[] = [];
   @Input() site_id: number;
+  @Input() state: number;
+  
 
   listOfColumn = [
     {

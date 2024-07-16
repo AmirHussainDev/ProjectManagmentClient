@@ -60,7 +60,7 @@ export class SaleRequestComponent implements OnInit {
     total: 0,
     date_created: new Date(),
     isCustom: false,
-    vendor_id: 0,
+    vendor: {},
     max_qty: 0,
     min_unit_price: 0,
     unit_price: 0,
@@ -103,7 +103,6 @@ export class SaleRequestComponent implements OnInit {
       shipment_charges: new FormControl(0),
       total: new FormControl(0),
       balance: new FormControl(0),
-      vendor_id: new FormControl(0),
       organization_id: new FormControl(0),
       sub_organization_id: new FormControl(0),
       invoice_date: new FormControl(new Date()),
@@ -188,14 +187,14 @@ export class SaleRequestComponent implements OnInit {
     this.loading = false;
   }
 
-  onItemChange(index: number) {
+  onItemChange(item:any,index: number) {
     const itemGroup = this.SaleRequestDetails.controls.items.controls[index] as FormGroup<SaleItemControl>
     const itemName = itemGroup.controls.selected_item.value.item_name
     const maxQty = itemGroup.controls.selected_item.value.qty;
     const minUnitPrice = itemGroup.controls.selected_item.value.avg_unit_price;
-    const vendor_id = itemGroup.controls.selected_item.value.vendor_id;
+    const vendor = item.vendor?item.vendor: itemGroup.controls.selected_item.value.vendor_id;
     itemGroup.controls.name.setValue(itemName);
-    itemGroup.controls.vendor_id.setValue(vendor_id);
+    itemGroup.controls.vendor.setValue(vendor);
     itemGroup.controls.name.setValue(itemName);
     itemGroup.controls.max_qty.setValue(maxQty);
     itemGroup.controls.min_unit_price.setValue(minUnitPrice);
@@ -226,7 +225,6 @@ export class SaleRequestComponent implements OnInit {
         shipment_charges: response.shipment_charges,
         total: response.total,
         balance: response.balance,
-        vendor_id: response.vendor_id,
         organization_id: response.organization_id,
         sub_organization_id: response.sub_organization_id,
         attachment: response.attachment,
@@ -266,7 +264,7 @@ export class SaleRequestComponent implements OnInit {
       selected_item: new FormControl(object.name),
       qty: new FormControl(object.qty, [Validators.required]),
       actualQty: new FormControl(object.actualQty),
-      vendor_id: new FormControl(object.vendor_id),
+      vendor: new FormControl(object.vendor),
       unit_price: new FormControl(object.unit_price, [Validators.required]),
       discount: new FormControl(object.discount),
       total: new FormControl(object.total),

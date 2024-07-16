@@ -14,7 +14,7 @@
                     <nz-form-item>
                         <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">Name</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-select class="control inputField" formControlName="name"
+                            <nz-select class="inputField" formControlName="name"
                                 [nzDropdownRender]="renderTemplate" nzAllowClear nzPlaceHolder="Select item"
                                 (ngModelChange)="onExpenseNameChange($event)">
                                 <nz-option *ngFor="let item of vendorItems" [nzLabel]="item.name"
@@ -28,7 +28,7 @@
                         <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                             nzFor="quantity">Quantity</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <input (change)="onQuantityChange()" class="control inputField" nz-input
+                            <input (change)="onQuantityChange()" class="inputField" nz-input
                                 formControlName="quantity">
                         </nz-form-control>
                     </nz-form-item>
@@ -41,7 +41,7 @@
                             Price</nz-form-label>
                         <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
                             nzErrorTip="The input is not valid date!">
-                            <input (change)="onUnitPriceChange()" class="control inputField" nz-input
+                            <input (change)="onUnitPriceChange()" class="inputField" nz-input
                                 formControlName="unit_price">
                             &nbsp;
                         </nz-form-control>
@@ -71,7 +71,7 @@
                     <nz-form-item>
                         <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzFor="refered_by">Refered By</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-select class="control inputField" id="reports_to" formControlName="refered_by"
+                            <nz-select class="inputField" id="reports_to" formControlName="refered_by"
                                 placeholder="Select user">
                                 <nz-option *ngFor="let user of users" [nzValue]="user?.id"
                                     [nzLabel]="user?.name"></nz-option>
@@ -87,7 +87,7 @@
                             Notes</nz-form-label>
                         <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
                             nzErrorTip="The input is not valid date!">
-                            <textarea class="control inputField" nz-input formControlName="note"></textarea>
+                            <textarea class="inputField" nz-input formControlName="note"></textarea>
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>

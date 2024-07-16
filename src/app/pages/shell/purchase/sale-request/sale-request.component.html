@@ -114,7 +114,7 @@
                                                 *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
                                                 [nzExpandedKeys]="expandableKey" [nzNodes]="nodes||[]" nzShowSearch
                                                 nzPlaceHolder="Please select" formControlName="selected_item"
-                                                (ngModelChange)="onItemChange(i)"></nz-tree-select>
+                                                (ngModelChange)="onItemChange($event,i)"></nz-tree-select>
                                         </td>
                                         <td>
                                             <nz-input-group [nzSuffix]="control.get('max_qty')?.value" >

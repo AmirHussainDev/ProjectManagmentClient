@@ -106,8 +106,8 @@ export const ContractStates = {
 
 export const ContractStateNames = {
     [ContractStates.Draft]: 'DRAFT',
-    [ContractStates.PendingApproval]: 'PENDING INVOICE',
-    [ContractStates.Approved]: 'APPROVED',
+    [ContractStates.PendingApproval]: 'PENDING',
+    [ContractStates.Approved]: 'IN-PROGRESS',
     [ContractStates.Cancelled]: 'CANCELLED',
     [ContractStates.Completed]: 'COMPLETED'
 }
@@ -132,13 +132,13 @@ export const SiteStates = {
     PendingApproval: 1,
     Approved: 4,
     Cancelled: 3,
-    Completed: 4
+    Completed: 5
 }
 
 export const SiteStateNames = {
     [SiteStates.Draft]: 'DRAFT',
     [SiteStates.PendingApproval]: 'PENDING APPROVAL',
-    [SiteStates.Approved]: 'APPROVED',
+    [SiteStates.Approved]: 'IN-PROGRESS',
     [SiteStates.Cancelled]: 'CANCELLED',
     [SiteStates.Completed]: 'COMPLETED'
 }

@@ -33,7 +33,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="name">
                                         Name</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <input class="control inputField" nz-input formControlName="name">
+                                        <input class="inputField" nz-input formControlName="name">
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -43,7 +43,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="budget">budget</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <input class="control inputField" z-input formControlName="budget">
+                                        <input class="inputField" z-input formControlName="budget">
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -56,7 +56,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="owner">owner</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <input class="control inputField" nz-input formControlName="owner">
+                                        <input class="inputField" nz-input formControlName="owner">
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -66,7 +66,7 @@
                                         nzFor="contact_no">Contact
                                         No</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <input class="control inputField" nz-input formControlName="contact_no">
+                                        <input class="inputField" nz-input formControlName="contact_no">
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -77,7 +77,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="address">
                                         Address</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <textarea [rows]="2" class="control inputField" nz-input
+                                        <textarea [rows]="2" class="inputField" nz-input
                                             formControlName="address"></textarea>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -91,7 +91,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="site_start_date">site_start_date</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <nz-date-picker class="control inputField"
+                                        <nz-date-picker class="inputField"
                                             formControlName="site_start_date"></nz-date-picker>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -103,7 +103,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="site_end_date">site_end_date</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <nz-date-picker class="control inputField"
+                                        <nz-date-picker class="inputField"
                                             formControlName="site_end_date"></nz-date-picker>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -118,8 +118,7 @@
                                         Contract Details
                                     </nz-form-label>
                                     <nz-form-control [nzSm]="20" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <textarea [rows]="6" class="control inputField" nz-input
-                                            formControlName="details">
+                                        <textarea [rows]="6" class="inputField" nz-input formControlName="details">
                         </textarea>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -155,11 +154,12 @@
     </nz-collapse-panel>
 </nz-collapse>
 
-<div style="margin-top: 12px;" *ngIf="siteDetails.get('state')?.value===siteStates.Approved">
+<div style="margin-top: 12px;"
+    *ngIf="siteDetails.get('state')?.value===siteStates.Approved||siteDetails.get('state')?.value===siteStates.Completed">
 
     <nz-row nzGutter="4" style="margin-bottom: 12px;">
         <nz-col [nzMd]="16" [nzSm]="24" [nzXs]="24">
-
+           
             <nz-card style="width:100%">
                 <app-expenses [site_id]="site_id"></app-expenses>
             </nz-card>
@@ -167,11 +167,19 @@
         <nz-col [nzMd]="8" [nzSm]="24" [nzXs]="24">
             <nz-card style="width:100%">
                 <app-owner-payments [site_id]="site_id"></app-owner-payments>
-             </nz-card>
-             <nz-card style="width:100%; margin-top: 4px;">
+            </nz-card>
+            <nz-card style="width:100%; margin-top: 4px;">
                 <app-contractor-payments [site_id]="site_id"></app-contractor-payments>
-             </nz-card>
+            </nz-card>
+            <nz-card style="margin-top: 4px; width:100%">
+                <highcharts-chart [Highcharts]="Highcharts" *ngIf="showChart" [options]="chartOptions"
+                    [constructorType]="chartConstructor" style="width: 100%;display: block;">
+                </highcharts-chart>
+            </nz-card>
         </nz-col>
-       
+
     </nz-row>
+
+    <button *ngIf="siteDetails.controls.state.value==siteStates.Approved" nz-button nzType="primary"
+        (click)="completeSiteWork()" style="margin-bottom: 12px;float: right;">Complete Work</button>
 </div>

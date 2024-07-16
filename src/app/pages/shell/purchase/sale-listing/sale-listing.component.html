@@ -69,7 +69,12 @@
                                 {{ stateNames[data.state] }}
                             </button> </td>
                         <td>
-                            <span>{{data.total | currency :'PKR'}}</span>
+                            <span style="    display: inline-grid;
+                                                width: max-content;"><span>{{ data.total | currency :'PKR'}}</span>
+                                <span *ngIf="data.state===states.PaymentConfirmation" class="remainingAmount">
+                               Balance: {{data.balance | currency:'PKR'}}
+                               </span>
+                               </span>
 
                         </td>
                     </ng-container>
@@ -81,9 +86,13 @@
                                         <nz-list-item-meta-title>
                                             <span class="flex space-between">
                                                 <span>{{ data.subject }}</span>
-                                                <span>{{data.total | currency :'PKR'}}</span>
+                                                <span style="    display: inline-grid;
+                                                width: max-content;">
+                                                <span>{{ data.total | currency :'PKR'}}</span>
+                                                <span *ngIf="data.state===states.PaymentConfirmation" class="remainingAmount">
+                                               Balance: {{data.balance | currency:'PKR'}}
+                                               </span>                                            </span>
                                             </span>
-
                                         </nz-list-item-meta-title>
                                         <nz-list-item-meta-description>
                                             <span class="flex space-between">

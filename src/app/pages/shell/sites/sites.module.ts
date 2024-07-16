@@ -20,6 +20,7 @@ import { UsernamePipe } from "../../../pipes/username.pipe";
 import { WorkLogComponent } from './site-contract/work-log/work-log.component';
 import { ContractPaymentComponent } from './site-contract/contract-payment/contract-payment.component';
 import { SharedModule } from '../shared/shared.module';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -52,7 +53,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
         ReactiveFormsModule,
         FormsModule,
         UsernamePipe,
-        SharedModule
+        SharedModule,
+        HighchartsChartModule
     ]
 })
 export class SitesModule { }

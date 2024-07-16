@@ -12,6 +12,7 @@ import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
 import { SiteStateNames, SiteStates } from '../../../../services/app.constants';
 import { SiteDetails } from '../../../../services/app.interfact';
+import * as Highcharts from 'highcharts';
 
 @Component({
   selector: 'app-site',
@@ -21,14 +22,22 @@ import { SiteDetails } from '../../../../services/app.interfact';
 export class SiteComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
   vendors: any[] = [];
-  isActive=false;
+  isActive = false;
   vendorItems: { name: string }[] = [];
   discountTotal: number = 0;
   siteTotal: number = 0;
   loading = false;
   siteStates = SiteStates;
   stateNames = SiteStateNames;
-  site_id=0;
+  site_id = 0;
+
+
+  isHighcharts = typeof Highcharts === 'object';
+  title = 'UnivHighCharts';
+  Highcharts: typeof Highcharts = Highcharts;
+  chartConstructor: string = 'chart';
+  chartOptions: Highcharts.Options = {};
+
   listOfData: User[] = [
   ];
   defaultItemValues = {
@@ -61,6 +70,7 @@ export class SiteComponent implements OnInit, OnDestroy {
   })
   sites: any[];
   siteForm: any;
+  showChart: boolean;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -70,6 +80,68 @@ export class SiteComponent implements OnInit, OnDestroy {
     private router: Router,
     private msg: NzMessageService,
     private modal: NzModalService) {
+    this.chartOptions = {
+      chart: {
+        type: 'column',
+        backgroundColor: 'transparent', // Set chart background color to transparent
+        height: 300 // Set the height of the chart
+      },
+      credits: {
+        enabled: false
+      },
+      title: {
+        text: 'Site expenses',
+        align: 'left',
+        style: {
+          fontSize: '12px', // Title font size
+          fontWeight: 'bold' // Title font weight
+        }
+      },
+      subtitle: {
+        text:
+          '',
+        align: 'left',
+        style: {
+          fontSize: '12px' // Subtitle font size
+        }
+      },
+      xAxis: {
+        categories: ['Site Payments'],
+        labels: {
+          style: {
+            fontSize: '11px' // X-axis labels font size
+          }
+        }
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: '',
+          style: {
+            fontSize: '12px' // Y-axis title font size
+          }
+        },
+        labels: {
+          style: {
+            fontSize: '11px' // Y-axis labels font size
+          }
+        }
+      },
+      tooltip: {
+        valueSuffix: ' ',
+        style: {
+          fontSize: '11px' // Tooltip font size
+        }
+      },
+      plotOptions: {
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+        }
+      },
+      series: []
+    };
+
     this.siteDetails = this.fb.group({
       id: new FormControl(),
       name: new FormControl(),
@@ -100,11 +172,36 @@ export class SiteComponent implements OnInit, OnDestroy {
         this.siteDetails.updateValueAndValidity();
 
       }
-      this.siteDetails.controls['id'].setValue(paramMap.get('siteId')!=='new'?paramMap.get('siteId'): 0);
-      this.site_id=this.siteDetails.controls['id'].value;
+      this.siteDetails.controls['id'].setValue(paramMap.get('siteId') !== 'new' ? paramMap.get('siteId') : 0);
+      this.site_id = this.siteDetails.controls['id'].value;
       this.setSiteDetails();
+      this.loadStatistics();
     });
 
+  }
+  async loadStatistics() {
+
+this.showChart=false;
+    const serdata: {} = await this.appService.retireveSiteStatisticsById(this.site_id)
+    // Iterate through the data to organize it by vendor name
+    // Initialize an empty object to store series data
+    const series: any[] = []
+    Object.entries(serdata).forEach((key) => {
+      if(key[0]!=='siteId'){
+        series.push({
+          name: key[0],
+          data: [key[1]]
+        })
+      }
+
+    });
+
+    // Convert seriesData object into an array
+
+
+this.showChart=true;
+    // Assign the series to your chartOptions
+    this.chartOptions.series = series as any;
   }
   ngOnDestroy(): void {
 
@@ -226,6 +323,30 @@ export class SiteComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  async completeSiteWork() {
+    const detailsDifference: any = this.appService.findObjectDifferences(this.previoussiteDetails, this.siteDetails.getRawValue())
+    console.log(detailsDifference)
+    const body = {
+      id: this.previoussiteDetails.id,
+      ...detailsDifference
+    }
+
+    const response: any = await this.appService.updateSiteRequest({
+      ...body,
+      state: this.siteStates.Completed
+    })
+    if (response) {
+      this.notification.create(
+        'success',
+        'site - ' + this.previoussiteDetails.id,
+        'site work completed successfly',
+      ).onClose.subscribe((resp) => {
+        this.router.navigate(['/'])
+      });
+    }
+  }
+
 
   printCard() {
     let printContents = this.content.nativeElement.innerHTML;

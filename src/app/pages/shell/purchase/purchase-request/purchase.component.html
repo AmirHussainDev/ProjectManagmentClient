@@ -128,7 +128,7 @@
                                         *ngFor="let control of purchaseDetails.controls.items.controls; let i = index">
                                         <td>
                                             <nz-select formControlName="name" [nzDropdownRender]="renderTemplate"
-                                                nzAllowClear nzPlaceHolder="Select item">
+                                                nzAllowClear nzPlaceHolder="Select item"  (ngModelChange)="onProductChange($event,i)">
                                                 <nz-option *ngFor="let item of vendorItems" [nzLabel]="item.name"
                                                     [nzValue]="item.name"></nz-option>
                                             </nz-select>
