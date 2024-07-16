@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Subject, map } from 'rxjs';
-import { Attendance, ContractDetails, Employee, EmployeePayments, Expense, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
+import { Attendance, ContractDetails, Employee, EmployeePayments, Expense, Organization, OwnerPayment, PurchaseItem, PurchaseOrder, Role, RoleCreateObj, SaleOrder, Site, SiteDetails, SubOrganization } from './app.interfact';
 import { UserService } from './user.service';
 import { Customer, CustomerCreateObj } from '../pages/shell/purchase/customers/customers.interface';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -20,6 +20,8 @@ export class AppService {
   user_permissions=[];
   
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
+  currentOrganization = new Subject<Organization>();
+  organization: Organization;
   constructor(private http: HttpClient, private userService: UserService,    private media: MediaMatcher   ) { }
   header: HttpHeaders = new HttpHeaders({
     'accept': 'application/json'
@@ -48,7 +50,11 @@ export class AppService {
     this.currentSubOrgId = item.id;
     this.currentSubOrganization.next(item);
   }
-
+  setCurrentOrganization(item: Organization) {
+    this.organization = item;
+    this.currentOrganization.next(item);
+  }
+  
   async getSubOrganizations(setDefault = false): Promise<SubOrganization[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');

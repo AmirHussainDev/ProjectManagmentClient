@@ -9,6 +9,14 @@ export interface SubOrganization {
     value?: number;
     filename?: string;
 }
+export interface Organization {
+    id: number;
+    name: string;
+    domain_name:string;
+    icon:string;
+    image:string;
+    key?: string;
+}
 
 export interface Role {
     id: number;
