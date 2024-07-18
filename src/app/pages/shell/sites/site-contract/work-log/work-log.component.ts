@@ -61,6 +61,8 @@ export class WorkLogComponent implements OnInit {
 
   async handleOk() {
     try {
+      this.isVisible = false;
+
       this.isOkLoading = true;
       await this.addContractorWorkLog()
       this.isVisible = false;
@@ -122,33 +124,20 @@ export class WorkLogComponent implements OnInit {
   }
   onChange(event: Date[]) {
     if (event && event.length > 1) {
-      const no_of_units = this.getNumberOfDays(event[0], event[1], this.contractDetails.includeWeekends)
+      const no_of_units = this.appService.getNumberOfDays(event[0], event[1], this.contractDetails.include_weekends)
       this.addContractorWorkLogForm.patchValue({
         work_from: event[0], work_to: event[1],
-        no_of_units, amount: no_of_units * this.contractDetails.amount_per_day
-      });
+        no_of_units, amount: no_of_units * this.contractDetails.amount_per_unit
+      },{emitEvent:false});
     }
   }
-  getNumberOfDays(startDate: Date, endDate: Date, includeWeekends: boolean = false): number {
-    // Copy the start date so we don't modify the original
-    let currentDate = new Date(startDate);
-    const daysBetween = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
-    let count = 0;
-
-    for (let i = 0; i <= daysBetween; i++) {
-      // Check if weekends should be included and if the current day is a weekend (Saturday or Sunday)
-      if (!includeWeekends && (currentDate.getDay() === 0 || currentDate.getDay() === 6)) {
-        // Skip weekends
-        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-        continue;
-      }
-
-      count++;
-      currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-    }
-
-    return count;
+  setAmout(event:Event){
+    this.addContractorWorkLogForm.patchValue({
+      work_from: new Date(), work_to: new Date(),
+      no_of_units:Number((event.target as any).value), amount: Number((event.target as any).value) * this.contractDetails.amount_per_unit
+    },{emitEvent:false});
   }
+  
   editCache: { [key: string]: { edit: boolean; data: ContractorWorkLog } } = {};
   startEdit(id: number): void {
     this.editCache[id].edit = true;

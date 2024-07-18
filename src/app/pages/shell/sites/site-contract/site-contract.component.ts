@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import html2canvas from 'html2canvas';
 import jspdf from 'jspdf';
@@ -13,7 +13,7 @@ import { ItemControl, ContractDetails } from '../../../../services/app.interfact
 import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
-import { ContractStateNames, ContractStates } from '../../../../services/app.constants';
+import { ContractStateNames, ContractStates, ContractorType, ContractorTypeName } from '../../../../services/app.constants';
 
 @Component({
   selector: 'app-site-contract',
@@ -22,7 +22,8 @@ import { ContractStateNames, ContractStates } from '../../../../services/app.con
 })
 export class SiteContractComponent {
   isActive = false;
-
+  contractorType = ContractorType;
+  contractorTypeName = ContractorTypeName;
   @ViewChild('content', { static: false }) content: ElementRef;
   vendors: any[] = [];
   vendorItems: { name: string }[] = [];
@@ -55,9 +56,7 @@ export class SiteContractComponent {
     contract_type: new FormControl(),
     state: new FormControl(this.contractStates.Draft),
     with_material: new FormControl(0),
-    payment_schedule: new FormControl(0),
-    amount_per_schedule: new FormControl(0),
-    amount_per_day: new FormControl(0),
+    amount_per_unit: new FormControl(0),
     created_by: new FormControl(0),
     site: new FormControl(0),
     total: new FormControl(0),
@@ -67,6 +66,8 @@ export class SiteContractComponent {
     contract_end_date: new FormControl(new Date()),
     attachment: new FormControl(),
     terms: new FormControl(''),
+    no_of_units: new FormControl(0, [Validators.required]),
+    include_weekends: new FormControl()
   })
   sites: any[];
   siteForm: any;
@@ -84,12 +85,10 @@ export class SiteContractComponent {
       contractor: new FormControl(),
       subject: new FormControl(),
       details: new FormControl(),
-      contract_type: new FormControl(),
+      contract_type: new FormControl(this.contractorType.DurationBased),
       state: new FormControl(this.contractStates.Draft),
       with_material: new FormControl(0),
-      payment_schedule: new FormControl(0),
-      amount_per_schedule: new FormControl(0),
-      amount_per_day: new FormControl(0),
+      amount_per_unit: new FormControl(0),
       created_by: new FormControl(0),
       site: new FormControl(0),
       total: new FormControl(0),
@@ -99,6 +98,8 @@ export class SiteContractComponent {
       contract_end_date: new FormControl(new Date()),
       attachment: new FormControl(),
       terms: new FormControl(''),
+      no_of_units: new FormControl(0, [Validators.required]),
+      include_weekends: new FormControl()
     });
   }
   submitForm() { }
@@ -112,14 +113,35 @@ export class SiteContractComponent {
         this.contractDetails.enable();
         this.contractDetails.updateValueAndValidity();
       }
-      this.site_id = parseInt(paramMap.get('siteId')?.toString()||'0');
+      this.site_id = parseInt(paramMap.get('siteId')?.toString() || '0');
       this.contractDetails.controls['id'].setValue(paramMap.get('contractId') !== 'new' ? paramMap.get('contractId') : 0);
       this.contractDetails.controls['site'].setValue(paramMap.get('siteId') || 0);
       this.setContractRequestDetails();
     });
 
   }
-
+  setNoOfDays() {
+    const no_of_units = this.appService.getNumberOfDays(
+      this.contractDetails.get('contract_start_date')?.value || new Date(),
+      this.contractDetails.get('contract_end_date')?.value || new Date(),
+      this.contractDetails.get('include_weekends')?.value)
+      this.contractDetails.patchValue({
+        no_of_units
+      });
+      this.setAmountPerUnit();
+  }
+  setAmountPerUnit(){
+    this.contractDetails.patchValue({
+      amount_per_unit:      (this.contractDetails.get('total')?.value/this.contractDetails.get('no_of_units')?.value)
+    })
+  }
+  onTypeChange() {
+    this.contractDetails.patchValue({
+      no_of_units: 0,
+      amount_per_unit: 0,
+      total: 0,
+    })
+  }
   async setSitesData() {
     const resp: any = await this.appService.getAndSetSites();
     const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
@@ -153,17 +175,17 @@ export class SiteContractComponent {
         total: response.total,
         organization: response.organization_id,
         subOrganization: response.sub_organization_id,
-        contractor: Number(response.contractor||0),
+        contractor: Number(response.contractor || 0),
         contract_type: response.contract_type,
         with_material: response.with_material,
-        payment_schedule: response.payment_schedule,
-        amount_per_schedule: response.amount_per_schedule,
-        amount_per_day: response.amount_per_day,
+        amount_per_unit: response.amount_per_unit,
         site: response.site_id,
         contract_start_date: response.contract_start_date,
         contract_end_date: response.contract_end_date,
         attachment: response.attachment,
         terms: response.terms,
+        no_of_units: response.no_of_units,
+        include_weekends: response.include_weekends
       })
     }
 
@@ -173,6 +195,7 @@ export class SiteContractComponent {
 
   async loadAndUsers() {
     this.listOfData = await this.userService.getOrganizationUsers();
+    this.listOfData = this.listOfData.filter(user => user.is_contractor)
   }
   async submitRequest() {
     const response: any = await this.appService.createContract({

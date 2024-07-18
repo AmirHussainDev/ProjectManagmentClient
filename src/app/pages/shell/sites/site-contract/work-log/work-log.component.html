@@ -10,20 +10,25 @@
     <nz-card *nzModalContent style="width:100%">
         <form nz-form [formGroup]="addContractorWorkLogForm" (ngSubmit)="handleOk()">
             <nz-row nzGutter="2" style="margin-bottom: 12px;">
-                <nz-col [nzMd]="10" [nzSm]="24" [nzXs]="24">
+                <nz-col *ngIf="contractDetails.contract_type == '1'" [nzMd]="24" [nzSm]="24" [nzXs]="24">
                     <nz-form-item>
                         <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="from">From</nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            <nz-range-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
+                            <nz-range-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="date"
+                                (ngModelChange)="onChange($event)"></nz-range-picker>
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>
-                <nz-col *ngIf="contractDetails.contract_type == '1'" [nzMd]="10" [nzSm]="16" [nzXs]="16">
+                <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
                     <nz-form-item>
-                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="no_of_units">No of units
-                            worked</nz-form-label>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                            nzFor="no_of_units">{{contractDetails.contract_type == '1'?'No of days':'No of Units'}}
+                        </nz-form-label>
                         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                            {{addContractorWorkLogForm.get('no_of_units')?.value}}
+                            {{contractDetails.contract_type == '1'?
+                            addContractorWorkLogForm.get('no_of_units')?.value:''}}
+                            <nz-input-number *ngIf="contractDetails.contract_type != '1'" (change)="setAmout($event)"
+                                class="inputField" formControlName="no_of_units" />
                         </nz-form-control>
                     </nz-form-item>
                 </nz-col>
@@ -54,7 +59,8 @@
     </div>
 </ng-template>
 
-<nz-table #editRowTable [nzPageSize]="1000"  #sortTable nzShowPagination="false" [nzData]="listOfData" nzTableLayout="fixed">
+<nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfData"
+    nzTableLayout="fixed">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">

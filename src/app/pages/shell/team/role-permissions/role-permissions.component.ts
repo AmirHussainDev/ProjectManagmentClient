@@ -38,6 +38,7 @@ export class RolePermissionsComponent implements OnInit {
     this.isModalVisible = true;
   }
   async handleOk() {
+    this.isModalVisible = false;
     await this.appService.createRole(this.addRoleForm.value as RoleCreateObj)
     this.isModalVisible = false;
     this.getAndSetRolesPermission();

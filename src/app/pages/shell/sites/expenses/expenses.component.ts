@@ -90,6 +90,7 @@ export class ExpensesComponent implements OnInit {
   async handleOk() {
     try {
       this.isOkLoading = true;
+      this.isVisible = false;
       await this.addExpense()
       this.isVisible = false;
       this.addExpenseForm.reset()

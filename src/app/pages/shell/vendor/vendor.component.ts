@@ -78,6 +78,7 @@ export class VendorComponent implements OnInit , OnDestroy {
     this.isModalVisible = true;
   }
   async handleOk() {
+    this.isModalVisible = false;
     await this.appService.createVendor(this.addVendorForm.value.name, this.addVendorForm.value.file)
     this.isModalVisible = false;
     this.populateVendorData();

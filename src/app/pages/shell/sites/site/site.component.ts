@@ -187,7 +187,7 @@ this.showChart=false;
     // Initialize an empty object to store series data
     const series: any[] = []
     Object.entries(serdata).forEach((key) => {
-      if(key[0]!=='siteId'){
+      if(key[0]!=='siteId'&&key[0]!=='siteName'){
         series.push({
           name: key[0],
           data: [key[1]]

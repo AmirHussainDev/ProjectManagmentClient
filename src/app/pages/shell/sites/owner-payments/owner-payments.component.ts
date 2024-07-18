@@ -67,9 +67,9 @@ export class OwnerPaymentsComponent implements OnInit {
 
   async handleOk() {
     try {
+      this.isVisible = false;
       this.isOkLoading = true;
       await this.addOwnerPayment()
-      this.isVisible = false;
       this.addOwnerPaymentForm.reset()
     } catch (err) {
 

@@ -456,7 +456,7 @@ export class PurchaseComponent implements OnInit {
 
   }
   async confirmPaymentDetails(save = false) {
-    if (!save && !this.purchaseDetails.value.amount_paid || Number(this.purchaseDetails.value.amount_paid) !== Number(this.purchaseDetails.get('total')?.value)) {
+    if (!save && (!this.purchaseDetails.value.amount_paid || Number(this.purchaseDetails.value.amount_paid) !== Number(this.purchaseDetails.get('total')?.value))) {
       this.notification.create(
         'error',
         'Balance exists',

@@ -103,6 +103,14 @@ export const ContractStates = {
     Cancelled: 3,
     Completed: 4
 }
+export const ContractorType = {
+    MeasurementBased: "2",
+    DurationBased: "1",
+}
+export const ContractorTypeName = {
+    [ContractorType.MeasurementBased]: "Measurement Based",
+    [ContractorType.DurationBased]: "Duration Based",
+}
 
 export const ContractStateNames = {
     [ContractStates.Draft]: 'DRAFT',

@@ -233,9 +233,7 @@ export interface ContractDetails {
     contract_start_date: FormControl;
     contract_end_date: FormControl;
     with_material: FormControl;
-    payment_schedule: FormControl;
-    amount_per_schedule: FormControl;
-    amount_per_day: FormControl;
+    amount_per_unit: FormControl;
     created_by: FormControl;
     total: FormControl;
     organization: FormControl;
@@ -243,6 +241,8 @@ export interface ContractDetails {
     site: FormControl;
     attachment: FormControl;
     terms: FormControl;
+    no_of_units:FormControl;
+    include_weekends:FormControl;
 }
 
 

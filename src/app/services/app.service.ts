@@ -54,7 +54,26 @@ export class AppService {
     this.organization = item;
     this.currentOrganization.next(item);
   }
-  
+  getNumberOfDays(startDate: Date, endDate: Date, includeWeekends: boolean = false): number {
+    // Copy the start date so we don't modify the original
+    let currentDate = new Date(startDate);
+    const daysBetween = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+    let count = 0;
+
+    for (let i = 0; i <= daysBetween; i++) {
+      // Check if weekends should be included and if the current day is a weekend (Saturday or Sunday)
+      if (!includeWeekends && (currentDate.getDay() === 0 || currentDate.getDay() === 6)) {
+        // Skip weekends
+        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+        continue;
+      }
+
+      count++;
+      currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+    }
+
+    return count;
+  }
   async getSubOrganizations(setDefault = false): Promise<SubOrganization[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
