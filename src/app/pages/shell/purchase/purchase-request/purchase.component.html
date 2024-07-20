@@ -128,7 +128,8 @@
                                         *ngFor="let control of purchaseDetails.controls.items.controls; let i = index">
                                         <td>
                                             <nz-select formControlName="name" [nzDropdownRender]="renderTemplate"
-                                                nzAllowClear nzPlaceHolder="Select item"  (ngModelChange)="onProductChange($event,i)">
+                                                nzAllowClear nzPlaceHolder="Select item"
+                                                (ngModelChange)="onProductChange($event,i)">
                                                 <nz-option *ngFor="let item of vendorItems" [nzLabel]="item.name"
                                                     [nzValue]="item.name"></nz-option>
                                             </nz-select>
@@ -162,13 +163,7 @@
                             </tbody>
                         </nz-table>
                         <nz-row nzGutter="2" style="margin-bottom: 12px;">
-                            <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
 
-
-                                <!-- <button nz-button *ngIf="purchaseDetails.controls.state.value==POStates.Draft"
-                    nzType="primary"  style="margin-bottom: 12px;">Add
-                    Product</button> -->
-                            </nz-col>
                             <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
                                 <nz-card *ngIf="purchaseDetails.controls.state.value!==POStates.Draft"
                                     [nzActions]="[totalLabel, totalAmount]">
@@ -198,7 +193,7 @@
                                     <div>
                                     </div>
                                 </nz-card>
-                                <nz-card style="margin-top: 12px !important;"
+                                <!-- <nz-card style="margin-top: 12px !important;"
                                     *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing"
                                     nzTitle="Payment Details" [nzActions]="[balanceLabel, balanceAmount]">
                                     <nz-form-item>
@@ -210,8 +205,56 @@
                                         </nz-form-control>
                                     </nz-form-item>
 
+                                </nz-card> -->
+                            </nz-col>
+                            <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
+                                <ng-template #header>
+                                    <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing"
+                                        style="float: left" nz-button nzType="primary" nzSize="small" nzShape="round"
+                                        (click)="addPaymentControlRow()">
+                                        <span nz-icon nzTheme="outline" nzType="plus"></span> Add Payments
+                                    </button>
+                                    <h3 *ngIf="purchaseDetails.controls.state.value!==POStates.PaymentProcessing">
+                                        Payment Details
+                                    </h3>
+                                </ng-template>
+                                <nz-card *ngIf="purchaseDetails.controls.state.value!=POStates.Draft" [nzTitle]="header"
+                                    [nzActions]="[balanceLabel, balanceAmount]">
+
+                                    <nz-table class="payment_history" [nzBordered]="false" [nzShowPagination]="false"
+                                        *ngIf="purchaseDetails.controls.payment_history.controls?.length">
+
+                                        <thead >
+                                            <tr>
+                                                <th>Notes</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <ng-container formArrayName="payment_history">
+                                            <ng-container [formGroupName]="pi"
+                                                *ngFor="let rt of purchaseDetails.controls.payment_history.controls; let pi = index">
+
+                                                <tr>
+                                                    <td> <input nz-input style="width: auto;" formControlName="notes">
+                                                    </td>
+                                                    <td> <input nz-input-number formControlName="total"
+                                                            (change)="calculateBalance()"></td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+
+                                    </nz-table>
+                                    <nz-form-item>
+                                        <nz-form-label nzFor="amount_paid">Amount Paid
+                                        </nz-form-label>
+                                        <nz-form-control nzErrorTip="">
+                                            {{purchaseDetails.get('amount_paid')?.value | currency :'PKR '}}
+                                        </nz-form-control>
+                                    </nz-form-item>
+
                                 </nz-card>
                             </nz-col>
+
                         </nz-row>
                         <ng-template #totalLabel>
                             <h5>Discount</h5>
@@ -295,7 +338,8 @@
                                 Invoice</button>
                             <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing" nz-button
                                 nzType="primary" [disabled]="purchaseDetails.invalid"
-                                (click)="confirmPaymentDetails(true)" style="margin-bottom: 12px;margin-right: 10px;">Save
+                                (click)="confirmPaymentDetails(true)"
+                                style="margin-bottom: 12px;margin-right: 10px;">Save
                             </button>
                             <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing" nz-button
                                 nzType="primary" [disabled]="purchaseDetails.invalid" (click)="confirmPaymentDetails()"

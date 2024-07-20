@@ -127,8 +127,8 @@ tfoot tr td {
 
 .ant-table-footer,
 .ant-table-thead>tr>th {
-    color: white !important;
-    background: #21263C !important;
+    color: white ;
+    background: #21263C ;
 
 }
 
@@ -389,4 +389,13 @@ ul {
         border-radius: 0px !important;
     
     }
+  }
+
+  .payment_history  th {
+    background: transparent !important;
+    color: black !important;
+  }
+  .ant-table-column-sort{
+    color: white ;
+    background: #5f647c !important ;
   }

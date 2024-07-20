@@ -49,33 +49,37 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   handleOk(){
-    window.location.reload()
+    this.isVisible=false;
+    // window.location.reload()
   }
   sunscribeToGeoLocation() {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log(position);
-        },
-        (error) => {
-          console.error(`Error occurred: ${error.message}`);
-          this.isVisible=true;
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              console.error("User denied the request for Geolocation.");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              console.error("Location information is unavailable.");
-              break;
-            case error.TIMEOUT:
-              console.error("The request to get user location timed out.");
-              break;
+    setTimeout(()=>{
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.longitude=position.coords.longitude
+            this.latitude=position.coords.latitude
+          },
+          (error) => {
+            console.error(`Error occurred: ${error.message}`);
+            this.isVisible=true;
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                console.error("User denied the request for Geolocation.");
+                break;
+              case error.POSITION_UNAVAILABLE:
+                console.error("Location information is unavailable.");
+                break;
+              case error.TIMEOUT:
+                console.error("The request to get user location timed out.");
+                break;
+            }
           }
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }  
+    },2000)
   }
 
   async setCurrentUserDetails(subOrgId: number) {

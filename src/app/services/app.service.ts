@@ -17,21 +17,21 @@ export class AppService {
   currentSite = new Subject<any>();
   currentSiteId = 0;
   currentSubOrgId = 0;
-  user_permissions=[];
-  
+  user_permissions = [];
+
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
   currentOrganization = new Subject<Organization>();
   organization: Organization;
-  constructor(private http: HttpClient, private userService: UserService,    private media: MediaMatcher   ) { }
+  constructor(private http: HttpClient, private userService: UserService, private media: MediaMatcher) { }
   header: HttpHeaders = new HttpHeaders({
     'accept': 'application/json'
   });
+  
   isMobile(): boolean {
     const viewWidth = window.innerWidth;
-  const viewHeight = window.innerHeight;
-
-    const isMobile = this.media&&this.media.matchMedia('(max-width: 600px)');
-    return isMobile.matches || viewHeight>viewWidth;
+    const viewHeight = window.innerHeight;
+    const isMobile = this.media && this.media.matchMedia('(max-width: 600px)');
+    return isMobile.matches || viewHeight > viewWidth;
   }
   getAndSetSites() {
     const organization_id = localStorage.getItem('organization_id');
@@ -80,7 +80,10 @@ export class AppService {
       const response = await this.http.get(`/api/organizations/${organization_id}`).toPromise();
       const subOrgs = response as SubOrganization[]
       if (subOrgs && subOrgs.length && setDefault && localStorage.getItem('selectedOrganzation')) {
-        const subOrg = subOrgs.find((sub) => sub.id == JSON.parse(localStorage.getItem('selectedOrganzation')||'{}').id || 0)
+        const subOrg = subOrgs.find((sub) => sub.id == JSON.parse(localStorage.getItem('selectedOrganzation') || '{}').id || 0)
+        this.setSubOrganization(subOrg || { id: 0, name: '', organization_id: (organization_id || 0) as number })
+      }else if(subOrgs && subOrgs.length && setDefault && localStorage.getItem('sub_organization_id')){
+        const subOrg = subOrgs.find((sub) => sub.id == parseInt(localStorage.getItem('sub_organization_id')||'0') || 0)
         this.setSubOrganization(subOrg || { id: 0, name: '', organization_id: (organization_id || 0) as number })
       }
       return subOrgs;
@@ -113,10 +116,10 @@ export class AppService {
       throw error;
     }
   }
-  async createSubOrganization(body:any): Promise<Role> {
+  async createSubOrganization(body: any): Promise<Role> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      body={...body,organization_id }
+      body = { ...body, organization_id }
 
       const response = await this.http.post(`/api/organizations/subOrg`, body).toPromise();
       return response as Role;
@@ -280,12 +283,12 @@ export class AppService {
       const sub_organization_id = this.currentSubOrgId;
       const response = await this.http.get(`/api/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
       let subOrg = response as SubOrganization
-     const selectedOrg=localStorage.getItem('selectedOrganzation')
-     if(selectedOrg){
-      subOrg= JSON.parse(selectedOrg);
-     }
-     this.currentSubOrganization.next(subOrg);
-     this.currentSubOrgId = subOrg.id;
+      const selectedOrg = localStorage.getItem('selectedOrganzation')
+      if (selectedOrg) {
+        subOrg = JSON.parse(selectedOrg);
+      }
+      this.currentSubOrganization.next(subOrg);
+      this.currentSubOrgId = subOrg.id;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);
@@ -384,7 +387,7 @@ export class AppService {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/inventory-purchase/purchase-request-by-id/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
-      return response ;
+      return response;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);
@@ -608,10 +611,10 @@ export class AppService {
     }
   }
 
-  async retireveAllSiteStatistics(subOrgId:number): Promise<any> {
+  async retireveAllSiteStatistics(subOrgId: number): Promise<any> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/Sites/statistics/all/${organization_id}/${subOrgId||this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`/api/Sites/statistics/all/${organization_id}/${subOrgId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
       return response as any;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -817,7 +820,7 @@ export class AppService {
     }
   }
 
-  async getEmployeeDetail(UserId: number,subOrgId:number) {
+  async getEmployeeDetail(UserId: number, subOrgId: number) {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/employee/${organization_id}/${subOrgId}/${UserId}`, { headers: this.header }).toPromise()
@@ -869,7 +872,7 @@ export class AppService {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/employee/currentEmployeeSubordinates/${organization_id}/${this.currentSubOrgId}/${userId}`, { headers: this.header }).toPromise()
-      return response  as Employee[];
+      return response as Employee[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);
@@ -904,13 +907,13 @@ export class AppService {
     }
   }
 
-  
 
-  async getEmployeePaymentsDetail(subOrgId: number=0): Promise<{paymentObject:any,employee:Employee}[]> {
+
+  async getEmployeePaymentsDetail(subOrgId: number = 0): Promise<{ paymentObject: any, employee: Employee }[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/payments/employees/${organization_id}/${subOrgId|| this.currentSubOrgId}`, { headers: this.header }).toPromise()
-      return response  as {paymentObject:any,employee:Employee}[];
+      const response = await this.http.get(`/api/payments/employees/${organization_id}/${subOrgId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      return response as { paymentObject: any, employee: Employee }[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);
@@ -927,7 +930,7 @@ export class AppService {
         created_by: this.userService.loggedInUser.id,
       }
       const response = await this.http.post(`/api/payments`, body).toPromise();
-      return response ;
+      return response;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);
@@ -935,11 +938,11 @@ export class AppService {
     }
   }
 
- async getPayments(employeeId:number){
+  async getPayments(employeeId: number) {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`/api/payments/employee/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
-      return response  as any[];
+      return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);

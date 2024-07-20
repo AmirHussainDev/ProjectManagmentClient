@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AppService } from '../../../../services/app.service';
-import { ItemControl, PurchaseDetails, PurchaseItem, PurchaseOrder } from '../../../../services/app.interfact';
+import { ItemControl, PaymentHistory, PurchaseDetails, PurchaseItem, PurchaseOrder } from '../../../../services/app.interfact';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { UserService } from '../../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -59,6 +59,7 @@ export class PurchaseComponent implements OnInit {
     items_discount_total: new FormControl(0),
     overall_discount_total: new FormControl(0),
     item_cost: new FormControl(0),
+    payment_history: this.fb.array<FormGroup<PaymentHistory>>([]),
     amount_paid: new FormControl(0),
     additional_cost: new FormControl(0),
     created_by: new FormControl(0),
@@ -104,6 +105,7 @@ export class PurchaseComponent implements OnInit {
       items_discount_total: new FormControl(0),
       overall_discount_total: new FormControl(0),
       item_cost: new FormControl(0),
+      payment_history: this.fb.array<FormGroup<PaymentHistory>>([]),
       amount_paid: new FormControl(0),
       additional_cost: new FormControl(0),
       overall_discount: new FormControl(0),
@@ -153,6 +155,7 @@ export class PurchaseComponent implements OnInit {
       }
       this.purchaseDetails.reset({ state: POStates.Draft, id: 0 });
       this.clearItems();
+      this.purchaseDetails.reset({ state: POStates.Draft, id: 0, items: [], payment_history: [] });
       this.purchaseDetails.controls['id'].setValue(id || 0);
 
       await this.setPurchaseRequestDetails();
@@ -169,6 +172,10 @@ export class PurchaseComponent implements OnInit {
     while ((this.purchaseDetails.get('items') as FormArray).value?.length !== 0) {
       this.purchaseDetails.controls.items.removeAt(0)
     }
+    while ((this.purchaseDetails.get('payment_history') as FormArray).value.length !== 0) {
+      this.purchaseDetails.controls.payment_history.removeAt(0)
+    }
+
   }
   async setSitesData() {
     const resp: any = await this.appService.getAndSetSites();
@@ -255,6 +262,10 @@ export class PurchaseComponent implements OnInit {
         }
       )
     }
+    const paymentHistory = response.payment_history || [];
+    paymentHistory.forEach((payment_history: any) => {
+      this.addPaymentRow(payment_history)
+    });
 
     this.previousPurchaseDetails = this.purchaseDetails.getRawValue() as any;
 
@@ -298,16 +309,54 @@ export class PurchaseComponent implements OnInit {
   addProductRow(): void {
     (this.purchaseDetails.controls['items'] as FormArray).push(this.getItemFormGroup());
   }
-  onProductChange(name: string,index:number){
-    ((this.purchaseDetails.controls['items']as FormArray).controls[index] as FormGroup).patchValue({isCustom:this.vendorItems.find(item=>item.name===name)?.isCustom})
+  
+  getPaymentHistoryItemFormGroup(object: any) {
+    return this.fb.group({
+      notes: new FormControl(object.notes),
+      total: new FormControl(object.total),
+      date_created: new FormControl(new Date(object.date_created)),
+      added_by: new FormControl(object.added_by)
+    }) as FormGroup<PaymentHistory>
   }
+
+  addPaymentControlRow() {
+    this.addPaymentRow({
+      notes: '',
+      total: 0,
+      date_created: new Date(),
+      added_by: this.userService.loggedInUser.id
+    })
+  }
+  addPaymentRow(objectValue: any): void {
+
+    this.purchaseDetails.controls.payment_history.push(this.getPaymentHistoryItemFormGroup(objectValue));
+  }
+
+
   calculateBalance() {
     if (this.loading) {
       return
     }
-    const amount_paid = this.purchaseDetails.value.amount_paid;
+
+    const detailsvalues = this.purchaseDetails.getRawValue();
+    let amount_paid = 0
+    detailsvalues.payment_history.forEach(hist => {
+      amount_paid += (hist.total * 1);
+    });
+    this.purchaseDetails.get('amount_paid')?.setValue(amount_paid);
     this.purchaseDetails.controls.balance.setValue(this.purchaseDetails.get('total')?.value - amount_paid);
   }
+
+  onProductChange(name: string,index:number){
+    ((this.purchaseDetails.controls['items']as FormArray).controls[index] as FormGroup).patchValue({isCustom:this.vendorItems.find(item=>item.name===name)?.isCustom})
+  }
+  // calculateBalance() {
+  //   if (this.loading) {
+  //     return
+  //   }
+  //   const amount_paid = this.purchaseDetails.value.amount_paid;
+  //   this.purchaseDetails.controls.balance.setValue(this.purchaseDetails.get('total')?.value - amount_paid);
+  // }
 
   calculateTotal(): void {
     const itemsArray = this.purchaseDetails.get('items') as FormArray;

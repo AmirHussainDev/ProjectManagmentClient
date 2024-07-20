@@ -194,6 +194,7 @@ export interface PurchaseDetails {
     items_discount_total: FormControl;
     overall_discount_total: FormControl;
     item_cost: FormControl;
+    payment_history: FormArray<FormGroup<PaymentHistory>>;
     amount_paid: FormControl;
     additional_cost: FormControl;
     overall_discount: FormControl;
