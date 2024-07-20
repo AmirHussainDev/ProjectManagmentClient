@@ -22,7 +22,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   latitude: number;
   longitude: number;
   currentOrganizationId: number;
-
+  isVisible=false;
   constructor(
     private route: ActivatedRoute,
 
@@ -48,17 +48,36 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.sunscribeToGeoLocation();
   }
 
+  handleOk(){
+    window.location.reload()
+  }
   sunscribeToGeoLocation() {
-    if ('geolocation' in navigator) {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position: GeolocationPosition) => {
-
-          this.latitude = position.coords.latitude,
-            this.longitude = position.coords.longitude
+        (position) => {
+          console.log(position);
+        },
+        (error) => {
+          console.error(`Error occurred: ${error.message}`);
+          this.isVisible=true;
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.error("User denied the request for Geolocation.");
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.error("Location information is unavailable.");
+              break;
+            case error.TIMEOUT:
+              console.error("The request to get user location timed out.");
+              break;
+          }
         }
       );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
     }
   }
+
   async setCurrentUserDetails(subOrgId: number) {
     this.employee = await this.appService.getEmployeeDetail(this.currentUserId, subOrgId)
     if (!this.employee) {

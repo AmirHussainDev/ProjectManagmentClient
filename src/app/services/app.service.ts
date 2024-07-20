@@ -30,7 +30,7 @@ export class AppService {
     const viewWidth = window.innerWidth;
   const viewHeight = window.innerHeight;
 
-    const isMobile = this.media.matchMedia('(max-width: 600px)');
+    const isMobile = this.media&&this.media.matchMedia('(max-width: 600px)');
     return isMobile.matches || viewHeight>viewWidth;
   }
   getAndSetSites() {

@@ -17,3 +17,16 @@
        <app-attendance-details *ngIf="user.employee" [employee]="user.employee" [isSupervisor]="user.isSupervisor"></app-attendance-details>
     </nz-tab>
 </nz-tabset>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Enable Location" [nzCancelDisabled]="true" (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+        <div id="geolocation-error-message" >
+            <p>We need your location to provide the best experience. Please follow these steps to enable location access:</p>
+            <ul>
+              <li><strong>Chrome:</strong> Go to Settings > Privacy and Security > Site Settings > Location, and allow location access for this site.</li>
+              <li><strong>Firefox:</strong> Go to Preferences > Privacy & Security > Permissions > Location, and allow location access for this site.</li>
+              <li><strong>Safari:</strong> Go to Preferences > Websites > Location, and allow location access for this site.</li>
+            </ul>
+          </div>
+    </ng-container>
+  </nz-modal>
