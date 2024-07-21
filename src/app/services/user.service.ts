@@ -14,7 +14,7 @@ import { AppService } from './app.service';
 export class UserService {
   users: User[]
   loggedInUser: any = {}
-
+  appurl=  environment.apiUrl
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -39,7 +39,7 @@ export class UserService {
   async getOrganizationUsers(): Promise<User[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`/api/users/${organization_id}`).toPromise();
+      const response = await this.http.get(`${this.appurl}/users/${organization_id}`).toPromise();
       this.users = response as User[];
       return response as User[];
     } catch (error) {
@@ -52,7 +52,7 @@ export class UserService {
   async createPassword(userObj:any): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.put(`/api/users/password`, {...userObj,organization_id}).toPromise();
+      const response = await this.http.put(`${this.appurl}/users/password`, {...userObj,organization_id}).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -64,7 +64,7 @@ export class UserService {
   async createUser(userObj: UserCreateObj): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.post(`/api/users`, userObj).toPromise();
+      const response = await this.http.post(`${this.appurl}/users`, userObj).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -77,7 +77,7 @@ export class UserService {
   async updateUser(userObj: any,userId:number): Promise<User> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.put(`/api/users`, {...userObj,id:userId}).toPromise();
+      const response = await this.http.put(`${this.appurl}/users`, {...userObj,id:userId}).toPromise();
       return response as User;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
