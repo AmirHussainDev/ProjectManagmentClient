@@ -5,11 +5,14 @@ import { NgZorroAntdModule } from '../../../ng-zorro-antd.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HasPermissionDirective } from '../../../directives/permissions.directive';
 import { PdfGeneratorService } from '../../../services/pdf-generator.service';
+import { SelectModalControlComponent } from '../components/select-modal-control/select-modal-control.component';
 
 
 
 @NgModule({
-  declarations: [ChangePasswordComponent,HasPermissionDirective],
+  declarations: [ChangePasswordComponent,
+    HasPermissionDirective,
+    SelectModalControlComponent],
   imports: [
     CommonModule,
     NgZorroAntdModule,
@@ -19,6 +22,7 @@ import { PdfGeneratorService } from '../../../services/pdf-generator.service';
   providers:[
     PdfGeneratorService,
   ],
-  exports:[ChangePasswordComponent,HasPermissionDirective]
+  exports:[ChangePasswordComponent,HasPermissionDirective,SelectModalControlComponent],
+
 })
 export class SharedModule { }

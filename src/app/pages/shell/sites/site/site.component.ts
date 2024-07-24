@@ -10,7 +10,7 @@ import { Subscription, Observable, Observer } from 'rxjs';
 import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
-import { SiteStateNames, SiteStates } from '../../../../services/app.constants';
+import { SiteStateNames, SiteStates, SitesGraphKeys } from '../../../../services/app.constants';
 import { SiteDetails } from '../../../../services/app.interfact';
 import * as Highcharts from 'highcharts';
 
@@ -37,7 +37,7 @@ export class SiteComponent implements OnInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   chartConstructor: string = 'chart';
   chartOptions: Highcharts.Options = {};
-
+  sitesGraphKeys:any=SitesGraphKeys
   listOfData: User[] = [
   ];
   defaultItemValues = {
@@ -189,7 +189,7 @@ this.showChart=false;
     Object.entries(serdata).forEach((key) => {
       if(key[0]!=='siteId'&&key[0]!=='siteName'){
         series.push({
-          name: key[0],
+          name: this.sitesGraphKeys[key[0]],
           data: [key[1]]
         })
       }

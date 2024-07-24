@@ -127,6 +127,14 @@ export const POStates = {
     Completed: 4
 }
 
+export const SitesGraphKeys = {
+    "siteTotalBudget": "Total Budget",
+    "siteExpensesSum": "All Expenses",
+    "siteGeneralExpensesSum": "General Expenses",
+    "siteContractPaymentsSum": "Contractor Payments",
+    "siteOwnerPaymentsSum": "Owner Payments"
+}
+
 export const InvoiceStateNames = {
     [POStates.Draft]: 'DRAFT',
     [POStates.PendingInvoice]: 'PENDING INVOICE',

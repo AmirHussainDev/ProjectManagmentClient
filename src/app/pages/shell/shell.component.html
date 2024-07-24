@@ -167,7 +167,7 @@
       <nz-header >
         <div class="flex space-between center" style="flex-wrap: wrap;">
           <span class="flex center">
-            <span class="trigger" *ngIf="isMobile()" nz-icon style="font-size: 18px;"
+            <span class="trigger" *ngIf="isMobile() || (!isMobile()&&isCollapsed)" nz-icon style="font-size: 18px;"
               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" (click)="isCollapsed = !isCollapsed"></span>
             <!-- <h3 class="header-text" style="padding-left: 16px;">Home</h3> -->
           </span>

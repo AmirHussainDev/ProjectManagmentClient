@@ -51,6 +51,10 @@ export class SaleRequestComponent implements OnInit {
   stateNames = SaleStateNames
   listOfData: Customer[] = [
   ];
+  displayControlColumns=[{value:'vendor_name',
+                          name:'Vendor Name'},
+                          {value:'name',
+                          name:'Item'}]
   defaultItemValues = {
     id: 0,
     name: '',

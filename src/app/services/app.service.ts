@@ -31,7 +31,7 @@ export class AppService {
     const viewWidth = window.innerWidth;
     const viewHeight = window.innerHeight;
     const isMobile = this.media && this.media.matchMedia('(max-width: 600px)');
-    return isMobile.matches || viewHeight > viewWidth;
+    return isMobile?.matches || viewHeight > viewWidth;
   }
   getAndSetSites() {
     const organization_id = localStorage.getItem('organization_id');
@@ -283,12 +283,15 @@ export class AppService {
       const sub_organization_id = this.currentSubOrgId;
       const response = await this.http.get(`${this.apiUrl}/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
       let subOrg = response as SubOrganization
-      const selectedOrg = localStorage.getItem('selectedOrganzation')
-      if (selectedOrg) {
-        subOrg = JSON.parse(selectedOrg);
+      if(subOrg){
+        const selectedOrg = localStorage.getItem('selectedOrganzation')
+        if (selectedOrg) {
+          subOrg = JSON.parse(selectedOrg);
+        }
+        this.currentSubOrganization.next(subOrg);
+        this.currentSubOrgId = subOrg.id;
+  
       }
-      this.currentSubOrganization.next(subOrg);
-      this.currentSubOrgId = subOrg.id;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching roles', error);

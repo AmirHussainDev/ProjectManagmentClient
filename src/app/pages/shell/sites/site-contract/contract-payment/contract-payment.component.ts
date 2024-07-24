@@ -15,7 +15,8 @@ export class ContractPaymentComponent implements OnInit {
   vendorItems: any[] = [];
   @Input() site_id: number;
   date: Date;
-  balance=0;
+  balance = 0;
+  total = 0;
   listOfColumn = [
     {
       title: 'Note',
@@ -52,16 +53,19 @@ export class ContractPaymentComponent implements OnInit {
 
 
   async showModal() {
+    this.setTotalAndBalance();
+    this.isVisible = true;
+  }
 
+  async setTotalAndBalance() {
     const totalPaid = this.listOfData.reduce((sum, payment) => {
-      return sum + (parseInt(payment.amount.toString(),0));
+      return sum + (parseInt(payment.amount.toString(), 0));
     }, 0);
     const contractorPayment = await this.appService.retrieveSiteContractWorkLogBySiteId(this.site_id, this.contractDetails.id)
-    const totalAmount = contractorPayment.reduce((sum, payment) => {
-      return sum + (parseInt(payment.amount.toString(),0));
+    this.total = contractorPayment.reduce((sum, payment) => {
+      return sum + (parseInt(payment.amount.toString(), 0));
     }, 0);
-    this.balance=totalAmount-totalPaid;
-    this.isVisible = true;
+    this.balance = this.total - totalPaid;
   }
 
   async handleOk() {
@@ -112,6 +116,7 @@ export class ContractPaymentComponent implements OnInit {
   async populateContractorPaymentData() {
     this.listOfData = await this.appService.retrieveSiteContractPaymentBySiteId(this.site_id, this.contractDetails.id)
     this.updateEditCache();
+    this.setTotalAndBalance();
   }
 
   index = 0;

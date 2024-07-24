@@ -38,6 +38,12 @@ export class OrganizationSelectorComponent implements OnInit {
     this.getAndSetSubOrganizations();
   }
 
+  getUserInitials(name: string): string {
+    const nameArray = name.trim().split(' '); // Split the name into an array of words
+    const initials = nameArray.map(word => word.charAt(0)); // Extract the first character of each word
+    return initials.join('').toUpperCase(); // Join the characters and convert to uppercase
+  }
+  
   close() {
     this.closeDrawer.emit(true);
   }

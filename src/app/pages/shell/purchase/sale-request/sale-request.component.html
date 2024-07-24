@@ -118,11 +118,15 @@
                                                     *ngIf="(SaleRequestDetails.controls.state.value!==SaleStates.Draft ||control.controls.isCustom?.value)"
                                                     nz-input-number formControlName="name"
                                                     (ngModelChange)="onQuantityChange(i)">
-                                                <nz-tree-select
+                                                <app-select-modal-control *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value" formControlName="selected_item"
+                                                    [data]="vendorItems" [displayColumns]="displayControlColumns"
+                                                    [header]="'Select Product'" (ngModelChange)="onItemChange($event,i)">
+                                                </app-select-modal-control>
+                                                <!-- <nz-tree-select
                                                     *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
                                                     [nzExpandedKeys]="expandableKey" [nzNodes]="nodes||[]" nzShowSearch
                                                     nzPlaceHolder="Please select" formControlName="selected_item"
-                                                    (ngModelChange)="onItemChange($event,i)"></nz-tree-select>
+                                                    (ngModelChange)="onItemChange($event,i)"></nz-tree-select> -->
                                             </td>
                                             <td>
                                                 <nz-input-group [nzSuffix]="control.get('max_qty')?.value">

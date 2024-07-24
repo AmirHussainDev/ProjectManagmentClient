@@ -144,8 +144,8 @@
                             [queryParams]="{ PO: subData.purchase_no }"
                             href="">PO -{{subData.purchase_no}}</a>
                             <a *ngIf="!subData.stock_in && subData.sale_no"
-                            [routerLink]="['/', 'sales','sale']"
-                            [queryParams]="{ PO: subData.sale_no }"
+                            [routerLink]="['/','purchase', 'sales','sale']"
+                            [queryParams]="{ SALE: subData.sale_no }"
                             href="">SALE -{{subData.sale_no||subData.sale_id}}</a>
 
                             <a *ngIf="!subData.stock_in && (subData.site_no||subData.site_id)"

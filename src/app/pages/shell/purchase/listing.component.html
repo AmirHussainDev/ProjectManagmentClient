@@ -53,10 +53,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of listOfDisplayData">
+                                    <tr *ngFor="let data of listOfDisplayData" class="selectedItem">
                                         <td>
                                             <nz-list nzItemLayout="horizontal">
-                                                <nz-list-item>
+                                                <nz-list-item  [routerLink]="['/', 'purchase','purchase']"
+                                                [queryParams]="{ PO: data.purchase_no }" >
                                                     <nz-list-item-meta
                                                         [nzAvatar]="apiUrl +'/images/'+data.filename">
                                                         <nz-list-item-meta-title>
@@ -70,8 +71,7 @@
                                                             <span class="flex space-between">
                                                                 <span>
                                                                     <a (click)="showSide=true"
-                                                                        [routerLink]="['/', 'purchase','purchase']"
-                                                                        [queryParams]="{ PO: data.purchase_no }"
+                                                                       
                                                                         href="">PO-{{data.purchase_no}}</a>
                                                                     <nz-divider nzType="vertical"></nz-divider>
                                                                     <span class="dateDisplay">

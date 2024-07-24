@@ -79,7 +79,10 @@ export class PurchaseComponent implements OnInit {
   sites: any[];
   subOrgSubscription: Subscription;
   currentOrganizationId: number;
-  fileList: NzUploadFile[] = []
+  fileList: NzUploadFile[] = [];
+  displayControlColumns=[
+  {value:'name',
+  name:'Item'}]
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,

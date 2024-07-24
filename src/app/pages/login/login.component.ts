@@ -15,6 +15,7 @@ export class LoginComponent {
   appurl=environment.apiUrl
   organization_id = 0;
   showErrorMessage = false;
+  passwordVisible=false;
   validateForm: FormGroup<{
     username: FormControl<string>;
     password: FormControl<string>;

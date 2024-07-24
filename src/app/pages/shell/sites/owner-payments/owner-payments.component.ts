@@ -46,6 +46,7 @@ export class OwnerPaymentsComponent implements OnInit {
   OwnerPaymentRoles: any[];
   users: any[];
   subOrganizations: SubOrganization[];
+  total: number=0;
   constructor(
     private appService: AppService,
     private userService: UserService,
@@ -112,6 +113,9 @@ export class OwnerPaymentsComponent implements OnInit {
     this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
     // this.mapOwnerPaymentData();
     this.updateEditCache();
+    this.total = this.listOfData.reduce((sum, payment) => {
+      return sum + (parseInt(payment.amount.toString(), 0));
+    }, 0);
   }
 
   index = 0;

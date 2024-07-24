@@ -1,0 +1,46 @@
+<div>
+    <nz-input-group [nzSuffix]="!isDisabled?suffixIconSearch:undefined">
+        <input [value]="this.modelValue==='all'?value?.name :value" (click)="openModal()" (keydown)="stopEvent($event)"
+            (keyup)="stopEvent($event)" (keypress)="stopEvent($event)" [disabled]="isDisabled" /> </nz-input-group>
+    <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+    </ng-template>
+
+</div>
+
+<nz-modal [(nzVisible)]="showModal" [nzTitle]="header" (nzOnCancel)="closeModal()" (nzOnOk)="closeModal()"
+    [nzFooter]="null">
+    <div *nzModalContent>
+        <div *ngIf="addCustom">
+            <nz-input-group nzSearch nzSize="small" [nzAddOnAfter]="suffixButton">
+                <input style="height: 32px" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="customValue"
+                    nz-input placeholder="Add custom item" />
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button nz-button nzType="primary" [nzSize]="'default'" nzSearch
+                    (click)="selectCustomItem()">Add</button>
+            </ng-template>
+            <nz-divider nzText="OR"></nz-divider>
+        </div>
+
+        <div style="margin-bottom: 5px;">
+            <nz-input-group nzSize="small">
+                <input nz-input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="searchValue"
+                    placeholder="Search..." />
+            </nz-input-group>
+
+        </div>
+        <nz-table #filterTable [nzData]="filterData()" nzShowPagination="false">
+            <thead>
+                <tr>
+                    <th *ngFor="let column of displayColumns">{{ column.name }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="selectedItem" *ngFor="let item of filterTable.data" (click)="selectItem(item)">
+                    <td *ngFor="let column of displayColumns">{{ item[column.value] }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-modal>

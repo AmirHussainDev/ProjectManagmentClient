@@ -11,7 +11,7 @@ import { UserService } from '../../../../services/user.service';
 })
 export class ContractorPaymentsComponent implements OnInit {
   @Input() site_id: number;
-
+  total=0;
   listOfColumn :any[] = [
     {
       title: 'Contractor',
@@ -60,6 +60,9 @@ export class ContractorPaymentsComponent implements OnInit {
 
   async populateContractPaymentData() {
     this.listOfData = await this.appService.retrieveContractPaymentsBySiteId(this.site_id)
+    this.total = this.listOfData.reduce((sum, payment) => {
+      return sum + (parseInt(payment.amount.toString(), 0));
+    }, 0);
   }
 
 }

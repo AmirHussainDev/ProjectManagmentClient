@@ -3,9 +3,9 @@
     <ng-container *nzDrawerContent>
           <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
             @for (item of data; track item) {
-            <nz-list-item nz-button nzType="text" (click)="setSubOrganization(item)">
-                <nz-list-item-meta [nzAvatar]="item.filename? item.filename
-                :'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'"
+            <nz-list-item nz-button nzType="text" class="selectedItem" (click)="setSubOrganization(item)">
+                <nz-list-item-meta [nzAvatar]="item.filename? item.filename:
+                'A'" 
                     nzDescription="">
                     <nz-list-item-meta-title>
                        {{ item.name }}

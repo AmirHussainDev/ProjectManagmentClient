@@ -399,3 +399,8 @@ ul {
     color: white ;
     background: #5f647c !important ;
   }
+
+  .selectedItem:hover{
+cursor: pointer;
+background-color: #d3d3d3;
+  }

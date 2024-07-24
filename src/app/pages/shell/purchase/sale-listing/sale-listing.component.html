@@ -53,13 +53,13 @@
             </thead>
             <tbody>
 
-                <tr *ngFor="let data of listOfDisplayData">
-                    <ng-container *ngIf="!showSide">
+                <tr *ngFor="let data of listOfDisplayData" class="selectedItem" [routerLink]="['/', 'purchase','sales','sale']"
+                [queryParams]="{ SALE: data.sale_no }">
+                    <ng-container *ngIf="!showSide" >
                         <td> {{ data.date_created | date : 'dd MMM yyyy' }} </td>
                         <td> {{ data.subject }} </td>
                         <td>
-                            <a (click)="openDetails()" [routerLink]="['/', 'purchase','sales','sale']"
-                                [queryParams]="{ SALE: data.sale_no }" href="">SALE -
+                            <a (click)="openDetails()"  href="">SALE -
                                 {{data.sale_no}}</a>
                         </td>
                         <td> {{ data.customer_name }} </td>

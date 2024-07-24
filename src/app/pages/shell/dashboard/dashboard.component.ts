@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
 import * as Highcharts from 'highcharts';
+import { SitesGraphKeys } from '../../../services/app.constants';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'UnivHighCharts';
   Highcharts: typeof Highcharts = Highcharts;
   chartConstructor: string = 'chart';
-
+  sitesGraphKeys:any=SitesGraphKeys
   chartOptions: Highcharts.Options = {};
   siteChartOptions: Highcharts.Options = {};
   piechartOptions: Highcharts.Options = {};
@@ -298,7 +299,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         if (key !== 'siteId' && key !== 'siteName') {
           if (index === 0) {
             series.push({
-              name: key,
+              name: this.sitesGraphKeys[key],
+
               data: [value]
             });
           } else {

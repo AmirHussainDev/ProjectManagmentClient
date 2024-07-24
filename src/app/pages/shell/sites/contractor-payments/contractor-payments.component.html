@@ -1,5 +1,7 @@
 <div class="flex center space-between">
-    <h3>Contractors Payments</h3>
+    <h5>Contractors Payments</h5>
+    <h5>{{total | currency:'PKR '}}</h5>
+
 </div>
 
 <nz-table #editRowTable [nzPageSize]="1000"  #sortTable nzShowPagination="false" [nzData]="listOfData" nzTableLayout="fixed">

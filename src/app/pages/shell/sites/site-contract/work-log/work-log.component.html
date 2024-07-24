@@ -1,8 +1,8 @@
 <div class="flex center space-between">
     <h3>Work Log</h3>
-    <button nz-button nzType="primary" (click)="showModal()">
-        <span>Add Work Log</span>
-    </button>
+    <h5><button nz-button nzType="primary" (click)="showModal()">
+        <span nz-icon nzType="plus"> </span>
+        </button></h5>
 </div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Add Work Log" (nzOnCancel)="handleCancel()"
     [nzOkDisabled]="addContractorWorkLogForm.invalid" (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">

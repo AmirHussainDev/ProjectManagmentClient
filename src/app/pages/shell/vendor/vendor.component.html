@@ -94,7 +94,8 @@
                     <div>
                         <span style="font-size: 24px;" nz-button (click)="viewDetails(data)" nz-icon nzType="profile" 
                             nzTheme="outline"></span>
-                        <img class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
+
+                        <img *ngIf="data.filename" class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
                         <span> {{ data.name }}</span>
                     </div>
                 </td>

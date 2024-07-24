@@ -60,9 +60,14 @@ export class ExpensesComponent implements OnInit {
   isVisible = false;
   isOkLoading = false;
 
+  total=0;
   ExpenseRoles: any[];
   users: any[];
   subOrganizations: SubOrganization[];
+  displayControlColumns=[{value:'vendor_name',
+  name:'Vendor Name'},
+  {value:'name',
+  name:'Item'}]
   constructor(
     private appService: AppService,
     private userService: UserService,
@@ -130,11 +135,14 @@ export class ExpensesComponent implements OnInit {
     this.users = await this.userService.getOrganizationUsers();
     this.ExpenseRoles = await this.appService.getRoles();
     this.subOrganizations = await this.appService.getSubOrganizations();
-    this.vendorItems = await this.appService.getInventoryBySiteId(this.site_id)
+    this.vendorItems = await this.appService.getInventory()
     this.ExpenseRoles = this.ExpenseRoles.map(role => ({ key: role.role_name, value: role.id }))
     this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
     // this.mapExpenseData();
     this.updateEditCache();
+    this.total = this.listOfData.reduce((sum, payment) => {
+      return sum + (parseInt(payment.amount.toString(), 0));
+    }, 0);
   }
 
   index = 0;
