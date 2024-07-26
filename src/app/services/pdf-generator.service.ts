@@ -124,7 +124,7 @@ export class PdfGeneratorService {
                                 ... this.invoice.items.map(item => {
                                     // Create a new array combining the item and its return details
                                     const combinedItems = [[item.name, item.unit_price, item.qty, item.discount, item.total]];
-                                    totalAmount += item.total
+                                    totalAmount += Number(item.total)
                                     return combinedItems;
                                 }).flat(),
                                 [{ text: 'Total Amount', colSpan: 3 }, {}, {}, this.invoice.items_discount_total, totalAmount]
@@ -146,7 +146,7 @@ export class PdfGeneratorService {
                                 ... this.invoice.items.map(item => {
                                     // Create a new array combining the item and its return details
                                     const combinedItems = [...item.return_details.map((returnDetail: any) => {
-                                        totalReturnAmount += returnDetail.returnAmount;
+                                        totalReturnAmount += Number(returnDetail.returnAmount);
                                         return [
                                             item.name,
                                             item.unit_price || '',
