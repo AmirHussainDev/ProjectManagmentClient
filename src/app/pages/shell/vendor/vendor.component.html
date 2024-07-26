@@ -1,38 +1,33 @@
-<div *appHasPermission="appPermissions.UpdateVendors" class="flex space-between" style="margin-bottom:5px"> 
-    <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
-        Vendors
-    </h3>
-  
+<div *appHasPermission="appPermissions.UpdateVendors" class="flex space-between" style="margin-bottom:5px">
+    <span style="display: -webkit-box;width: 100%;">
+        <h3 style="margin-right: 5px;">
+            Vendors
+        </h3>
+
         <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
             <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
-            
-          </nz-input-group>
-          <ng-template #inputClearTpl>
-            @if (searchValue) {
-              <span
-                nz-icon
-                class="ant-input-clear-icon"
-                nzTheme="fill"
-                nzType="close-circle"
-                (click)="searchValue = '';search()"
-                
-              ></span>
-            } @else{
-                <span nz-icon nzType="search"></span>
-            }
-          </ng-template>
-      <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"></span>
-      </ng-template>
 
-   </span>
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+            @if (searchValue) {
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                (click)="searchValue = '';search()"></span>
+            } @else{
+            <span nz-icon nzType="search"></span>
+            }
+        </ng-template>
+        <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+        </ng-template>
+
+    </span>
     <button nz-button nzType="primary" nzSize="small" (click)="showModal()">Add Vendor</button>
 </div>
 <app-vendor-details *ngIf="drawerVisible" [vendor]="selectedVendor" (closeDrawer)="drawerVisible=false"
     [visible]="drawerVisible"></app-vendor-details>
 
 <!-- Modal for adding Vendor name -->
-<nz-modal [(nzVisible)]="isModalVisible" nzTitle="Add Vendor" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="isModalVisible" [nzTitle]="newItem? 'Add Vendor':'Edit Vendor'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <nz-form *nzModalContent [formGroup]="addVendorForm">
         <nz-form-item>
             <nz-form-label nzRequired>Vendor Name</nz-form-label>
@@ -78,7 +73,8 @@
 </nz-modal>
 <!-- <app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible"
     [userVendors]="userVendors" [users]="listOfDisplayData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
-<nz-table #editRowTable [nzPageSize]="1000"  #sortTable nzShowPagination="false" [nzData]="listOfDisplayData" nzTableLayout="fixed">
+<nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfDisplayData"
+    nzTableLayout="fixed">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
@@ -92,7 +88,7 @@
 
                 <td>
                     <div>
-                        <span style="font-size: 24px;" nz-button (click)="viewDetails(data)" nz-icon nzType="profile" 
+                        <span style="font-size: 24px;" nz-button (click)="viewDetails(data)" nz-icon nzType="profile"
                             nzTheme="outline"></span>
 
                         <img *ngIf="data.filename" class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
@@ -103,7 +99,8 @@
                 <td>{{data.address}}</td>
                 <td>{{data.email}}</td>
                 <td>
-                    <a *appHasPermission="appPermissions.UpdateVendors" (click)="startEdit(data.id)">Edit</a>
+                    <a *appHasPermission="appPermissions.UpdateVendors"
+                        (click)="startEdit(data.id); showModal(false)">Edit</a>
                 </td>
             </ng-container>
             <ng-template #editTemplate>

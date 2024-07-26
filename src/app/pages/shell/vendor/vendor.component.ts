@@ -14,14 +14,14 @@ import { AppPermissions } from '../../../services/app.constants';
   templateUrl: './vendor.component.html',
   styleUrl: './vendor.component.css'
 })
-export class VendorComponent implements OnInit , OnDestroy {
+export class VendorComponent implements OnInit, OnDestroy {
   apiUrl = environment.apiUrl;
 
   isModalVisible = false;
   drawerVisible = false;
   selectedVendor: any = {};
   addVendorForm: FormGroup;
-  appPermissions=AppPermissions;
+  appPermissions = AppPermissions;
   listOfColumn = [
 
     {
@@ -59,27 +59,39 @@ export class VendorComponent implements OnInit , OnDestroy {
   loading: boolean;
   avatarUrl: string;
   msg: any;
-  currentSubOrganizationSubscription:Subscription;
+  currentSubOrganizationSubscription: Subscription;
   searchVisible: boolean;
   searchValue: any;
-  listOfDisplayData: any[]=[];
+  listOfDisplayData: any[] = [];
+  newItem: boolean;
+  editableItem: any;
   constructor(private appService: AppService,
     private fb: FormBuilder
   ) {
     this.addVendorForm = this.fb.group({
       name: ['', [Validators.required]],
+      id: [0],
       contact_no: ['', [Validators.required]],
       email: ['', [Validators.required]],
       address: ['', [Validators.required]],
       file: ['', [Validators.required]]
     })
   }
-  showModal() {
+
+  showModal(isNew = true) {
+    this.newItem = isNew;
+    if (this.newItem) {
+      this.addVendorForm.reset();
+      this.avatarUrl = '';
+    }
     this.isModalVisible = true;
   }
+
   async handleOk() {
     this.isModalVisible = false;
-    await this.appService.createVendor(this.addVendorForm.value.name, this.addVendorForm.value.file)
+    this.newItem ? await this.appService.createVendor(this.addVendorForm.value, this.addVendorForm.value.file) :
+      await this.appService.updateVendor(this.addVendorForm.value,
+        this.addVendorForm.value.file)
     this.isModalVisible = false;
     this.populateVendorData();
   }
@@ -94,11 +106,11 @@ export class VendorComponent implements OnInit , OnDestroy {
       }
     });
   }
-ngOnDestroy(): void {
-  if(this.currentSubOrganizationSubscription){
-    this.currentSubOrganizationSubscription.unsubscribe()
+  ngOnDestroy(): void {
+    if (this.currentSubOrganizationSubscription) {
+      this.currentSubOrganizationSubscription.unsubscribe()
+    }
   }
-}
 
 
   open(): void {
@@ -114,14 +126,24 @@ ngOnDestroy(): void {
 
   async populateVendorData() {
     this.listOfData = await this.appService.getVendors(),
-    this.listOfDisplayData=this.listOfData
-      this.updateEditCache();
+      this.listOfDisplayData = this.listOfData
+    this.updateEditCache();
   }
 
 
   editCache: { [key: string]: { edit: boolean; data: any } } = {};
   startEdit(id: string): void {
-    this.editCache[id].edit = true;
+    this.editableItem = this.editCache[id].data;
+    // this.editCache[id].edit = true;
+    this.addVendorForm = this.fb.group({
+      name: [this.editableItem.name, [Validators.required]],
+      contact_no: [this.editableItem.contact_no, [Validators.required]],
+      email: [this.editableItem.email, [Validators.required]],
+      address: [this.editableItem.address, [Validators.required]],
+      file: [null, [Validators.required]],
+      id: [this.editableItem.id]
+    })
+    this.avatarUrl = 'api/images/' + this.editableItem.filename
   }
 
   cancelEdit(id: string): void {
@@ -134,14 +156,14 @@ ngOnDestroy(): void {
 
   async saveEdit(id: string) {
     const index = this.listOfDisplayData.findIndex(item => item.id === id);
-    await this.appService.updateVendor({
-      id,
-      ...this.editCache[id].data,
-      organization_id: this.editCache[id].data.organization_id,
-      role_id: this.editCache[id].data.role_id,
-      reports_to: this.editCache[id].data.reports_to,
-      name: this.editCache[id].data.name
-    });
+    // await this.appService.updateVendor({
+    //   id,
+    //   ...this.editCache[id].data,
+    //   organization_id: this.editCache[id].data.organization_id,
+    //   role_id: this.editCache[id].data.role_id,
+    //   reports_to: this.editCache[id].data.reports_to,
+    //   name: this.editCache[id].data.name
+    // });
     this.editCache[id].edit = false;
     Object.assign(this.listOfDisplayData[index], this.editCache[id].data);
     this.populateVendorData();
@@ -200,11 +222,11 @@ ngOnDestroy(): void {
 
   search(): void {
     this.searchVisible = false;
-    if(this.searchValue){
-      this.listOfDisplayData = this.listOfData.filter((item:any) => (item.name&&item.name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+    if (this.searchValue) {
+      this.listOfDisplayData = this.listOfData.filter((item: any) => (item.name && item.name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
-  
-    }else{
+
+    } else {
       this.listOfDisplayData = this.listOfData
     }
   }

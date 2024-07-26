@@ -7,19 +7,18 @@
             </h4>
         </span>
 
-        <span>
+        <!-- <span>
             <button nz-button nzType="primary" (click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
             <button style="margin-left: 12px;" nz-button nzType="primary" printSectionId="print-section" ngxPrint
                 printTitle="MyTitle">
 
                 <span nz-icon nzType="printer" nzTheme="outline"></span>
             </button>
-        </span>
+        </span> -->
     </div>
 </ng-template>
-
 <nz-collapse nzAccordion>
-    <nz-collapse-panel #p nzExpandedIcon='double-right' [nzHeader]="renderHome"
+    <nz-collapse-panel #p nzExpandedIcon='caret-right' [nzHeader]="renderHome"
         [nzActive]="isActive || (siteDetails.get('state')?.value !== siteStates.Approved && siteDetails.get('state')?.value !== siteStates.Completed )"
         [nzDisabled]="(siteDetails.get('state')?.value !== siteStates.Approved && siteDetails.get('state')?.value !== siteStates.Completed )">
 

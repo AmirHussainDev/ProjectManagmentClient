@@ -18,7 +18,7 @@
 </ng-template>
 
 <nz-collapse nzAccordion>
-    <nz-collapse-panel #p nzExpandedIcon='double-right' [nzHeader]="renderHome"
+    <nz-collapse-panel #p nzExpandedIcon='caret-right' [nzHeader]="renderHome"
         [nzActive]="isActive || (contractDetails.get('state')?.value !== contractStates.Approved && contractDetails.get('state')?.value !== contractStates.Completed )"
         [nzDisabled]="(contractDetails.get('state')?.value !== contractStates.Approved && contractDetails.get('state')?.value !== contractStates.Completed )">
 

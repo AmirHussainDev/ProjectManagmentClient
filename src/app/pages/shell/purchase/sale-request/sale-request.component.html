@@ -117,10 +117,12 @@
                                                 <input
                                                     *ngIf="(SaleRequestDetails.controls.state.value!==SaleStates.Draft ||control.controls.isCustom?.value)"
                                                     nz-input-number formControlName="name"
-                                                    (ngModelChange)="onQuantityChange(i)">
-                                                <app-select-modal-control *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value" formControlName="selected_item"
-                                                    [data]="vendorItems" [displayColumns]="displayControlColumns"
-                                                    [header]="'Select Product'" (ngModelChange)="onItemChange($event,i)">
+                                                   >
+                                                <app-select-modal-control
+                                                    *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
+                                                    formControlName="selected_item" [data]="vendorItems"
+                                                    [displayColumns]="displayControlColumns" [header]="'Select Product'"
+                                                    (ngModelChange)="onItemChange($event,i)">
                                                 </app-select-modal-control>
                                                 <!-- <nz-tree-select
                                                     *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
@@ -197,7 +199,7 @@
                                                         </td>
                                                         <td>
                                                             {{
-                                                            (rt.get('returnAmount')?.value * -1) | currency : 'PKR '
+                                                            (rt.get('returnAmount')?.value ) | currency : 'PKR '
                                                             }}
                                                         </td>
                                                     </tr>
@@ -249,7 +251,16 @@
                                         <thead>
                                             <tr>
                                                 <th>Notes</th>
-                                                <th>Amount</th>
+                                                <th><span class="flex space-between"> Amount
+                                                        <button
+                                                            *ngIf="SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation || returningItem"
+                                                            style="float: right" nz-button nzType="primary"
+                                                            nzSize="small" nzShape="round"
+                                                            (click)="addPaymentControlRow()">
+                                                            <span nz-icon nzTheme="outline" nzType="plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <ng-container formArrayName="payment_history">
@@ -266,14 +277,6 @@
                                         </ng-container>
 
                                     </nz-table>
-                                    <nz-form-item>
-                                        <nz-form-label nzFor="amount_paid">Amount Paid
-                                        </nz-form-label>
-                                        <nz-form-control nzErrorTip="">
-                                            {{SaleRequestDetails.get('amount_paid')?.value | currency :'PKR '}}
-                                        </nz-form-control>
-                                    </nz-form-item>
-
                                 </nz-card>
                             </nz-col>
                         </nz-row>
@@ -289,19 +292,18 @@
                             </h4>
                         </ng-template>
                         <ng-template #header>
-                            <button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.PaymentConfirmation"
-                                style="float: left" nz-button nzType="primary" nzSize="small" nzShape="round"
-                                (click)="addPaymentControlRow()">
-                                <span nz-icon nzTheme="outline" nzType="plus"></span> Add Payments
-                            </button>
-                            <h3 *ngIf="SaleRequestDetails.controls.state.value!==SaleStates.PaymentConfirmation">
+
+                            <h5 *ngIf="SaleRequestDetails.controls.state.value!==SaleStates.PaymentConfirmation">
                                 Payment Details
-                            </h3>
+                            </h5>
                         </ng-template>
                         <ng-template #balanceLabel>
+                            <h5>Amount Paid</h5>
                             <h3>Balance</h3>
                         </ng-template>
                         <ng-template #balanceAmount>
+                            <p [innerHTML]="SaleRequestDetails.get('amount_paid')?.value | currency :'PKR '">
+                            </p>
                             <h4 [innerHTML]="SaleRequestDetails.get('balance')?.value| currency:'PKR '">
                             </h4>
                         </ng-template>

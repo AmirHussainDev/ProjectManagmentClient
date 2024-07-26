@@ -1,36 +1,31 @@
-<div class="flex space-between" style="margin:12px">
-    <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
-        Sites
-    </h3>
-  
+<div class="flex space-between" style="">
+    <span style="display: -webkit-box;width: 100%;">
+        <h3 style="margin-right: 5px;">
+            Sites
+        </h3>
+
         <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
             <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
-            
-          </nz-input-group>
-          <ng-template #inputClearTpl>
-            @if (searchValue) {
-              <span
-                nz-icon
-                class="ant-input-clear-icon"
-                nzTheme="fill"
-                nzType="close-circle"
-                (click)="searchValue = '';search()"
-                
-              ></span>
-            } @else{
-                <span nz-icon nzType="search"></span>
-            }
-          </ng-template>
-      <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"></span>
-      </ng-template>
 
-   </span> <a [routerLink]="['./','new']" [state]="{tracingId: 2}">
-    <button nz-button nzType="primary" [nzSize]="'small'">
-        <span nz-icon nzType="plus"> </span>
-        New Site
-    </button>
-</a>
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+            @if (searchValue) {
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                (click)="searchValue = '';search()"></span>
+            } @else{
+            <span nz-icon nzType="search"></span>
+            }
+        </ng-template>
+        <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+        </ng-template>
+
+    </span> <a [routerLink]="['./','new']" [state]="{tracingId: 2}">
+        <button nz-button nzType="primary" [nzSize]="'small'">
+            <span nz-icon nzType="plus"> </span>
+            New Site
+        </button>
+    </a>
 </div>
 
 
@@ -45,11 +40,11 @@
     <tbody>
         <ng-container *ngFor="let data of listOfDisplayData">
 
-            <tr [class.expanded]="expandSet.has(data.id)">
-                <td [nzExpandIcon]="expandIcon" [nzExpand]="expandSet.has(data.id)"
+            <tr [class.expanded]="expandSet.has(data.id)" class="selectedItem"> 
+                <td [nzExpand]="expandSet.has(data.id)"
                     (nzExpandChange)="onExpandChange(data.id, $event)"></td>
 
-                <td>
+                <td [routerLink]="[ data.id]" >
                     <nz-list nzItemLayout="horizontal">
                         <nz-list-item>
                             <nz-list-item-meta>
@@ -63,7 +58,7 @@
                                 <nz-list-item-meta-description>
                                     <span class="flex space-between">
                                         <span>
-                                            <a [routerLink]="[ data.id]" href="">Site-{{data.id}}</a>
+                                            Site-{{data.id}}
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <span class="dateDisplay">
                                                 {{data.date_created | date : 'dd MMM yyyy' }}</span>
@@ -89,10 +84,10 @@
             </tr>
 
             <ng-template #expandIcon>
-                <span nz-icon *ngIf="!expandSet.has(data.id)" nzType="double-right" nzTheme="outline"  style="font-size: 16px; color: #08c;"
-                    (click)="onExpandChange(data.id, true)" ></span>
-                <span nz-icon *ngIf="expandSet.has(data.id)" [nzRotate]="90" nzType="double-right" nzTheme="outline"  style="font-size: 16px; color: #08c;"
-                    (click)="onExpandChange(data.id, false)"></span>
+                <span nz-icon *ngIf="!expandSet.has(data.id)" nzType="double-right" nzTheme="outline"
+                    style="font-size: 16px; color: #08c;" (click)="onExpandChange(data.id, true)"></span>
+                <span nz-icon *ngIf="expandSet.has(data.id)" [nzRotate]="90" nzType="double-right" nzTheme="outline"
+                    style="font-size: 16px; color: #08c;" (click)="onExpandChange(data.id, false)"></span>
             </ng-template>
         </ng-container>
     </tbody>

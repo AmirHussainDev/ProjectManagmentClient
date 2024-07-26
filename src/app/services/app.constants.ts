@@ -92,7 +92,7 @@ export const SaleStates = {
 export const SaleStateNames = {
     [SaleStates.Draft]: 'DRAFT',
     [SaleStates.PaymentConfirmation]: 'PAYMENT CONFIRMATION',
-    [SaleStates.Invoiced]: 'Invoiced',
+    [SaleStates.Invoiced]: 'INVOICED',
     [SaleStates.Cancelled]: 'CANCELLED'
 }
 

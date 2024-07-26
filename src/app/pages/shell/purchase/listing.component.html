@@ -3,106 +3,99 @@
         <div class="container">
             <div class="section">
                 <div class="card-container">
-                           <div class="flex space-between" style="margin-bottom:5px">
+                    <div class="flex space-between" style="margin-bottom:5px">
 
-                            <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
+                        <span style="display: -webkit-box;width: 100%;">
+                            <h3 style="margin-right: 5px;">
                                 Purchases
                             </h3>
-                          
-                                <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
-                                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
-                                    
-                                  </nz-input-group>
-                                  <ng-template #inputClearTpl>
-                                    @if (searchValue) {
-                                      <span
-                                        nz-icon
-                                        class="ant-input-clear-icon"
-                                        nzTheme="fill"
-                                        nzType="close-circle"
-                                        (click)="searchValue = '';search()"
-                                        
-                                      ></span>
-                                    } @else{
-                                        <span nz-icon nzType="search"></span>
-                                    }
-                                  </ng-template>
-                              <ng-template #suffixIconSearch>
+
+                            <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+                                <input type="text" placeholder="Search here" [(ngModel)]="searchValue"
+                                    (keyup)="search()" nz-input />
+
+                            </nz-input-group>
+                            <ng-template #inputClearTpl>
+                                @if (searchValue) {
+                                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                                    (click)="searchValue = '';search()"></span>
+                                } @else{
                                 <span nz-icon nzType="search"></span>
-                              </ng-template>
+                                }
+                            </ng-template>
+                            <ng-template #suffixIconSearch>
+                                <span nz-icon nzType="search"></span>
+                            </ng-template>
 
-                           </span>
-                                <a (click)="showSide=true" [routerLink]="['./purchase']" 
-                                [queryParams]="{ PO: 'new' }"
-                                [state]="{tracingId: 2}">
-                                    <button nz-button nzType="primary" [nzSize]="'small'">
-                                        <span nz-icon nzType="plus"> </span>
-                                        New Purchase
-                                    </button>
-                                </a>
-                            </div>
-                            <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData" [nzFrontPagination]="false"
-                                [nzLoading]="loading" [nzTotal]="total" 
-                                [nzPageIndex]="pageIndex" (nzQueryParams)="onPurchaseQueryParamsChange($event)">
-                                <thead>
-                                    <tr>
-                                        <th nzColumnKey="name" nzCustomFilter nzWidth="80%" [nzSortFn]="true">Purchase 
-                                           </th>
-                                        <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let data of listOfDisplayData" class="selectedItem">
-                                        <td>
-                                            <nz-list nzItemLayout="horizontal">
-                                                <nz-list-item  [routerLink]="['/', 'purchase','purchase']"
-                                                [queryParams]="{ PO: data.purchase_no }" >
-                                                    <nz-list-item-meta
-                                                        [nzAvatar]="apiUrl +'/images/'+data.filename">
-                                                        <nz-list-item-meta-title>
-                                                            <span class="flex space-between">
-                                                                <span>{{data.vendor_name}} - {{ data.subject }}</span>
-                                                              
-                                                            </span>
+                        </span>
+                        <a (click)="showSide=true" [routerLink]="['./purchase']" [queryParams]="{ PO: 'new' }"
+                            [state]="{tracingId: 2}">
+                            <button nz-button nzType="primary" [nzSize]="'small'">
+                                <span nz-icon nzType="plus"> </span>
+                                New Purchase
+                            </button>
+                        </a>
+                    </div>
+                    <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData"
+                        [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total" [nzPageIndex]="pageIndex"
+                        (nzQueryParams)="onPurchaseQueryParamsChange($event)">
+                        <thead>
+                            <tr>
+                                <th nzColumnKey="name" nzCustomFilter nzWidth="80%" [nzSortFn]="true">Purchase
+                                </th>
+                                <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of listOfDisplayData" class="selectedItem">
+                                <td>
+                                    <nz-list nzItemLayout="horizontal">
+                                        <nz-list-item (click)="showSide=true"
+                                            [routerLink]="['/', 'purchase','purchase']"
+                                            [queryParams]="{ PO: data.purchase_no }">
+                                            <nz-list-item-meta [nzAvatar]="apiUrl +'/images/'+data.filename">
+                                                <nz-list-item-meta-title>
+                                                    <span class="flex space-between">
+                                                        <span>{{data.vendor_name}} - {{ data.subject }}</span>
 
-                                                        </nz-list-item-meta-title>
-                                                        <nz-list-item-meta-description>
-                                                            <span class="flex space-between">
-                                                                <span>
-                                                                    <a (click)="showSide=true"
-                                                                       
-                                                                        href="">PO-{{data.purchase_no}}</a>
-                                                                    <nz-divider nzType="vertical"></nz-divider>
-                                                                    <span class="dateDisplay">
-                                                                        {{data.date_created | date : 'dd MMM yyyy'
-                                                                        }}</span>
-                                                                </span>
-                                                            </span>
-                                                        </nz-list-item-meta-description>
-                                                    </nz-list-item-meta>
-                                                </nz-list-item>
-                                            </nz-list>
-                                        </td>
-                                        <td style="text-align: end;">
-                                            <span style="    display: inline-grid;
+                                                    </span>
+
+                                                </nz-list-item-meta-title>
+                                                <nz-list-item-meta-description>
+                                                    <span class="flex space-between">
+                                                        <span>
+                                                            <span> PO-{{data.purchase_no}}</span>
+                                                            <nz-divider nzType="vertical"></nz-divider>
+                                                            <span class="dateDisplay">
+                                                                {{data.date_created | date : 'dd MMM yyyy'
+                                                                }}</span>
+                                                        </span>
+                                                    </span>
+                                                </nz-list-item-meta-description>
+                                            </nz-list-item-meta>
+                                        </nz-list-item>
+                                    </nz-list>
+                                </td>
+                                <td style="text-align: end;">
+                                    <span style="    display: inline-grid;
                                             width: max-content;">
-                                                <span>{{data.state===states.PendingInvoice?'':
-                                                 data.total | currency :'PKR'}}</span>
-                                                 <span *ngIf="data.state===states.PaymentProcessing&&data.balance" class="remainingAmount">
-                                                Balance: {{data.balance | currency:'PKR'}}
-                                                </span>
-                                            </span>
-                                            <button nz-button nzType="primary"
-                                                [className]="data.state===states.Completed? 'green-button':'default'"
-                                                [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"
-                                                nzShape="round">
-                                                {{ stateNames[data.state] }}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </nz-table>
+                                        <span>{{data.state===states.PendingInvoice?'':
+                                            data.total | currency :'PKR'}}</span>
+                                        <span *ngIf="data.state===states.PaymentProcessing&&data.balance"
+                                            class="remainingAmount">
+                                            Balance: {{data.balance | currency:'PKR'}}
+                                        </span>
+                                    </span>
+                                    <button nz-button nzType="primary"
+                                        [className]="data.state===states.Completed? 'green-button':'default'"
+                                        [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
+                                        {{ stateNames[data.state] }}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
                 </div>
             </div>
         </div>
@@ -112,7 +105,8 @@
     </nz-col>
 </nz-row>
 <div *ngIf="isMobile()&&showSide">
-    <nz-drawer  nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]="" (nzOnClose)="showSide=false">
+    <nz-drawer nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]=""
+        (nzOnClose)="showSide=false">
         <ng-container *nzDrawerContent>
 
             <router-outlet>

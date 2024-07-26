@@ -26,7 +26,7 @@ export class AppService {
   header: HttpHeaders = new HttpHeaders({
     'accept': 'application/json'
   });
-  
+
   isMobile(): boolean {
     const viewWidth = window.innerWidth;
     const viewHeight = window.innerHeight;
@@ -82,8 +82,8 @@ export class AppService {
       if (subOrgs && subOrgs.length && setDefault && localStorage.getItem('selectedOrganzation')) {
         const subOrg = subOrgs.find((sub) => sub.id == JSON.parse(localStorage.getItem('selectedOrganzation') || '{}').id || 0)
         this.setSubOrganization(subOrg || { id: 0, name: '', organization_id: (organization_id || 0) as number })
-      }else if(subOrgs && subOrgs.length && setDefault && localStorage.getItem('sub_organization_id')){
-        const subOrg = subOrgs.find((sub) => sub.id == parseInt(localStorage.getItem('sub_organization_id')||'0') || 0)
+      } else if (subOrgs && subOrgs.length && setDefault && localStorage.getItem('sub_organization_id')) {
+        const subOrg = subOrgs.find((sub) => sub.id == parseInt(localStorage.getItem('sub_organization_id') || '0') || 0)
         this.setSubOrganization(subOrg || { id: 0, name: '', organization_id: (organization_id || 0) as number })
       }
       return subOrgs;
@@ -116,6 +116,20 @@ export class AppService {
       throw error;
     }
   }
+  async updateSubOrganization(body: any): Promise<Role> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      body = { ...body, organization_id }
+
+      const response = await this.http.put(`${this.apiUrl}/organizations/subOrg`, body).toPromise();
+      return response as Role;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error creating organization vendor:', error);
+      throw error;
+    }
+  }
+
   async createSubOrganization(body: any): Promise<Role> {
     try {
       const organization_id = localStorage.getItem('organization_id');
@@ -129,10 +143,13 @@ export class AppService {
       throw error;
     }
   }
-  async createVendor(name: string, file: File): Promise<Role> {
+  async createVendor(obj: any, file: File): Promise<Role> {
     try {
       const body = new FormData();
-      body.append('name', name)
+      body.append('name', obj.name)
+      body.append('contact_no', obj.contact_no)
+      body.append('email', obj.email)
+      body.append('address', obj.address)
       body.append('file', file)
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.post(`${this.apiUrl}/organizations/vendor/${organization_id}`, body).toPromise();
@@ -144,11 +161,19 @@ export class AppService {
     }
   }
 
-  async updateVendor(roleObj: any): Promise<Role> {
+  async updateVendor(roleObj: any, file: File): Promise<Role> {
     try {
+      const body = new FormData();
+      body.append('name', roleObj.name)
+      body.append('contact_no', roleObj.contact_no)
+      body.append('email', roleObj.email)
+      body.append('address', roleObj.address)
+      if (file) {
+        body.append('file', file)
+      }
       const organization_id = localStorage.getItem('organization_id');
 
-      const response = await this.http.put(`${this.apiUrl}/organizations/vendor/${organization_id}/${roleObj.id}`, roleObj).toPromise();
+      const response = await this.http.put(`${this.apiUrl}/organizations/vendor/${organization_id}/${roleObj.id}`, body).toPromise();
       return response as Role;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -283,14 +308,14 @@ export class AppService {
       const sub_organization_id = this.currentSubOrgId;
       const response = await this.http.get(`${this.apiUrl}/organizations/${organization_id}/${sub_organization_id}`, { headers: this.header }).toPromise()
       let subOrg = response as SubOrganization
-      if(subOrg){
+      if (subOrg) {
         const selectedOrg = localStorage.getItem('selectedOrganzation')
         if (selectedOrg) {
           subOrg = JSON.parse(selectedOrg);
         }
         this.currentSubOrganization.next(subOrg);
         this.currentSubOrgId = subOrg.id;
-  
+
       }
     } catch (error) {
       // Handle error appropriately, such as logging or throwing

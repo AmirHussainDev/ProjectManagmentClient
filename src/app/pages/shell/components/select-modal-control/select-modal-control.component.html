@@ -1,6 +1,6 @@
 <div>
     <nz-input-group [nzSuffix]="!isDisabled?suffixIconSearch:undefined">
-        <input [value]="this.modelValue==='all'?value?.name :value" (click)="openModal()" (keydown)="stopEvent($event)"
+        <input [value]="this.modelValue==='all'?(value?.name||'') :(value||'')" (click)="openModal()" (keydown)="stopEvent($event)"
             (keyup)="stopEvent($event)" (keypress)="stopEvent($event)" [disabled]="isDisabled" /> </nz-input-group>
     <ng-template #suffixIconSearch>
         <span nz-icon nzType="search"></span>

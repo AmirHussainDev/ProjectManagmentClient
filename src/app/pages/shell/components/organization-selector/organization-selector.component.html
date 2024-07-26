@@ -1,17 +1,22 @@
-<nz-drawer *appHasPermission="appPermissions.SwitchOrganization" [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" [nzTitle]="organization" (nzOnClose)="close()">
-    
+<nz-drawer *appHasPermission="appPermissions.SwitchOrganization" [nzClosable]="false" [nzVisible]="visible"
+    nzPlacement="right" [nzTitle]="organization" (nzOnClose)="close()">
+
     <ng-container *nzDrawerContent>
-          <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
-            @for (item of data; track item) {
-            <nz-list-item nz-button nzType="text" class="selectedItem" (click)="setSubOrganization(item)">
+        <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
+            @for (item of data; track item;) {
+            <nz-list-item nz-button nzType="text" style="padding: 4px;" class="selectedItem" (click)="setSubOrganization(item)">
                 <nz-list-item-meta [nzAvatar]="item.filename? item.filename:
-                'A'" 
-                    nzDescription="">
+                'A'" nzDescription="">
                     <nz-list-item-meta-title>
-                       {{ item.name }}
+                        {{ item.name }}
                     </nz-list-item-meta-title>
                 </nz-list-item-meta>
+                <ul nz-list-item-actions>
+                    <nz-list-item-action> <span nz-icon nzType="edit" nzTheme="outline"
+                            (click)="showModal(false,item.id)"></span></nz-list-item-action>
+                </ul>
             </nz-list-item>
+
             }
             @if (data.length === 0) {
             <nz-list-empty />
@@ -19,7 +24,8 @@
         </nz-list>
 
     </ng-container>
-    <nz-modal [(nzVisible)]="isModalVisible" nzTitle="Add Organization" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <nz-modal [(nzVisible)]="isModalVisible" [nzTitle]="newItem?'Add Organization':'Edit Organization'"
+        (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
         <nz-form *nzModalContent [formGroup]="addOrgForm">
             <nz-form-item>
                 <nz-form-label nzRequired>Organization Name</nz-form-label>
@@ -30,13 +36,14 @@
             <nz-form-item>
                 <nz-form-label nzRequired>Organization Image</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
-    
+
                     <section>
                         <button (click)="compressFile()">Upload</button>
                         <div>
-                            <img style="width: 100px;height: 100px;" *ngIf="addOrgForm.get('filename')?.value" [src]="addOrgForm.get('filename')?.value" alt="" />
+                            <img style="width: 100px;height: 100px;" *ngIf="addOrgForm.get('filename')?.value"
+                                [src]="addOrgForm.get('filename')?.value" alt="" />
                         </div>
-                      </section>
+                    </section>
                 </nz-form-control>
             </nz-form-item>
         </nz-form>

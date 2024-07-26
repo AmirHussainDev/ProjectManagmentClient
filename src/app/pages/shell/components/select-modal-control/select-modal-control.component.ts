@@ -1,5 +1,5 @@
 import { Component, Input, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormControl, Validator } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormControl, Validator, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-select-modal-control',
@@ -53,7 +53,10 @@ export class SelectModalControlComponent implements ControlValueAccessor, Valida
   }
 
   validate(control: FormControl) {
-    return control.value ? null : { required: true };
+    if (control.hasValidator(Validators.required) && !control.value) {
+      return { required: true };
+    }
+    return null;
   }
 
   openModal() {

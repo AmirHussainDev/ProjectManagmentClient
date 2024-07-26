@@ -1,49 +1,46 @@
 <nz-row style="height: 100%;">
     <nz-col [nzSpan]="!isMobile()&&showSide?8:24" style="height: 100%; overflow-y: auto;">
         <div class="flex space-between" style="margin-bottom:5px;margin-right:5px">
-         <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
-                All Quotes 
-            </h3>
-          
+            <span style="display: -webkit-box;width: 100%;">
+                <h3 style="margin-right: 5px;">
+                    All Quotes
+                </h3>
+
                 <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
-                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
-                    
-                  </nz-input-group>
-                  <ng-template #inputClearTpl>
+                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()"
+                        nz-input />
+
+                </nz-input-group>
+                <ng-template #inputClearTpl>
                     @if (searchValue) {
-                      <span
-                        nz-icon
-                        class="ant-input-clear-icon"
-                        nzTheme="fill"
-                        nzType="close-circle"
-                        (click)="searchValue = '';search()"
-                        
-                      ></span>
+                    <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                        (click)="searchValue = '';search()"></span>
                     } @else{
-                        <span nz-icon nzType="search"></span>
+                    <span nz-icon nzType="search"></span>
                     }
-                  </ng-template>
-              <ng-template #suffixIconSearch>
-                <span nz-icon nzType="search"></span>
-              </ng-template>
-        </span>
-            <a (click)="openDetails()" [routerLink]="['./sale']"  [queryParams]="{ SALE: 'new' }" [state]="{tracingId: 2}">
+                </ng-template>
+                <ng-template #suffixIconSearch>
+                    <span nz-icon nzType="search"></span>
+                </ng-template>
+            </span>
+            <a (click)="openDetails()" [routerLink]="['./sale']" [queryParams]="{ SALE: 'new' }"
+                [state]="{tracingId: 2}">
                 <button nz-button nzType="primary" [nzSize]="'small'">
                     <span nz-icon nzType="plus"> </span>
                     New Quote
                 </button>
             </a>
         </div>
-        <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="listOfDisplayData" [nzFrontPagination]="false" [nzLoading]="loading"
-            [nzTotal]="total" [nzPageIndex]="pageIndex"
+        <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="listOfDisplayData"
+            [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total" [nzPageIndex]="pageIndex"
             (nzQueryParams)="onSaleQueryParamsChange($event)">
             <thead>
                 <tr>
                     <ng-container *ngIf="!showSide">
                         <th nzColumnKey="date_create" nzWidth="20%" [nzSortFn]="true">Date</th>
                         <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Subject
-                           
-                            </th>
+
+                        </th>
                         <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Quote Number</th>
                         <th nzColumnKey="customer_name" nzWidth="20%" [nzSortFn]="true">Customer Name</th>
                         <th nzColumnKey="state" [nzFilters]="filterStates" [nzFilterFn]="true">Status
@@ -53,14 +50,14 @@
             </thead>
             <tbody>
 
-                <tr *ngFor="let data of listOfDisplayData" class="selectedItem" [routerLink]="['/', 'purchase','sales','sale']"
-                [queryParams]="{ SALE: data.sale_no }">
-                    <ng-container *ngIf="!showSide" >
+                <tr *ngFor="let data of listOfDisplayData" class="selectedItem" (click)="openDetails()"
+                    [routerLink]="['/', 'purchase','sales','sale']" [queryParams]="{ SALE: data.sale_no }">
+                    <ng-container *ngIf="!showSide">
                         <td> {{ data.date_created | date : 'dd MMM yyyy' }} </td>
                         <td> {{ data.subject }} </td>
                         <td>
-                            <a (click)="openDetails()"  href="">SALE -
-                                {{data.sale_no}}</a>
+                            SALE -
+                            {{data.sale_no}}
                         </td>
                         <td> {{ data.customer_name }} </td>
                         <td> <button nz-button nzType="primary"
@@ -72,9 +69,9 @@
                             <span style="    display: inline-grid;
                                                 width: max-content;"><span>{{ data.total | currency :'PKR'}}</span>
                                 <span *ngIf="data.state===states.PaymentConfirmation" class="remainingAmount">
-                               Balance: {{data.balance | currency:'PKR'}}
-                               </span>
-                               </span>
+                                    Balance: {{data.balance | currency:'PKR'}}
+                                </span>
+                            </span>
 
                         </td>
                     </ng-container>
@@ -88,19 +85,17 @@
                                                 <span>{{ data.subject }}</span>
                                                 <span style="    display: inline-grid;
                                                 width: max-content;">
-                                                <span>{{ data.total | currency :'PKR'}}</span>
-                                                <span *ngIf="data.state===states.PaymentConfirmation" class="remainingAmount">
-                                               Balance: {{data.balance | currency:'PKR'}}
-                                               </span>                                            </span>
+                                                    <span>{{ data.total | currency :'PKR'}}</span>
+                                                    <span *ngIf="data.state===states.PaymentConfirmation"
+                                                        class="remainingAmount">
+                                                        Balance: {{data.balance | currency:'PKR'}}
+                                                    </span> </span>
                                             </span>
                                         </nz-list-item-meta-title>
                                         <nz-list-item-meta-description>
                                             <span class="flex space-between">
                                                 <span>
-                                                    <a (click)="openDetails()"
-                                                        [routerLink]="['/', 'purchase','sales','sale']"
-                                                        [queryParams]="{ SALE: data.sale_no }" href="">SALE -
-                                                        {{data.sale_no}}</a>
+                                                    SALE - {{data.sale_no}}
                                                     <nz-divider nzType="vertical"></nz-divider>
                                                     <span class="dateDisplay"> {{
                                                         data.date_created | date : 'dd MMM yyyy' }}</span>
@@ -122,7 +117,7 @@
                 </tr>
             </tbody>
         </nz-table>
-        
+
     </nz-col>
     <nz-col class="sidebarright" [nzSpan]="!isMobile()&&showSide?16:0" *ngIf="!isMobile()&&showSide">
         <router-outlet></router-outlet>
@@ -130,12 +125,12 @@
 </nz-row>
 <nz-dropdown-menu #menu="nzDropdownMenu">
     <div class="ant-table-filter-dropdown">
-      <div class="search-box">
-        <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">Search</button>
-        <button nz-button nzSize="small" (click)="reset()">Reset</button>
-      </div>
+        <div class="search-box">
+            <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">Search</button>
+            <button nz-button nzSize="small" (click)="reset()">Reset</button>
+        </div>
     </div>
-  </nz-dropdown-menu>
+</nz-dropdown-menu>
 <div *ngIf="isMobile()&&showSide">
     <nz-drawer nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]=""
         (nzOnClose)="showSide=false">

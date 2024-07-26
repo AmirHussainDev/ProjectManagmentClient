@@ -101,18 +101,31 @@ tfoot tr td {
     justify-content: space-between;
     align-items: center;
     padding: 5px;
+    line-height: 1.5;
+}
+.ant-collapse-header {
+    border-radius: 0 0 0px 0px !important;
 }
 
 .detailBar {
     display: flex;
     width: 100%;
     margin-left: auto;
-    margin-top: 10px;
     justify-content: space-between;
     align-items: center;
     padding: 5px;
 }
+.ant-card-head-title{
+    padding:8px
+}
+.ant-card-head{
+    min-height: 28px;
+    padding:8px
 
+}
+.payment_history{
+    padding:0px !important
+}
 .appbackground {
     /* background: url('../28.jpg') !important; */
     background-size: cover !important
@@ -272,7 +285,7 @@ a:hover {
 }
 
 .ant-card-body {
-    padding: 10px !important;
+    padding: 8px !important;
 }
 
 .ant-collapse-header {
@@ -287,7 +300,9 @@ a:hover {
     font-size: 12px;
     line-height: 1;
 }
-
+.ant-list-item-meta {
+    align-items: center;
+}
 .ant-list-item-meta-description {
     font-size: 12px;
     line-height: 2;
@@ -329,12 +344,19 @@ a:hover {
     background-color: inherit;
 }
 
+.ant-collapse-item{
+    margin: 0px !important;
+}
+.ant-list-item{
+    padding: 0px;
+}
+
 .ant-collapse > .ant-collapse-item {
     border: 1px solid #F1E5FF;
     padding: 0px;
     margin: 14px;
     background: #F1E5FF;
-    border-radius: 10px !important;
+    border-radius: 4px !important;
 }
 .ant-collapse-content {
     border-radius: 12px !important;

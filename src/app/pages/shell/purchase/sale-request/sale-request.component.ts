@@ -77,6 +77,7 @@ export class SaleRequestComponent implements OnInit {
   isSpinning = false;
   currentOrganizationId: number;
   fileList: NzUploadFile[] = []
+  returningItem: boolean;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -366,7 +367,7 @@ export class SaleRequestComponent implements OnInit {
         totalReturnAmount += returnDetail.returnAmount;
       });
     });
-    return totalReturnAmount;
+    return totalReturnAmount * -1;
   }
   calculateOverAllDiscountAndTotal() {
     if (this.loading) {
@@ -399,6 +400,7 @@ export class SaleRequestComponent implements OnInit {
         unit_price:
           unit_price - (unit_price * discount / 100)
       }))
+      this.returningItem=true;
     }
 
   }
@@ -416,7 +418,7 @@ export class SaleRequestComponent implements OnInit {
       const unit_price = returnItem[discountIndex].get('unit_price')?.value || 0;
       const charge = returnItem[discountIndex].get('charge')?.value || 0;
       const qty = returnItem[discountIndex].get('qty')?.value || 0;
-      const returnAmount = (unit_price - ((unit_price * charge) / 100)) * qty
+      const returnAmount = (unit_price - ((unit_price * charge) / 100)) * qty * -1
       returnItem[discountIndex].get('returnAmount')?.setValue(returnAmount);
       this.calculateTotal()
     }
