@@ -46,32 +46,32 @@
     <tbody>
         <ng-template ngFor let-data [ngForOf]="sortTable.data" let-i="index">
             <tr>
-                <ng-container *ngIf="!editCache[i]?.edit; else editTemplate">
+                <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
                     <td [nzExpand]="expandSet.has(i)" (nzExpandChange)="onExpandChange(i, $event)"></td>
                     <td>{{ data.name }}</td>
                     <td>{{ data.contact_no }}</td>
                     <td>{{ data.address }}</td>
                     <td>{{ data.account_no }}</td>
-                    <td *appHasPermission="appPermissions.AddCustomers"><a (click)="startEdit(i)">Edit</a></td>
+                    <td *appHasPermission="appPermissions.AddCustomers"><a (click)="startEdit(data.id)">Edit</a></td>
                 </ng-container>
                 <ng-template #editTemplate>
                     <td></td>
                     <td>
-                        <input type="text" nz-input [(ngModel)]="editCache[i].data.name" />
+                        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" />
                     </td>
                     <td>
-                        <input type="text" nz-input [(ngModel)]="editCache[i].data.contact_no" />
+                        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.contact_no" />
                     </td>
                     <td>
-                        <input type="text" nz-input [(ngModel)]="editCache[i].data.address" />
+                        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.address" />
                     </td>
                     <td>
-                        <input type="text" nz-input [(ngModel)]="editCache[i].data.account_no" />
+                        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.account_no" />
                     </td>
 
                     <td *appHasPermission="appPermissions.AddCustomers">
-                        <a (click)="saveEdit(i)" class="save">Save</a> &nbsp;
-                        <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(i)">Cancel</a>
+                        <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
+                        <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
                     </td>
                 </ng-template>
             </tr>

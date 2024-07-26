@@ -51,10 +51,14 @@ export class SaleRequestComponent implements OnInit {
   stateNames = SaleStateNames
   listOfData: Customer[] = [
   ];
-  displayControlColumns=[{value:'vendor_name',
-                          name:'Vendor Name'},
-                          {value:'name',
-                          name:'Item'}]
+  displayControlColumns = [{
+    value: 'vendor_name',
+    name: 'Vendor Name'
+  },
+  {
+    value: 'name',
+    name: 'Item'
+  }]
   defaultItemValues = {
     id: 0,
     name: '',
@@ -150,7 +154,7 @@ export class SaleRequestComponent implements OnInit {
       }
     });
   }
-  
+
   clearItems() {
     while ((this.SaleRequestDetails.get('items') as FormArray).value.length !== 0) {
       this.SaleRequestDetails.controls.items.removeAt(0)
@@ -192,12 +196,12 @@ export class SaleRequestComponent implements OnInit {
     this.loading = false;
   }
 
-  onItemChange(item:any,index: number) {
+  onItemChange(item: any, index: number) {
     const itemGroup = this.SaleRequestDetails.controls.items.controls[index] as FormGroup<SaleItemControl>
     const itemName = itemGroup.controls.selected_item.value.item_name
     const maxQty = itemGroup.controls.selected_item.value.qty;
     const minUnitPrice = itemGroup.controls.selected_item.value.avg_unit_price;
-    const vendor = item.vendor?item.vendor: itemGroup.controls.selected_item.value.vendor_id;
+    const vendor = item.vendor ? item.vendor : itemGroup.controls.selected_item.value.vendor_id;
     itemGroup.controls.name.setValue(itemName);
     itemGroup.controls.vendor.setValue(vendor);
     itemGroup.controls.name.setValue(itemName);
@@ -306,7 +310,7 @@ export class SaleRequestComponent implements OnInit {
       qty: new FormControl(object.qty),
       unit_price: new FormControl(object.unit_price),
       charge: new FormControl(object.charge),
-      date_created: new FormControl(object.date_created),
+      date_created: new FormControl(object.date_created || new Date()),
       max_qty: new FormControl(object.max_qty),
       returnAmount: new FormControl(object.returnAmount)
     }) as FormGroup<SaleItemReturnControl>
@@ -400,7 +404,7 @@ export class SaleRequestComponent implements OnInit {
         unit_price:
           unit_price - (unit_price * discount / 100)
       }))
-      this.returningItem=true;
+      this.returningItem = true;
     }
 
   }

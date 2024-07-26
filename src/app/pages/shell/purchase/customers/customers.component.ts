@@ -52,12 +52,12 @@ export class CustomersComponent implements OnInit, OnDestroy {
     {
       title: 'Account No',
       compare: (a: Customer, b: Customer) => a.account_no - b.account_no,
-      priority: 3
+      priority: 4
     },
     {
       title: 'Action',
       compare: (a: Customer, b: Customer) => a.account_no - b.account_no,
-      priority: 3
+      priority: 5
     }
   ];
   listOfData: Customer[] = [
@@ -163,14 +163,14 @@ export class CustomersComponent implements OnInit, OnDestroy {
       account_no: this.editCache[id].data.account_no,
       name: this.editCache[id].data.name
     });
-    this.editCache[index].edit = false;
-    Object.assign(this.listOfDisplayData[index], this.editCache[index].data);
+    this.editCache[id].edit = false;
+    Object.assign(this.listOfDisplayData[index], this.editCache[id].data);
     this.populateCustomerData();
   }
 
   updateEditCache(): void {
     this.listOfDisplayData.forEach((item, index) => {
-      this.editCache[index] = {
+      this.editCache[item.id] = {
         edit: false,
         data: { ...item }
       };

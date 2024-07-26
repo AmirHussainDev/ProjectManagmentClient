@@ -376,6 +376,7 @@ export interface ContractorPayment {
 
 
 export interface EmployeeForm {
+    id: FormControl;
     organization: FormControl;
     subOrganization: FormControl;
     position: FormControl;

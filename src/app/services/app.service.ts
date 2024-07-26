@@ -6,6 +6,14 @@ import { Attendance, ContractDetails, Employee, EmployeePayments, Expense, Organ
 import { UserService } from './user.service';
 import { Customer, CustomerCreateObj } from '../pages/shell/purchase/customers/customers.interface';
 import { MediaMatcher } from '@angular/cdk/layout';
+interface KeyValue {
+  key: string;
+  value: any;
+}
+
+interface DataObject {
+  [key: string]: any;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +25,7 @@ export class AppService {
   currentSite = new Subject<any>();
   currentSiteId = 0;
   currentSubOrgId = 0;
+  currentSubOrg :SubOrganization;
   user_permissions = [];
 
   currentSubOrganization = new BehaviorSubject<SubOrganization>({ id: 0, organization_id: 0, name: '' });
@@ -48,6 +57,7 @@ export class AppService {
 
   setSubOrganization(item: SubOrganization) {
     this.currentSubOrgId = item.id;
+    this.currentSubOrg=item;
     this.currentSubOrganization.next(item);
   }
   setCurrentOrganization(item: Organization) {
@@ -513,7 +523,7 @@ export class AppService {
   }
 
 
-  findObjectDifferences(obj1: any, obj2: any): any {
+  findObjectDifferences(obj1: any={}, obj2: any={}): any {
     const diffs: any = {};
 
     // Iterate through properties of obj1
@@ -539,6 +549,39 @@ export class AppService {
     }
 
     return diffs;
+  }
+
+
+  areArraysDifferent(arr1: any[], arr2: any[]): boolean {
+    if (arr1.length !== arr2.length) {
+      return true;
+    }
+  
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i].key !== arr2[i].key || arr1[i].value !== arr2[i].value) {
+        return true;
+      }
+    }
+  
+    return false;
+  }
+
+ sortDataArray(dataArray: DataObject[], sortDefinition: KeyValue[]): DataObject[] {
+    return dataArray.sort((a, b) => {
+      for (const sort of sortDefinition) {
+        const key = sort.key;
+        const order = sort.value;
+  
+        if (order === 'ascend') {
+          if (a[key] > b[key]) return 1;
+          if (a[key] < b[key]) return -1;
+        } else if (order === 'descend') {
+          if (a[key] > b[key]) return -1;
+          if (a[key] < b[key]) return 1;
+        }
+      }
+      return 0;
+    });
   }
 
   async createContract(details: any): Promise<any[]> {

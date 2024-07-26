@@ -345,7 +345,7 @@ a:hover {
 }
 
 .ant-collapse-item{
-    margin: 0px !important;
+    margin: 7px 0px 0px 0px!important;
 }
 .ant-list-item{
     padding: 0px;

@@ -36,15 +36,21 @@
             (nzQueryParams)="onSaleQueryParamsChange($event)">
             <thead>
                 <tr>
+                    <ng-container *ngIf="showSide">
+                        <th nzColumnKey="subject" nzCustomFilter nzWidth="80%" [nzSortFn]="true">Sale
+                        </th>
+                        <th nzColumnKey="gender" [nzFilters]="filterStates" [nzFilterFn]="true">Status
+                        </th>
+                    </ng-container>
                     <ng-container *ngIf="!showSide">
                         <th nzColumnKey="date_create" nzWidth="20%" [nzSortFn]="true">Date</th>
-                        <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Subject
+                        <th nzColumnKey="subject" nzWidth="20%" [nzSortFn]="true">Subject
 
                         </th>
                         <th nzColumnKey="id" nzWidth="20%" [nzSortFn]="true">Quote Number</th>
                         <th nzColumnKey="customer_name" nzWidth="20%" [nzSortFn]="true">Customer Name</th>
                         <th nzColumnKey="state" [nzFilters]="filterStates" [nzFilterFn]="true">Status
-                        <th nzColumnKey="amount" nzWidth="20%" [nzSortFn]="true">Amount</th>
+                        <th nzColumnKey="total" nzWidth="20%" [nzSortFn]="true">Amount</th>
                     </ng-container>
                 </tr>
             </thead>
@@ -76,7 +82,7 @@
                         </td>
                     </ng-container>
                     <ng-container *ngIf="showSide">
-                        <td>
+                        <td colspan="2">
                             <nz-list nzItemLayout="horizontal">
                                 <nz-list-item>
                                     <nz-list-item-meta>

@@ -24,45 +24,46 @@ export class SaleListingComponent {
   filterStates = Object.keys(SaleStateNames).map((res: any) => ({ text: SaleStateNames[res], value: res }))
   subOrgSubscription: Subscription;
   status = '';
-  currentOrganizationId=0;
-  searchVisible=false;
-  searchValue='';
-  listOfDisplayData:any[]=[];
-  suffixIconSearch: string|TemplateRef<void>|undefined;
+  currentOrganizationId = 0;
+  searchVisible = false;
+  searchValue = '';
+  listOfDisplayData: any[] = [];
+  suffixIconSearch: string | TemplateRef<void> | undefined;
+  sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
     private route: ActivatedRoute,
-    private router:Router
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-        if(this.currentOrganizationId){
-          this.router.navigate(['/','purchase','sales'], {
+        if (this.currentOrganizationId) {
+          this.router.navigate(['/', 'purchase', 'sales'], {
             queryParams: {
               'SALE': null,
             },
             queryParamsHandling: 'merge'
           })
         }
-          this.currentOrganizationId=change.id;
-          this.route.queryParams.subscribe(async(params) => {
-            // Use this queryParams object to load data
-            
-             if (!params['SALE']) {
-            this.showSide=false
+        this.currentOrganizationId = change.id;
+        this.route.queryParams.subscribe(async (params) => {
+          // Use this queryParams object to load data
+
+          if (!params['SALE']) {
+            this.showSide = false
             this.loadSaleDataFromServer();
 
-            }else{
-              this.showSide=true
-            }
+          } else {
+            this.showSide = true
+          }
           // Do something with the query parameters
           this.status = params['status'];
-          if(this.status){
+          if (this.status) {
             this.loadSaleDataFromServer();
-            this.showSide = false;  
+            this.showSide = false;
           }
         });
       }
@@ -100,7 +101,7 @@ export class SaleListingComponent {
         params = params.append(filter.key, value);
       });
     });
-    if ((!filters || !filters.length)&&this.status&& parseInt(this.status) !== this.states.Quote) {
+    if ((!filters || !filters.length) && this.status && parseInt(this.status) !== this.states.Quote) {
       params = params.append('state', this.status);
     }
     this.getAndSetSaleRequests(params);
@@ -110,17 +111,23 @@ export class SaleListingComponent {
   onSaleQueryParamsChange(params: NzTableQueryParams): void {
     console.log(params);
     const { pageSize, pageIndex, sort, filter } = params;
+    if (this.sort && this.appService.areArraysDifferent(this.sort, sort)) {
+      this.sort = sort;
+      this.listOfDisplayData=this.appService.sortDataArray(this.listOfDisplayData,this.sort)
+      return;
+    }
+    this.sort = sort;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
     this.loadSaleDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
 
-  isMobile=this.appService.isMobile
+  isMobile = this.appService.isMobile
 
 
-  openDetails(){
-    this.showSide=true
+  openDetails() {
+    this.showSide = true
   }
   reset(): void {
     this.searchValue = '';
@@ -129,11 +136,11 @@ export class SaleListingComponent {
 
   search(): void {
     this.searchVisible = false;
-    if(this.searchValue){
-      this.listOfDisplayData = this.saleRequests.filter((item:any) => (item.subject&&item.subject.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+    if (this.searchValue) {
+      this.listOfDisplayData = this.saleRequests.filter((item: any) => (item.subject && item.subject.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
-  
-    }else{
+
+    } else {
       this.listOfDisplayData = this.saleRequests
     }
   }

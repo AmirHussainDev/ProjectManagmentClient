@@ -4,34 +4,30 @@
             Pending Invoices
         </h5> -->
         <div class="flex space-between" style="">
-            <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
-                Inventory
-            </h3>
-          
+            <span style="display: -webkit-box;width: 100%;">
+                <h3 style="margin-right: 5px;">
+                    Inventory
+                </h3>
+
                 <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
-                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
-                    
-                  </nz-input-group>
-                  <ng-template #inputClearTpl>
+                    <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()"
+                        nz-input />
+
+                </nz-input-group>
+                <ng-template #inputClearTpl>
                     @if (searchValue) {
-                      <span
-                        nz-icon
-                        class="ant-input-clear-icon"
-                        nzTheme="fill"
-                        nzType="close-circle"
-                        (click)="searchValue = '';search()"
-                        
-                      ></span>
+                    <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                        (click)="searchValue = '';search()"></span>
                     } @else{
-                        <span nz-icon nzType="search"></span>
+                    <span nz-icon nzType="search"></span>
                     }
-                  </ng-template>
-              <ng-template #suffixIconSearch>
-                <span nz-icon nzType="search"></span>
-              </ng-template>
-        
-           </span> 
-           <!-- <button (click)="isVisible=!isVisible"
+                </ng-template>
+                <ng-template #suffixIconSearch>
+                    <span nz-icon nzType="search"></span>
+                </ng-template>
+
+            </span>
+            <!-- <button (click)="isVisible=!isVisible"
                 nz-button nzType="primary" [nzSize]="'small'">
                 <span nz-icon nzType="plus"></span>
 
@@ -100,20 +96,19 @@
         </nz-modal>
 
 
-        <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData" [nzFrontPagination]="false" [nzLoading]="loading">
+        <nz-table [nzShowPagination]="false" #sortTable [nzPageSize]="1000" [nzData]="listOfDisplayData"
+            [nzFrontPagination]="false" [nzLoading]="loading">
             <thead>
                 <tr>
                     <th nzWidth="60px"></th>
-                    <th nzColumnKey="item_name" [nzSortFn]="true">Name</th>
-                    <th nzColumnKey="vendor_name">Vendor</th>
-                    <th nzColumnKey="qty">Quantity</th>
-                    <th nzColumnKey="latest_unit_price">Latest Unit Price</th>
-                    <th nzColumnKey="latest_unit_price">Average Unit Price</th>
-                    <th nzColumnKey="total">Total</th>
+                    <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare"
+                        [nzSortPriority]="column.priority">
+                        {{ column.title }}
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let data of listOfDisplayData; let i = index">
+                <ng-container *ngFor="let data of sortTable.data; let i = index">
                     <tr>
                         <td [nzExpand]="expandSet.has(data.item_name)" [nzExpandIcon]="expandIcon"></td>
 
@@ -125,8 +120,8 @@
                         <td> {{(data.qty* data.latest_unit_price) | currency : 'PKR '}} </td>
                     </tr>
                     <tr [nzExpand]="expandSet.has(data.item_name)">
-                        <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="data.subDetails" [nzFrontPagination]="false"
-                            [nzLoading]="loading">
+                        <nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="data.subDetails"
+                            [nzFrontPagination]="false" [nzLoading]="loading">
                             <thead>
                                 <tr>
                                     <th nzColumnKey="qty">Reference #</th>
@@ -138,20 +133,17 @@
             <tbody>
                 <ng-container *ngFor="let subData of data.subDetails; let i = index">
                     <tr [className]="subData.stock_in?'purchase-row':'sale-row'">
-                        <td> 
-                            <a *ngIf="subData.stock_in"
-                            [routerLink]="['/', 'purchase','purchase']"
-                            [queryParams]="{ PO: subData.purchase_no }"
-                            href="">PO -{{subData.purchase_no}}</a>
+                        <td>
+                            <a *ngIf="subData.stock_in" [routerLink]="['/', 'purchase','purchase']"
+                                [queryParams]="{ PO: subData.purchase_no }" href="">PO -{{subData.purchase_no}}</a>
                             <a *ngIf="!subData.stock_in && subData.sale_no"
-                            [routerLink]="['/','purchase', 'sales','sale']"
-                            [queryParams]="{ SALE: subData.sale_no }"
-                            href="">SALE -{{subData.sale_no||subData.sale_id}}</a>
+                                [routerLink]="['/','purchase', 'sales','sale']"
+                                [queryParams]="{ SALE: subData.sale_no }" href="">SALE
+                                -{{subData.sale_no||subData.sale_id}}</a>
 
                             <a *ngIf="!subData.stock_in && (subData.site_no||subData.site_id)"
-                            [routerLink]="['/', 'sites',subData.site_id]"
-                            [queryParams]="{ PO: subData.sale_no }"
-                            href="">SITE -{{subData.site_no||subData.site_id}}</a>
+                                [routerLink]="['/', 'sites',subData.site_id]" [queryParams]="{ PO: subData.sale_no }"
+                                href="">SITE -{{subData.site_no||subData.site_id}}</a>
 
                         <td> {{subData.stock_in ?'+':'-'}} {{subData.qty}} </td>
                         <td> {{subData.unit_price | currency : 'PKR ' }} </td>
@@ -164,9 +156,9 @@
         </tr>
         <ng-template #expandIcon>
             <span nz-icon *ngIf="!expandSet.has(data.item_name)" nzType="caret-right" nzTheme="outline"
-                (click)="onExpandChange(data.item_name, true,i)"></span>
+                (click)="onExpandChange(data.item_name, true,data.id)"></span>
             <span nz-icon *ngIf="expandSet.has(data.item_name)" nzType="caret-down" nzTheme="outline"
-                (click)="onExpandChange(data.item_name, false,i)"></span>
+                (click)="onExpandChange(data.item_name, false,data.id)"></span>
         </ng-template>
         </ng-container>
         </tbody>

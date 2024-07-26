@@ -2,34 +2,79 @@ import { Injectable } from "@angular/core";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { SaleStateNames } from "./app.constants";
+import { AppService } from "./app.service";
+import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Injectable({
     providedIn: 'root'
 })
 export class PdfGeneratorService {
-    constructor() { }
+    constructor(private appService: AppService) { }
     invoice = new Invoice();
-    saleStateName=SaleStateNames;
+    saleStateName = SaleStateNames;
     generatePDF(action = 'open') {
         console.log(this.invoice)
+        let totalAmount = 0;
+        let totalReturnAmount = 0;
         let docDefinition: any = {
 
             content: [
                 {
-                    text: 'Veins Group of Companies',
-                    fontSize: 16,
-                    alignment: 'center',
-                    color: '#047886'
+                    columns: [
+                        [{
+                            columns: [
+                                [{
+                                    columns: [
+                                        {
+                                            image: this.appService.currentSubOrg?.filename,
+                                            width: 24,
+                                            margin: [0, 0, 5, 5],
+                                            alignment: 'left',
+                                        }, {
+                                            text: this.appService.currentSubOrg.name,
+                                            fontSize: 24,
+                                            bold: true,
+                                            margin: [0, 0, 5, 5],
+                                            alignment: 'left',
+
+                                        }
+                                    ]
+                                },
+                                {
+                                    text: this.invoice.status,
+                                    fontSize: 14,
+                                    bold: true,
+                                    alignment: 'left',
+                                }],]
+                        }],
+                        [{
+
+                            text: 'Veins Group of Companies,\n',
+                            fontSize: 10,
+                            alignment: 'right'
+                        }, {
+                            text: 'Choudhry Plaza, 1st Floor, Shop No. 1-6,\n',
+
+                            fontSize: 10,
+                            alignment: 'right'
+                        }, {
+                            text: 'Adjacent to Amazon Mall, GT Road, Islamabad',
+
+                            fontSize: 10,
+                            alignment: 'right'
+                        }, {
+                            text: 'Contact No: 0313 5444004',
+
+                            fontSize: 10,
+                            alignment: 'right'
+                        },
+                        ],
+
+                    ]
                 },
-                {
-                    text: this.invoice.status,
-                    fontSize: 14,
-                    bold: true,
-                    alignment: 'center',
-                    decoration: 'underline',
-                    color: 'skyblue'
-                },
+
+
                 {
                     text: this.invoice.invoiceDetailLabel,
                     style: 'sectionHeader'
@@ -68,19 +113,93 @@ export class PdfGeneratorService {
                 {
                     table: {
                         headerRows: 1,
-                        widths: this.invoice.type == 'customer' ?['*', 'auto', 'auto', 'auto', 'auto', 'auto']:['*', 'auto', 'auto', 'auto', 'auto'],
+                        widths: this.invoice.type == 'customer' ? ['*', 'auto', 'auto', 'auto', 'auto', 'auto'] : ['*', 'auto', 'auto', 'auto', 'auto'],
                         body:
                             this.invoice.type == 'customer' ? [
-                                ['Quote number', 'Date', 'Subject', 'Status', 'Amount','Balance'],
-                                ...this.invoice.items.map(p => ([p.sale_no, this.formatDate(p.date_created), p.subject, this.saleStateName[p.state],p.total, p.balance])),
-                                [{ text: 'Total Balance', colSpan: 5 }, {}, {},{},{}, this.invoice.items.reduce((acc, p) => acc + parseFloat(p.balance), 0)]
+                                ['Quote number', 'Date', 'Subject', 'Status', 'Amount', 'Balance'],
+                                ...this.invoice.items.map(p => ([p.sale_no, this.formatDate(p.date_created), p.subject, this.saleStateName[p.state], p.total, p.balance])),
+                                [{ text: 'Total Balance', colSpan: 5 }, {}, {}, {}, {}, this.invoice.items.reduce((acc, p) => acc + parseFloat(p.balance), 0)]
                             ] : [
                                 ['Product', 'Unit Price', 'Quantity', 'Discount', 'Amount'],
-                                ...this.invoice.items.map(p => ([p.name, p.unit_price, p.qty, p.discount, p.total])),
-                                [{ text: 'Total Amount', colSpan: 3 }, {}, {}, this.invoice.items_discount_total, this.invoice.total]
+                                ... this.invoice.items.map(item => {
+                                    // Create a new array combining the item and its return details
+                                    const combinedItems = [[item.name, item.unit_price, item.qty, item.discount, item.total]];
+                                    totalAmount += item.total
+                                    return combinedItems;
+                                }).flat(),
+                                [{ text: 'Total Amount', colSpan: 3 }, {}, {}, this.invoice.items_discount_total, totalAmount]
                             ]
                     }
                 },
+                this.invoice.type == 'Sale' ? {
+                    text: 'Return Details',
+                    style: 'sectionHeader'
+                } : {},
+                this.invoice.type == 'Sale' ? {
+
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                        body:
+                            [
+                                ['Product', 'Unit Price', 'Quantity', 'Discount', 'Amount', 'Reason', 'Date'],
+                                ... this.invoice.items.map(item => {
+                                    // Create a new array combining the item and its return details
+                                    const combinedItems = [...item.return_details.map((returnDetail: any) => {
+                                        totalReturnAmount += returnDetail.returnAmount;
+                                        return [
+                                            item.name,
+                                            item.unit_price || '',
+                                            returnDetail.qty || 0,
+                                            returnDetail.discount || 0,
+
+                                            returnDetail.returnAmount || 0,
+                                            returnDetail.reason,
+                                            this.formatDate(returnDetail.date_created),
+                                        ]
+                                    })];
+
+                                    return combinedItems;
+                                }).flat(),
+                                [{ text: 'Total Return Amount', colSpan: 3 }, {}, {}, {}, {}, {}, totalReturnAmount]
+
+                            ]
+                    }
+                } : {},
+                this.invoice.type == 'Sale' || this.invoice.type == 'purchase' ? {
+                    columns: [
+                        [{
+                            margin: [0, 5, 0, 5],
+                            columns: [[
+                                { text: `Shipping Charges` },
+                                { text: `Additional Cost` },
+                                { text: `Discount %` },
+                                {
+                                    text: `Discount`,
+                                    style: 'summaryText'
+                                },
+                                {
+                                    text: `Total`,
+                                    style: 'summaryText'
+                                }],
+                            [
+                                { text: this.invoice.shipment_charges || '0', alignment: 'right', italics: true },
+                                { text: this.invoice.additional_cost || '0', alignment: 'right', italics: true },
+                                { text: this.invoice.overall_discount || '0', alignment: 'right', italics: true },
+                                {
+                                    text: this.invoice.overall_discount_total || '0',
+                                    style: 'summaryText', alignment: 'right', italics: true
+                                },
+                                {
+                                    text: this.invoice.total || '0',
+                                    style: 'summaryText', alignment: 'right', italics: true
+                                }],
+                            ],
+
+                        }],
+                        [{ alignment: 'right', qr: `${location.href}`, fit: '100', margin: [0, 5, 0, 5] }]
+                    ]
+                } : {},
                 {
                     text: 'Additional Details',
                     style: 'sectionHeader'
@@ -91,8 +210,9 @@ export class PdfGeneratorService {
                 },
                 {
                     columns: [
-                        [{ qr: `${this.invoice.personName}`, fit: '50' }],
-                        [{ text: 'Signature', alignment: 'right', italics: true }],
+                        [{ text: 'Signature', italics: true }],
+                        [],
+
                     ]
                 },
                 {
@@ -103,20 +223,28 @@ export class PdfGeneratorService {
                     text: this.invoice.terms,
                     style: 'sectionHeader'
                 },
-                {
-                    ul: [
-                        'Order can be return in max 10 days.',
-                        'Warrenty of the product will be subject to the manufacturer terms and conditions.',
-                        'This is system generated invoice.',
-                    ],
-                }
             ],
             styles: {
                 sectionHeader: {
                     bold: true,
-                    decoration: 'underline',
-                    fontSize: 14,
-                    margin: [0, 15, 0, 15]
+                    fontSize: 12,
+                    margin: [0, 15, 0, 15],
+                },
+                summaryText: {
+                    bold: true,
+                    fontSize: 12,
+                    margin: [0, 5, 0, 5],
+                },
+                sectionFooter: {
+                    height: 'auto',
+                    fontSize: 11,
+                    margin: [15, 15, 15, 15],
+                    textAlign: 'center',
+                },
+                sectionSubFooter: {
+                    fontSize: 11,
+                    margin: [15, 15, 15, 15],
+                    textAlign: 'center',
                 }
             }
         };
@@ -134,17 +262,17 @@ export class PdfGeneratorService {
     addProduct() {
         this.invoice.items.push(new Product());
     }
-    formatDate  (dateString:any) {
+    formatDate(dateString: any) {
         const date = new Date(dateString);
-      
+
         // Get day, month and year
         const day = String(date.getUTCDate()).padStart(2, '0');
         const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
         const year = date.getUTCFullYear();
-      
+
         // Return formatted date
         return `${day}-${month}-${year}`;
-      };
+    };
 }
 
 class Product {
@@ -158,6 +286,10 @@ class Product {
     subject?: any;
     state?: any;
     balance?: any;
+    return_details?: any;
+    id?: any;
+    isCustom?: any;
+    reason?: any
 
 }
 class Invoice {
@@ -179,6 +311,10 @@ class Invoice {
     customer?: any;
     subject: string;
     purchase_no?: string;
+    shipment_charges?: any;
+    additional_cost?: any;
+    overall_discount?: any;
+    overall_discount_total?: any;
     constructor() {
         // Initially one empty product row we will show 
         this.items.push(new Product());

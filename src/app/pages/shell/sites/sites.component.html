@@ -29,16 +29,19 @@
 </div>
 
 
-<nz-table [nzPageSize]="1000" [nzShowPagination]="false" [nzData]="listOfDisplayData" [nzFrontPagination]="false">
+<nz-table [nzPageSize]="1000"  #sortTable  [nzShowPagination]="false" [nzData]="listOfDisplayData" [nzFrontPagination]="false">
     <thead>
         <tr>
             <th nzWidth="60px"></th>
-            <th nzColumnKey="name" nzWidth="80%" [nzSortFn]="true">Site</th>
-            <th nzColumnKey="gender">Status</th>
+            <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" 
+            [nzWidth]="column.width"
+            [nzSortPriority]="column.priority">
+                {{ column.title }}
+            </th>
         </tr>
     </thead>
     <tbody>
-        <ng-container *ngFor="let data of listOfDisplayData">
+        <ng-container  *ngFor="let data of sortTable.data; let i = index">
 
             <tr [class.expanded]="expandSet.has(data.id)" class="selectedItem"> 
                 <td [nzExpand]="expandSet.has(data.id)"

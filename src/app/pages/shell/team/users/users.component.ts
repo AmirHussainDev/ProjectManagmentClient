@@ -51,11 +51,14 @@ export class UsersComponent implements OnInit {
   ];
 
   visible = false;
-  isEdit=false;
+  isEdit = false;
   userRoles: any[];
-  selectedUser:User;
+  selectedUser: User;
   subOrganizations: SubOrganization[];
-  appPermissions=AppPermissions;
+  appPermissions = AppPermissions;
+  searchVisible: boolean;
+  searchValue: any;
+  listOfDisplayData: User[];
   constructor(private userService: UserService,
     private appService: AppService,
     private modal: NzModalService) {
@@ -68,27 +71,29 @@ export class UsersComponent implements OnInit {
 
 
 
-  open(isEdit=false): void {
+  open(isEdit = false): void {
     this.visible = true;
-    this.isEdit  = isEdit;
+    this.isEdit = isEdit;
   }
 
   close(refresh = false): void {
     this.visible = false;
-    this.isEdit=false;
+    this.isEdit = false;
     if (refresh) {
       this.populateUserData();
     }
   }
 
   async populateUserData() {
-    this.listOfData = await this.userService.getOrganizationUsers(),
-      this.userRoles = await this.appService.getRoles();
+    this.listOfData = await this.userService.getOrganizationUsers();
+    this.userRoles = await this.appService.getRoles();
     this.subOrganizations = await this.appService.getSubOrganizations();
 
     this.userRoles = this.userRoles.map(role => ({ key: role.role_name, value: role.id }))
     this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
     this.mapUserData();
+    this.listOfDisplayData = this.listOfData;
+
   }
 
   mapUserData() {
@@ -112,16 +117,16 @@ export class UsersComponent implements OnInit {
   }
   startEdit(id: any): void {
     this.open(true);
-    this.selectedUser=this.listOfData[id];
+    this.selectedUser = this.listOfData[id];
   }
 
-  openChangePasswordModal(index:number): void {
+  openChangePasswordModal(index: number): void {
     const modal = this.modal.create({
-      nzTitle: 'Change Password ('+this.listOfData[index].name+')',
+      nzTitle: 'Change Password (' + this.listOfData[index].name + ')',
       nzContent: ChangePasswordComponent,
       nzFooter: null,
-      nzData:{
-        user:this.listOfData[index]
+      nzData: {
+        user: this.listOfData[index]
       }
     });
 
@@ -130,5 +135,16 @@ export class UsersComponent implements OnInit {
         console.log('Password changed', result);
       }
     });
+  }
+
+  search(): void {
+    this.searchVisible = false;
+    if (this.searchValue) {
+      this.listOfDisplayData = this.listOfData.filter((item: any) => (
+        JSON.stringify(item).toLowerCase().indexOf(this.searchValue.toLowerCase())>-1
+      ))
+    } else {
+      this.listOfDisplayData = this.listOfData
+    }
   }
 }

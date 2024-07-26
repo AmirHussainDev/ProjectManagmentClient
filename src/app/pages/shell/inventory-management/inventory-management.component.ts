@@ -26,6 +26,39 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   searchVisible: boolean;
   searchValue: any;
   listOfDisplayData: any[];
+  listOfColumn = [
+    {
+      title: 'Name',
+      compare: (a: any, b: any) => a.name.localeCompare(b.name),
+      priority: false
+    },
+    {
+      title: 'Vendor',
+      compare: (a: any, b: any) => a.vendor_name.localeCompare(b.vendor_name),
+      priority: 2
+    },
+    {
+      title: 'Qunantity',
+      compare: (a: any, b: any) => a.qty - b.qty,
+      priority: 3
+    },
+    {
+      title: 'Latest Unit Price',
+      compare: (a: any, b: any) => a.latest_unit_price - b.latest_unit_price,
+      priority: 4
+    },
+    {
+      title: 'Average Unit Price',
+      compare: (a: any, b: any) => a.avg_unit_price - b.avg_unit_price,
+      priority: 5
+    },
+    {
+      title: 'Total',
+      compare: (a: any, b: any) => a.total - b.total,
+      priority: 5
+    }
+  ];
+
   constructor(private fb: FormBuilder,
 
     private appService: AppService) {
@@ -44,9 +77,9 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   }
   async onExpandChange(name: string, checked: boolean, index: number) {
     if (checked) {
-      if (!this.inventory[index].expanded) {
-        this.inventory[index].subDetails = await this.appService.getInventoryItemDetails(name)
-        this.inventory[index].expanded = true;
+      if (!this.inventory.find(item=>item.name===name).expanded) {
+        this.inventory.find(item=>item.name===name).subDetails = await this.appService.getInventoryItemDetails(name)
+        this.inventory.find(item=>item.name===name).expanded = true;
       }
       this.expandSet.add(name);
     } else {

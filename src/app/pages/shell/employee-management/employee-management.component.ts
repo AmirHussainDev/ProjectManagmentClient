@@ -13,20 +13,20 @@ import { AppPermissions } from '../../../services/app.constants';
 })
 export class EmployeeManagementComponent implements OnInit, OnDestroy {
   listOfColumn = [
-   
+
     {
       title: 'Employee',
-      compare: (a: Employee, b: Employee) => a.employee - b.employee,
+      compare: (a: any, b: any) => a.employeeName.localeCompare(b.employeeName),
       priority: false
     },
     {
       title: 'Position',
-      compare: (a: Employee, b: Employee) => a.position.localeCompare(b.position),
+      compare: (a: any, b: any) => a.position.localeCompare(b.position),
       priority: false
     },
     {
       title: 'Supervisor',
-      compare: (a: Employee, b: Employee) => a.supervisor - b.supervisor,
+      compare: (a: any, b: any) => a.supervisorName - b.supervisorName,
       priority: 2
     },
     {
@@ -36,22 +36,22 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     },
     {
       title: 'Overtime',
-      compare: (a: Employee, b: Employee) => a.salary - b.salary,
+      compare: (a: any, b: any) => a.overtime - b.overtime,
       priority: 3
     },
     {
       title: 'Signout Required',
-      compare: (a: Employee, b: Employee) => a.salary - b.salary,
+      compare: (a: any, b: any) => a.siginout_required - b.siginout_required,
       priority: 3
     },
     {
       title: 'Working Hours',
-      compare: (a: Employee, b: Employee) => a.workingHours - b.workingHours,
+      compare: (a: any, b: any) => a.workingHours - b.workingHours,
       priority: 3
     },
     {
       title: 'Action',
-      compare: (a: Employee, b: Employee) => (a.id || 0) - (b.id || 0),
+      compare: (a: any, b: any) => (a.id || 0) - (b.id || 0),
       priority: 3
     }
   ];
@@ -63,11 +63,13 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   EmployeeRoles: any[];
   subOrganizations: SubOrganization[];
   subOrgSubscription: Subscription;
-  appPermissions=AppPermissions;
+  appPermissions = AppPermissions;
   currentOrganizationId: number;
   searchVisible: boolean;
   searchValue: any;
-  listOfDisplayData: Employee[]=[];
+  listOfDisplayData: Employee[] = [];
+  isNew: boolean;
+  editableItem: Employee;
   constructor(
     private appService: AppService,
     private userService: UserService) {
@@ -94,8 +96,9 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  open(): void {
+  open(isNew = true): void {
     this.visible = true;
+    this.isNew = isNew;
   }
 
   close(refresh = false): void {
@@ -107,15 +110,18 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   async populateEmployeeData() {
     this.listOfData = await this.appService.getOrganizationEmployees(),
-    this.listOfDisplayData=this.listOfData;
-      //   this.EmployeeRoles = await this.appService.getRoles();
-      // this.subOrganizations = await this.appService.getSubOrganizations();
-      this.updateEditCache();
+      this.listOfDisplayData = this.listOfData;
+    //   this.EmployeeRoles = await this.appService.getRoles();
+    // this.subOrganizations = await this.appService.getSubOrganizations();
+    this.updateEditCache();
   }
 
   editCache: { [key: string]: { edit: boolean; data: Employee } } = {};
   startEdit(id: any): void {
-    this.editCache[id].edit = true;
+    // this.editCache[id].edit = true;
+    this.editableItem = this.editCache[id].data;
+    // this.editCache[id].edit = true;
+   
   }
 
   cancelEdit(id: number): void {
@@ -128,7 +134,17 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   async saveEdit(id: number) {
     const index = this.listOfData.findIndex(item => item.id === id);
-    await this.appService.updateEmployee({...this.editCache[id].data
+    await this.appService.updateEmployee({
+      id: this.editCache[id].data.id,
+      position: this.editCache[id].data.position,
+      employee: this.editCache[id].data.employee,
+      supervisor: this.editCache[id].data.supervisor,
+      salary: this.editCache[id].data.salary,
+      overtime: this.editCache[id].data.overtime,
+      isSalaryHourly: this.editCache[id].data.isSalaryHourly,
+      workingHours: this.editCache[id].data.workingHours,
+      siginout_required: this.editCache[id].data.siginout_required,
+      details: this.editCache[id].data.details,
     });
     this.editCache[id].edit = false;
     Object.assign(this.listOfData[index], this.editCache[id].data);
@@ -144,14 +160,14 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  
+
   search(): void {
     this.searchVisible = false;
-    if(this.searchValue){
-      this.listOfDisplayData = this.listOfData.filter((item:any) => (item.position&&item.position.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.employeeName&&item.employeeName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.supervisorName&&item.supervisorName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+    if (this.searchValue) {
+      this.listOfDisplayData = this.listOfData.filter((item: any) => (item.position && item.position.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.employeeName && item.employeeName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.supervisorName && item.supervisorName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
-  
-    }else{
+
+    } else {
       this.listOfDisplayData = this.listOfData
     }
   }

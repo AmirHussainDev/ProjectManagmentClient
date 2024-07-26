@@ -14,7 +14,8 @@ export class EmployeeContractComponent implements OnInit {
   @Input() users: User[] = [];
   @Input() userRoles: RoleObj[] = [];
   @Input() subOrganizations: SubOrganization[] = [];
-
+  @Input() editableItem: any = {};
+  @Input() isNew: boolean = true;
   @Output() closeDrawer = new EventEmitter<boolean>();
   employeeForm: FormGroup<EmployeeForm>;
   constructor(
@@ -22,6 +23,7 @@ export class EmployeeContractComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.employeeForm = this.fb.group({
+      id: [0, []],
       employee: [0, [Validators.required]],
       position: ['', [Validators.required]],
       isSalaryHourly: [false],
@@ -37,6 +39,24 @@ export class EmployeeContractComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.isNew) {
+      this.employeeForm.reset();
+    } {
+      this.employeeForm = this.fb.group({
+        id: [this.editableItem.id],
+        employee: [this.editableItem.employee, [Validators.required]],
+        position: [this.editableItem.position, [Validators.required]],
+        isSalaryHourly: [this.editableItem.isSalaryHourly],
+        salary: [this.editableItem.salary, [Validators.required]],
+        overtime: [this.editableItem.overtime, [Validators.required]],
+        siginout_required: [this.editableItem.siginout_required, [Validators.required]],
+        organization: [parseInt(localStorage.getItem('organization_id') || '0')],
+        subOrganization: [this.editableItem.subOrganization],
+        supervisor: [this.editableItem.supervisor, [Validators.required]],
+        details: [this.editableItem.details, [Validators.required]],
+        workingHours: [this.editableItem.workingHours, [Validators.required]]
+      });
+    }
   }
   close(): void {
     this.closeDrawer.emit(false);
@@ -44,7 +64,20 @@ export class EmployeeContractComponent implements OnInit {
 
   async addUser() {
     console.log(this.employeeForm);
-    await this.appService.createEmployee(this.employeeForm.value as UserCreateObj)
+    this.isNew ? 
+      await this.appService.createEmployee(this.employeeForm.value as UserCreateObj) :
+      await this.appService.updateEmployee({
+        id: this.editableItem.id,
+        position: this.employeeForm.value.position,
+        employee: this.employeeForm.value.employee,
+        supervisor: this.employeeForm.value.supervisor,
+        salary: this.employeeForm.value.salary,
+        overtime: this.employeeForm.value.overtime,
+        isSalaryHourly: this.employeeForm.value.isSalaryHourly,
+        workingHours: this.employeeForm.value.workingHours,
+        siginout_required: this.employeeForm.value.siginout_required,
+        details: this.employeeForm.value.details,
+      });
     this.closeDrawer.emit(true);
   }
   objectKeys(obj: any): { key: string, value: any }[] {

@@ -1,7 +1,32 @@
-<button *appHasPermission="appPermissions.UpdateUsers" nz-button nzType="primary" (click)="open()">Add</button>
-<app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible" [userRoles]="userRoles" [users]="listOfData"
-    (closeDrawer)="close($event)" [isEdit]="isEdit" [selectedUser]="selectedUser"></app-create-user-drawer>
-<nz-table #editRowTable #sortTable [nzData]="listOfData" [nzPageSize]="1000" nzShowPagination="false">
+<div class="flex space-between" style="">
+    <span style="display: -webkit-box;width: 100%;">
+        <h3 style="margin-right: 5px;">
+            Users
+        </h3>
+
+        <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+            <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
+
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+            @if (searchValue) {
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                (click)="searchValue = '';search()"></span>
+            } @else{
+            <span nz-icon nzType="search"></span>
+            }
+        </ng-template>
+        <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+        </ng-template>
+
+    </span>
+    <button *appHasPermission="appPermissions.UpdateUsers" nz-button nzType="primary" (click)="open()">Add</button>
+</div>
+<app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible"
+    [userRoles]="userRoles" [users]="listOfData" (closeDrawer)="close($event)" [isEdit]="isEdit"
+    [selectedUser]="selectedUser"></app-create-user-drawer>
+<nz-table #editRowTable #sortTable [nzData]="listOfDisplayData" [nzPageSize]="1000" nzShowPagination="false">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
@@ -11,12 +36,13 @@
     </thead>
     <tbody>
         <tr *ngFor="let data of sortTable.data; let i=index">
-                <td>{{ data.name }}</td>
-                <td>{{ data.reportTo }}</td>
-                <td>{{ data.roleName }}</td>
-                <td>{{ data.sub_organization }}</td>
-                <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="startEdit(i)">Edit</a></td>
-                <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="openChangePasswordModal(i)">Change <span nz-icon nzType="unlock" nzTheme="outline"></span></a> </td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.reportTo }}</td>
+            <td>{{ data.roleName }}</td>
+            <td>{{ data.sub_organization }}</td>
+            <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="startEdit(i)">Edit</a></td>
+            <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="openChangePasswordModal(i)">Change <span
+                        nz-icon nzType="unlock" nzTheme="outline"></span></a> </td>
         </tr>
     </tbody>
 </nz-table>

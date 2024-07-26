@@ -1,38 +1,33 @@
-
 <div class="flex space-between" style="">
-    <span style="display: -webkit-box;width: 100%;">   <h3 style="margin-right: 5px;">
-        Employees
-    </h3>
-  
+    <span style="display: -webkit-box;width: 100%;">
+        <h3 style="margin-right: 5px;">
+            Employees
+        </h3>
+
         <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
             <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
-            
-          </nz-input-group>
-          <ng-template #inputClearTpl>
-            @if (searchValue) {
-              <span
-                nz-icon
-                class="ant-input-clear-icon"
-                nzTheme="fill"
-                nzType="close-circle"
-                (click)="searchValue = '';search()"
-                
-              ></span>
-            } @else{
-                <span nz-icon nzType="search"></span>
-            }
-          </ng-template>
-      <ng-template #suffixIconSearch>
-        <span nz-icon nzType="search"></span>
-      </ng-template>
 
-   </span> 
-   <button *appHasPermission="appPermissions.AddEmployees" nz-button nzType="primary" (click)="open()">Add</button>
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+            @if (searchValue) {
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                (click)="searchValue = '';search()"></span>
+            } @else{
+            <span nz-icon nzType="search"></span>
+            }
+        </ng-template>
+        <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+        </ng-template>
+
+    </span>
+    <button *appHasPermission="appPermissions.AddEmployees" nz-button nzType="primary" (click)="open()">Add</button>
 </div>
 
 <app-employee-contract *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible" [users]="users"
-    (closeDrawer)="close($event)"></app-employee-contract>
-<nz-table #editRowTable [nzPageSize]="1000"  #sortTable nzShowPagination="false" [nzData]="listOfDisplayData" nzTableLayout="fixed">
+    (closeDrawer)="close($event)" [editableItem]="editableItem" [isNew]="isNew" ></app-employee-contract>
+<nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfDisplayData"
+    nzTableLayout="fixed">
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
@@ -50,7 +45,8 @@
                 <td>{{ data.overtime }}</td>
                 <td>{{ data.siginout_required }}</td>
                 <td>{{ data.workingHours }}</td>
-                <td><a *appHasPermission="appPermissions.AddEmployees" (click)="startEdit(data.id)" >Edit</a></td>
+                <td><a *appHasPermission="appPermissions.AddEmployees" (click)="startEdit(data.id);open(false)">Edit</a>
+                </td>
             </ng-container>
             <ng-template #editTemplate>
                 <td>{{ data.employee|username }}</td>
@@ -64,7 +60,8 @@
                     </nz-select>
                 </td>
 
-                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.salary" /> {{editCache[data.id].data.isSalaryHourly?'/h':'/m'}}</td>
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.salary" />
+                    {{editCache[data.id].data.isSalaryHourly?'/h':'/m'}}</td>
                 <td>
                     <label nz-checkbox [(ngModel)]="editCache[data.id].data.overtime"
                         [nzChecked]="editCache[data.id].data.overtime"></label>

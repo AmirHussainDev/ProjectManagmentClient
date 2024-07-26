@@ -22,17 +22,19 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   states = POStates;
   partialPayments: any[] = []
   subOrgSubscription: Subscription;
-  showSide=false;
-  searchVisible=false;
-  searchValue=''
+  showSide = false;
+  searchVisible = false;
+  searchValue = ''
   tabs = ['Purchase Request', 'Purchase Returns', 'Sale Requests', 'Sale Return'];
-  listOfDisplayData:any[]=[];
+  listOfDisplayData: any[] = [];
   currentOrganizationId: number;
+  sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
+  
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
     private route: ActivatedRoute,
-    private router:Router,
+    private router: Router,
 
   ) { }
   total = 1;
@@ -68,17 +70,23 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   onPurchaseQueryParamsChange(params: NzTableQueryParams): void {
     console.log(params);
     const { pageSize, pageIndex, sort, filter } = params;
+    if (this.sort && this.appService.areArraysDifferent(this.sort, sort)) {
+      this.sort = sort;
+      this.listOfDisplayData=this.appService.sortDataArray(this.listOfDisplayData,this.sort)
+      return;
+    }
+    this.sort = sort;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
     this.loadPurchaseDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
-  
+
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-        if(this.currentOrganizationId){
-          this.router.navigate(['/','purchase'], {
+        if (this.currentOrganizationId) {
+          this.router.navigate(['/', 'purchase'], {
             queryParams: {
               'PO': null,
             },
@@ -86,22 +94,22 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
           })
         }
         this.currentOrganizationId = change.id;
-        this.showSide=false;
-        this.route.queryParams.subscribe(async(params) => {
-        if (!params['PO']) {
-        this.showSide=false;
-        this.onPurchaseQueryParamsChange({
-          pageIndex: 0,
-          pageSize: 0,
-          sort: [],
-          filter: []
-        })
-        }else{
-          this.showSide=true
-        }
-        
-      });
-    }
+        this.showSide = false;
+        this.route.queryParams.subscribe(async (params) => {
+          if (!params['PO']) {
+            this.showSide = false;
+            this.onPurchaseQueryParamsChange({
+              pageIndex: 0,
+              pageSize: 0,
+              sort: [],
+              filter: []
+            })
+          } else {
+            this.showSide = true
+          }
+
+        });
+      }
     });
   }
   ngOnDestroy(): void {
@@ -119,8 +127,8 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
- 
-  isMobile=this.appService.isMobile
+
+  isMobile = this.appService.isMobile
 
 
   reset(): void {
@@ -130,11 +138,11 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   search(): void {
     this.searchVisible = false;
-    if(this.searchValue){
-      this.listOfDisplayData = this.pendingInvoices.filter((item:any) => (item.subject&&item.subject.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.vendor_name&&item.vendor_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+    if (this.searchValue) {
+      this.listOfDisplayData = this.pendingInvoices.filter((item: any) => (item.subject && item.subject.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.vendor_name && item.vendor_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
-  
-    }else{
+
+    } else {
       this.listOfDisplayData = this.pendingInvoices
     }
   }

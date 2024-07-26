@@ -20,6 +20,7 @@ export class SiteContractorsComponent implements OnInit, OnDestroy {
   states = ContractStates;
   stateNames = ContractStateNames;
   subOrgSubscription: Subscription;
+  sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
 
   constructor(private appService: AppService) {
 
@@ -32,6 +33,12 @@ export class SiteContractorsComponent implements OnInit, OnDestroy {
   onContractsQueryParamsChange(params: NzTableQueryParams): void {
     console.log(params);
     const { pageSize, pageIndex, sort, filter } = params;
+    if (this.sort && this.appService.areArraysDifferent(this.sort, sort)) {
+      this.sort = sort;
+      this.contracts=this.appService.sortDataArray(this.contracts,this.sort)
+      return;
+    }
+    this.sort = sort;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;

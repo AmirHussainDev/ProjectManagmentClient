@@ -12,12 +12,12 @@ import { SiteStateNames, SiteStates } from '../../../services/app.constants';
   styleUrl: './sites.component.css'
 })
 export class SitesComponent implements OnInit, OnDestroy {
-  siteStates=SiteStates
-  siteStateNames=SiteStateNames
+  siteStates = SiteStates
+  siteStateNames = SiteStateNames
   expandSet = new Set<number>();
   searchVisible: boolean;
   searchValue: any;
-  listOfDisplayData: any[]=[];
+  listOfDisplayData: any[] = [];
   onExpandChange(id: number, checked: boolean): void {
     if (checked) {
       this.expandSet.add(id);
@@ -26,15 +26,22 @@ export class SitesComponent implements OnInit, OnDestroy {
     }
   }
   listOfColumn = [
-    {
-      title: 'id'
+    { title: 'Name',
+
+      compare: (a: any, b: any) => a.name.localeCompare(b.name),
+      priority: false,
+      width:'100%'
     },
     {
-      title: 'Name',
+      title: 'Status',
+      compare: (a: any, b: any) => a.state.localeCompare(b.state),
+      priority: false,    
+        width:'auto'
+
     },
   ];
 
-  subOrgSubscription:Subscription;
+  subOrgSubscription: Subscription;
   visible = false;
   sites: any[];
   constructor(private appService: AppService) {
@@ -48,7 +55,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.subOrgSubscription){
+    if (this.subOrgSubscription) {
       this.subOrgSubscription.unsubscribe();
     }
   }
@@ -67,17 +74,17 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   async populateSiteData() {
     this.sites = await this.appService.getSites();
-    this.listOfDisplayData= this.sites ;
+    this.listOfDisplayData = this.sites;
   }
 
 
   search(): void {
     this.searchVisible = false;
-    if(this.searchValue){
-      this.listOfDisplayData = this.sites.filter((item:any) => (item.name&&item.name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.owner&&item.owner.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+    if (this.searchValue) {
+      this.listOfDisplayData = this.sites.filter((item: any) => (item.name && item.name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.owner && item.owner.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
-  
-    }else{
+
+    } else {
       this.listOfDisplayData = this.sites
     }
   }
