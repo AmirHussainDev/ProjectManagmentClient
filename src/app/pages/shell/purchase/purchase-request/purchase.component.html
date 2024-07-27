@@ -214,26 +214,35 @@
                                 </nz-card> -->
                             </nz-col>
                             <nz-col [nzSm]="24" [nzXs]="24" [nzMd]="12" [nzXl]="12" [nzXXl]="12">
-                                <ng-template #header>
-                                    <button *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing"
-                                        style="float: left" nz-button nzType="primary" nzSize="small" nzShape="round"
-                                        (click)="addPaymentControlRow()">
-                                        <span nz-icon nzTheme="outline" nzType="plus"></span> Add Payments
-                                    </button>
-                                    <h3 *ngIf="purchaseDetails.controls.state.value!==POStates.PaymentProcessing">
-                                        Payment Details
-                                    </h3>
-                                </ng-template>
-                                <nz-card *ngIf="purchaseDetails.controls.state.value!=POStates.Draft" [nzTitle]="header"
-                                    [nzActions]="[balanceLabel, balanceAmount]">
 
-                                    <nz-table class="payment_history" [nzBordered]="false" [nzShowPagination]="false"
-                                        *ngIf="purchaseDetails.controls.payment_history.controls?.length">
+                            <ng-template #header>
+
+                                <h5 *ngIf="purchaseDetails.controls.state.value!==POStates.Draft">
+                                    Payment Details
+                                </h5>
+                            </ng-template>
+                            <nz-card style="margin-top: 12px !important;"
+                                    *ngIf="purchaseDetails.controls.state.value!=POStates.Draft" [nzTitle]="header"
+                                    [nzActions]="[balanceLabel, balanceAmount]">
+                                    <nz-table class="payment_history" style="margin-bottom: 12px;
+                                        padding: 12px;
+                                        background: white;"
+                                        *ngIf="purchaseDetails.controls.state.value!=POStates.Draft ">
 
                                         <thead>
                                             <tr>
+                                            <tr>
                                                 <th>Notes</th>
-                                                <th>Amount</th>
+                                                <th><span class="flex space-between"> Amount
+                                                        <button
+                                                            *ngIf="purchaseDetails.controls.state.value==POStates.PaymentProcessing"
+                                                            style="float: right" nz-button nzType="primary"
+                                                            nzSize="small" nzShape="round"
+                                                            (click)="addPaymentControlRow()">
+                                                            <span nz-icon nzTheme="outline" nzType="plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <ng-container formArrayName="payment_history">
@@ -250,14 +259,6 @@
                                         </ng-container>
 
                                     </nz-table>
-                                    <nz-form-item>
-                                        <nz-form-label nzFor="amount_paid">Amount Paid
-                                        </nz-form-label>
-                                        <nz-form-control nzErrorTip="">
-                                            {{purchaseDetails.get('amount_paid')?.value | currency :'PKR '}}
-                                        </nz-form-control>
-                                    </nz-form-item>
-
                                 </nz-card>
                             </nz-col>
 

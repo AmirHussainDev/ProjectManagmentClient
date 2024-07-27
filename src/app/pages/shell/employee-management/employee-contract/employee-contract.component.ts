@@ -64,8 +64,19 @@ export class EmployeeContractComponent implements OnInit {
 
   async addUser() {
     console.log(this.employeeForm);
-    this.isNew ? 
-      await this.appService.createEmployee(this.employeeForm.value as UserCreateObj) :
+    this.isNew ?
+      await this.appService.createEmployee(
+        {
+        position: this.employeeForm.value.position,
+        employee: this.employeeForm.value.employee,
+        supervisor: this.employeeForm.value.supervisor,
+        salary: this.employeeForm.value.salary,
+        overtime: this.employeeForm.value.overtime,
+        isSalaryHourly: this.employeeForm.value.isSalaryHourly,
+        workingHours: this.employeeForm.value.workingHours,
+        siginout_required: this.employeeForm.value.siginout_required,
+        details: this.employeeForm.value.details,
+      } as any) :
       await this.appService.updateEmployee({
         id: this.editableItem.id,
         position: this.employeeForm.value.position,
