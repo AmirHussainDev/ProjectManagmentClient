@@ -193,7 +193,7 @@
                         </span>
                         <span>
                             <button *ngIf="contractDetails.controls.state.value==contractStates.Draft" nz-button
-                                nzType="primary" (click)="submitRequest()"
+                                nzType="primary" [disabled]="contractDetails.invalid" (click)="submitRequest()"
                                 style="margin-bottom: 12px;float: right;">Submit</button>
 
                             <button *ngIf="contractDetails.controls.state.value==contractStates.PendingApproval"

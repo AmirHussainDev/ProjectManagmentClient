@@ -18,7 +18,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'UnivHighCharts';
   Highcharts: typeof Highcharts = Highcharts;
   chartConstructor: string = 'chart';
-  sitesGraphKeys:any=SitesGraphKeys
+  sitesGraphKeys: any = SitesGraphKeys
   chartOptions: Highcharts.Options = {};
   siteChartOptions: Highcharts.Options = {};
   piechartOptions: Highcharts.Options = {};
@@ -287,13 +287,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   async loadStatistics(subOrgId: number) {
     this.showChart = false;
     const stats: any[] = await this.appService.retireveAllSiteStatistics(subOrgId);
-  
+
     // Extract site names for the x-axis categories
     const siteNames = stats.map(stat => stat.siteName);
-  
+
     // Initialize an empty array to store series data
     const series: any[] = [];
-  
+
     stats.forEach((serdata, index) => {
       Object.entries(serdata).forEach(([key, value]) => {
         if (key !== 'siteId' && key !== 'siteName') {
@@ -304,7 +304,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
               data: [value]
             });
           } else {
-            const seriesItem = series.find(item => item.name === key);
+            const seriesItem = series.find(item => item.name === this.sitesGraphKeys[key]);
             if (seriesItem) {
               seriesItem.data.push(value);
             }
@@ -312,9 +312,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     });
-  
+
     this.showChart = true;
-  
+
     // Assign the series and categories to your chartOptions
     this.siteChartOptions = {
       ...this.siteChartOptions,
@@ -325,7 +325,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       series: series as any,
     };
   }
-  
+
   async getInventoryStats(currentOrganizationId: number = 0) {
     this.inventoryStats = await this.appService.getInventoryStatsBySubOrganization(currentOrganizationId)
 

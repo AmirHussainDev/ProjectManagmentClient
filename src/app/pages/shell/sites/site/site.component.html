@@ -6,7 +6,12 @@
                 {{siteDetails.get('name')?.value}}
             </h4>
         </span>
+        <a [routerLink]="['contract','new']" [state]="{tracingId: 2}">
+            <button nz-button nzType="primary" [nzSize]="'small'">
+                <span nz-icon nzType="plus"> </span> Contractor
 
+            </button>
+        </a>
         <!-- <span>
             <button nz-button nzType="primary" (click)="generatePDF()"> <span nz-icon nzType="download"></span></button>
             <button style="margin-left: 12px;" nz-button nzType="primary" printSectionId="print-section" ngxPrint
@@ -88,7 +93,7 @@
                             <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
-                                        nzFor="site_start_date">site_start_date</nz-form-label>
+                                        nzFor="site_start_date">Start Date</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
                                         <nz-date-picker class="inputField"
                                             formControlName="site_start_date"></nz-date-picker>
@@ -100,7 +105,7 @@
 
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
-                                        nzFor="site_end_date">site_end_date</nz-form-label>
+                                        nzFor="site_end_date">End Date</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
                                         <nz-date-picker class="inputField"
                                             formControlName="site_end_date"></nz-date-picker>
@@ -132,7 +137,7 @@
                         </span>
                         <span>
                             <button *ngIf="siteDetails.controls.state.value==siteStates.Draft" nz-button
-                                nzType="primary" (click)="submitRequest()"
+                                nzType="primary" [disabled]="siteDetails.invalid" (click)="submitRequest()"
                                 style="margin-bottom: 12px;float: right;">Submit</button>
 
                             <button *ngIf="siteDetails.controls.state.value==siteStates.PendingApproval" nz-button

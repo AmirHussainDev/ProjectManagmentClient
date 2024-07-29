@@ -381,7 +381,7 @@ export class SaleRequestComponent implements OnInit {
     const SaleRequestValue = this.SaleRequestDetails.getRawValue();
     const overallDiscount = SaleRequestValue.item_cost * (SaleRequestValue.overall_discount / 100)
     this.SaleRequestDetails.controls.overall_discount_total.setValue(overallDiscount);
-    this.SaleRequestDetails.controls.total.setValue(SaleRequestValue.item_cost - overallDiscount);
+    this.SaleRequestDetails.controls.total.setValue(SaleRequestValue.item_cost + Number(SaleRequestValue.shipment_charges||'0') + Number(SaleRequestValue.additional_cost||'0') - overallDiscount);
     this.calculateBalance()
   }
   removeProduct(index: number): void {

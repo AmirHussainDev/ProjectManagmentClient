@@ -216,14 +216,14 @@
                                         <nz-form-label nzFor="shipment_charges">Shipping Charges
                                         </nz-form-label>
                                         <nz-form-control nzErrorTip="The input is not valid date!">
-                                            <input nz-input class="inputField" formControlName="shipment_charges">
+                                            <input nz-input class="inputField" (change)="calculateOverAllDiscountAndTotal()" formControlName="shipment_charges">
                                         </nz-form-control>
                                     </nz-form-item>
                                     <nz-form-item>
                                         <nz-form-label nzFor="additional_cost">Additional Cost
                                         </nz-form-label>
                                         <nz-form-control nzErrorTip="The iinput is not valid date!">
-                                            <input nz-input class="inputField" formControlName="additional_cost">
+                                            <input (change)="calculateOverAllDiscountAndTotal()" nz-input class="inputField" formControlName="additional_cost">
                                         </nz-form-control>
                                     </nz-form-item>
                                     <nz-form-item>

@@ -84,10 +84,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   async setCurrentUserDetails(subOrgId: number) {
     this.employee = await this.appService.getEmployeeDetail(this.currentUserId, subOrgId)
-    if (!this.employee) {
-      alert('No employee found')
-      this.router.navigate(['/'])
-    }
+    
     this.getCurrentDayAttance(this.employee.id);
     this.fetchSupervisorUsers();
   }

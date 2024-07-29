@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import html2canvas from 'html2canvas';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -82,7 +82,7 @@ export class SiteComponent implements OnInit, OnDestroy {
     private modal: NzModalService) {
     this.chartOptions = {
       chart: {
-        type: 'column',
+        type: 'bar',
         backgroundColor: 'transparent', // Set chart background color to transparent
         height: 300 // Set the height of the chart
       },
@@ -106,7 +106,7 @@ export class SiteComponent implements OnInit, OnDestroy {
         }
       },
       xAxis: {
-        categories: ['Site Payments'],
+        categories: [''],
         labels: {
           style: {
             fontSize: '11px' // X-axis labels font size
@@ -144,9 +144,9 @@ export class SiteComponent implements OnInit, OnDestroy {
 
     this.siteDetails = this.fb.group({
       id: new FormControl(),
-      name: new FormControl(),
-      budget: new FormControl(),
-      owner: new FormControl(),
+      name: new FormControl('',[Validators.required]),
+      budget: new FormControl(0,[Validators.required]),
+      owner: new FormControl(null,[Validators.required]),
       contact_no: new FormControl(),
       state: new FormControl(this.siteStates.Draft),
       address: new FormControl(),
@@ -386,7 +386,7 @@ this.showChart=true;
 
   disableAndEnableSpecificControls() {
     const stateControl = this.siteDetails.get('state');
-    if (stateControl && stateControl.value !== this.siteStates.Draft) {
+    if (stateControl && stateControl.value !== this.siteStates.Draft && stateControl && stateControl.value !== this.siteStates.PendingApproval ) {
       console.log(this.siteDetails);
       Object.keys(this.siteDetails.controls).forEach(controlName => {
         const control = this.siteDetails.get(controlName);

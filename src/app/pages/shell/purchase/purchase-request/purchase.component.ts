@@ -24,7 +24,7 @@ import { DataUrl, NgxImageCompressService, UploadResponse } from 'ngx-image-comp
 export class PurchaseComponent implements OnInit {
   @ViewChild('content', { static: false }) content: ElementRef;
   vendors: any[] = [];
-  vendorItems: { name: string,isCustom?:boolean}[] = [];
+  vendorItems: { name: string, isCustom?: boolean }[] = [];
   discountTotal: number = 0;
   purchaseTotal: number = 0;
   loading = false;
@@ -80,9 +80,11 @@ export class PurchaseComponent implements OnInit {
   subOrgSubscription: Subscription;
   currentOrganizationId: number;
   fileList: NzUploadFile[] = [];
-  displayControlColumns=[
-  {value:'name',
-  name:'Item'}]
+  displayControlColumns = [
+    {
+      value: 'name',
+      name: 'Item'
+    }]
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -296,8 +298,8 @@ export class PurchaseComponent implements OnInit {
     return this.fb.group({
       id: new FormControl(object.id),
       purchase_id: new FormControl(object.purchase_id),
-      name: new FormControl(object.name),
-      qty: new FormControl(object.qty),
+      name: new FormControl(object.name, [Validators.required]),
+      qty: new FormControl(object.qty, [Validators.required]),
       unit_price: new FormControl(object.unit_price),
       discount: new FormControl(object.discount),
       total: new FormControl(object.total),
@@ -312,7 +314,7 @@ export class PurchaseComponent implements OnInit {
   addProductRow(): void {
     (this.purchaseDetails.controls['items'] as FormArray).push(this.getItemFormGroup());
   }
-  
+
   getPaymentHistoryItemFormGroup(object: any) {
     return this.fb.group({
       notes: new FormControl(object.notes),
@@ -350,8 +352,8 @@ export class PurchaseComponent implements OnInit {
     this.purchaseDetails.controls.balance.setValue(this.purchaseDetails.get('total')?.value - amount_paid);
   }
 
-  onProductChange(name: string,index:number){
-    ((this.purchaseDetails.controls['items']as FormArray).controls[index] as FormGroup).patchValue({isCustom:this.vendorItems.find(item=>item.name===name)?.isCustom})
+  onProductChange(name: string, index: number) {
+    ((this.purchaseDetails.controls['items'] as FormArray).controls[index] as FormGroup).patchValue({ isCustom: this.vendorItems.find(item => item.name === name)?.isCustom })
   }
   // calculateBalance() {
   //   if (this.loading) {
@@ -379,7 +381,7 @@ export class PurchaseComponent implements OnInit {
     }
     const overallDiscount = this.purchaseDetails.value.item_cost * (this.purchaseDetails.value.overall_discount / 100)
     this.purchaseDetails.controls.overall_discount_total.setValue(overallDiscount);
-    this.purchaseDetails.controls.total.setValue(this.purchaseDetails.value.item_cost - overallDiscount);
+    this.purchaseDetails.controls.total.setValue(this.purchaseDetails.value.item_cost + Number(this.purchaseDetails.value.shipment_charges || '0') + Number(this.purchaseDetails.value.additional_cost || '0') - overallDiscount);
     this.purchaseDetails.controls.balance.setValue(this.purchaseDetails.value.item_cost - overallDiscount);
   }
   removeProduct(index: number): void {
@@ -449,7 +451,7 @@ export class PurchaseComponent implements OnInit {
   addItem(input: HTMLInputElement): void {
     const value = input.value;
     if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
-      this.vendorItems = [...this.vendorItems, { name: input.value,isCustom:true }];
+      this.vendorItems = [...this.vendorItems, { name: input.value, isCustom: true }];
     }
   }
 

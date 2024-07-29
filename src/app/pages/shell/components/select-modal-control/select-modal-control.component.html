@@ -1,7 +1,8 @@
 <div>
     <nz-input-group [nzSuffix]="!isDisabled?suffixIconSearch:undefined">
-        <input [value]="this.modelValue==='all'?(value?.name||'') :(value||'')" (click)="openModal()" (keydown)="stopEvent($event)"
-            (keyup)="stopEvent($event)" (keypress)="stopEvent($event)" [disabled]="isDisabled" /> </nz-input-group>
+        <input [value]="this.modelValue==='all'?(value?.name||'') :(value||'')" (click)="openModal()"
+            (keydown)="stopEvent($event)" (keyup)="stopEvent($event)" (keypress)="stopEvent($event)"
+            [disabled]="isDisabled" /> </nz-input-group>
     <ng-template #suffixIconSearch>
         <span nz-icon nzType="search"></span>
     </ng-template>
@@ -10,7 +11,7 @@
 
 <nz-modal [(nzVisible)]="showModal" [nzTitle]="header" (nzOnCancel)="closeModal()" (nzOnOk)="closeModal()"
     [nzFooter]="null">
-    <div *nzModalContent>
+    <div *nzModalContent style="height: calc(100vh - 200px);overflow: auto;">
         <div *ngIf="addCustom">
             <nz-input-group nzSearch nzSize="small" [nzAddOnAfter]="suffixButton">
                 <input style="height: 32px" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="customValue"
@@ -30,7 +31,7 @@
             </nz-input-group>
 
         </div>
-        <nz-table #filterTable [nzData]="filterData()" nzShowPagination="false">
+        <nz-table #filterTable [nzData]="filterData()" [nzPageSize]="10000" nzShowPagination="false">
             <thead>
                 <tr>
                     <th *ngFor="let column of displayColumns">{{ column.name }}</th>

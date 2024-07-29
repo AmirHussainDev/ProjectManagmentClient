@@ -26,12 +26,12 @@ export class PdfGeneratorService {
                             columns: [
                                 [{
                                     columns: [
-                                        {
+                                        this.appService.currentSubOrg?.filename ? {
                                             image: this.appService.currentSubOrg?.filename,
                                             width: 24,
                                             margin: [0, 0, 5, 5],
                                             alignment: 'left',
-                                        }, {
+                                        } : {}, {
                                             text: this.appService.currentSubOrg.name,
                                             fontSize: 24,
                                             bold: true,
@@ -151,8 +151,7 @@ export class PdfGeneratorService {
                                             item.name,
                                             item.unit_price || '',
                                             returnDetail.qty || 0,
-                                            returnDetail.discount || 0,
-
+                                            returnDetail.charge || 0,
                                             returnDetail.returnAmount || 0,
                                             returnDetail.reason,
                                             this.formatDate(returnDetail.date_created),

@@ -71,6 +71,7 @@ export class SiteContractComponent {
   })
   sites: any[];
   siteForm: any;
+  
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -82,16 +83,16 @@ export class SiteContractComponent {
     private modal: NzModalService) {
     this.contractDetails = this.fb.group({
       id: new FormControl(),
-      contractor: new FormControl(),
-      subject: new FormControl(),
-      details: new FormControl(),
-      contract_type: new FormControl(this.contractorType.DurationBased),
+      contractor: new FormControl(null,[Validators.required]),
+      subject: new FormControl('',[Validators.required]),
+      details: new FormControl(''),
+      contract_type: new FormControl(this.contractorType.DurationBased,[Validators.required]),
       state: new FormControl(this.contractStates.Draft),
       with_material: new FormControl(0),
       amount_per_unit: new FormControl(0),
       created_by: new FormControl(0),
       site: new FormControl(0),
-      total: new FormControl(0),
+      total: new FormControl(0,[Validators.required]),
       organization: new FormControl(0),
       subOrganization: new FormControl(0),
       contract_start_date: new FormControl(new Date()),
@@ -136,11 +137,14 @@ export class SiteContractComponent {
     })
   }
   onTypeChange() {
-    this.contractDetails.patchValue({
-      no_of_units: 0,
-      amount_per_unit: 0,
-      total: 0,
-    })
+    if(!this.loading){
+      this.contractDetails.patchValue({
+        no_of_units: 0,
+        amount_per_unit: 0,
+        total: 0,
+      })
+  
+    }
   }
   async setSitesData() {
     const resp: any = await this.appService.getAndSetSites();
@@ -186,7 +190,7 @@ export class SiteContractComponent {
         terms: response.terms,
         no_of_units: response.no_of_units,
         include_weekends: response.include_weekends
-      })
+      },{emitEvent:false})
     }
 
     this.previousContractDetails = this.contractDetails.getRawValue() as any;
@@ -310,8 +314,7 @@ export class SiteContractComponent {
 
   disableAndEnableSpecificControls() {
     const stateControl = this.contractDetails.get('state');
-
-    if (stateControl && stateControl.value !== this.contractStates.Draft) {
+    if (stateControl && stateControl.value !== this.contractStates.Draft && stateControl.value !== this.contractStates.PendingApproval) {
       console.log(this.contractDetails);
       Object.keys(this.contractDetails.controls).forEach(controlName => {
         const control = this.contractDetails.get(controlName);
