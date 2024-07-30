@@ -26,6 +26,9 @@ export class UserService {
   logout() {
     localStorage.setItem('user', '{}')
     localStorage.setItem('token', '')
+    localStorage.setItem('token', '')
+    localStorage.removeItem('selectedOrganzation')
+    localStorage.removeItem('sub_organization_id')
     this.router.navigate(['/login']);
   }
 

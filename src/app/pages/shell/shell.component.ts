@@ -111,6 +111,7 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   logout() {
     this.userService.logout()
+    this.appService.setSubOrganization({id:0,name:''} as SubOrganization)
   }
 
   ngOnDestroy() {
