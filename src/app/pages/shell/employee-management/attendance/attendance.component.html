@@ -1,6 +1,6 @@
 <h3>Attendance</h3>
 
-<div class="flex center space-between">
+<div class="flex center space-between" *ngIf="this.employee&&this.employee.id">
   <strong>{{ currentDate | date: 'longDate' }}</strong>
   <div *ngIf="signInTime"> {{signInTime | date : 'hh:mm a'}}</div>
   <button nz-button nzType="primary" *ngIf="!signInTime" mat-button (click)="signIn()">Sign In</button>

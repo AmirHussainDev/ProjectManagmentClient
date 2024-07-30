@@ -50,6 +50,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.loggedInUser = this.userService.getUserDetails();
+    this.appService.getSubOrganizations(true);
     this.organization = this.appService.organization;
     this.titleService.setTitle(this.organization.name)
     this.setFavicon(this.organization.icon)
@@ -83,6 +84,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   }
 
   onSiteChange() {
+    
     this.siteSubscription = this.siteForm.valueChanges.subscribe(change => {
       this.setCurrentSite(change.site);
     });

@@ -22,7 +22,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   latitude: number;
   longitude: number;
   currentOrganizationId: number;
-  isVisible=false;
+  isVisible = false;
   constructor(
     private route: ActivatedRoute,
 
@@ -35,34 +35,34 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.subOrganizationSubscription = this.appService.currentSubOrganization.subscribe((change) => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.currentOrganizationId = change.id
-      this.route.paramMap.subscribe(paramMap => {
-        // Use this queryParams object to load data
-        if (change && change.id > 0 && paramMap.get('userId')) {
-          this.currentUserId = parseInt(paramMap.get('userId') || '0')
-          this.setCurrentUserDetails(change.id);
-        }
-      })
-    }
+        this.route.paramMap.subscribe(paramMap => {
+          // Use this queryParams object to load data
+          if (change && change.id > 0 && paramMap.get('userId')) {
+            this.currentUserId = parseInt(paramMap.get('userId') || '0')
+            this.setCurrentUserDetails(change.id);
+          }
+        })
+      }
     })
 
     this.sunscribeToGeoLocation();
   }
 
-  handleOk(){
-    this.isVisible=false;
+  handleOk() {
+    this.isVisible = false;
     // window.location.reload()
   }
   sunscribeToGeoLocation() {
-    setTimeout(()=>{
+    setTimeout(() => {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            this.longitude=position.coords.longitude
-            this.latitude=position.coords.latitude
+            this.longitude = position.coords.longitude
+            this.latitude = position.coords.latitude
           },
           (error) => {
             console.error(`Error occurred: ${error.message}`);
-            this.isVisible=true;
+            this.isVisible = true;
             switch (error.code) {
               case error.PERMISSION_DENIED:
                 console.error("User denied the request for Geolocation.");
@@ -78,14 +78,15 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         );
       } else {
         console.error("Geolocation is not supported by this browser.");
-      }  
-    },2000)
+      }
+    }, 2000)
   }
 
   async setCurrentUserDetails(subOrgId: number) {
     this.employee = await this.appService.getEmployeeDetail(this.currentUserId, subOrgId)
-    
-    this.getCurrentDayAttance(this.employee.id);
+    if (this.employee && this.employee.id) {
+      this.getCurrentDayAttance(this.employee.id);
+    }
     this.fetchSupervisorUsers();
   }
 
@@ -142,8 +143,10 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   async fetchSupervisorUsers() {
     this.supervisorUsers = [
-      { employee: this.employee, isSupervisor: false },
     ];
+    if (this.employee && this.employee.id) {
+      this.supervisorUsers.push({ employee: this.employee, isSupervisor: false },)
+    }
     const subordinates: Employee[] = await this.appService.getCurrentEmployeeSubordinates(this.currentUserId)
 
     if (subordinates && subordinates.length) {
