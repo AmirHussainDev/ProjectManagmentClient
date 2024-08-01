@@ -134,6 +134,8 @@ export class UsersComponent implements OnInit {
       if (result) {
         console.log('Password changed', result);
       }
+      this.searchValue = ''
+      this.search();
     });
   }
 
@@ -141,7 +143,7 @@ export class UsersComponent implements OnInit {
     this.searchVisible = false;
     if (this.searchValue) {
       this.listOfDisplayData = this.listOfData.filter((item: any) => (
-        JSON.stringify(item).toLowerCase().indexOf(this.searchValue.toLowerCase())>-1
+        JSON.stringify(item).toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1
       ))
     } else {
       this.listOfDisplayData = this.listOfData

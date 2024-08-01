@@ -4,8 +4,9 @@
             Users
         </h3>
 
-        <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
-            <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
+        <nz-input-group id="search" [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+            <input type="text" placeholder="Search here" name="searchValue" id="searchValue" [(ngModel)]="searchValue"
+            autocomplete="false"  (keyup)="search()" nz-input />
 
         </nz-input-group>
         <ng-template #inputClearTpl>

@@ -27,7 +27,6 @@
                 [state]="{tracingId: 2}">
                 <button nz-button nzType="primary" [nzSize]="'small'">
                     <span nz-icon nzType="plus"> </span>
-                    New Quote
                 </button>
             </a>
         </div>
@@ -73,51 +72,62 @@
                             </button> </td>
                         <td>
                             <span style="    display: inline-grid;
-                                                width: max-content;"><span>{{ data.total | currency :'PKR'}}</span>
+                                                width: max-content;"><span>{{ data.total | currency :'PKR '}}</span>
                                 <span *ngIf="data.state===states.PaymentConfirmation" class="remainingAmount">
-                                    Balance: {{data.balance | currency:'PKR'}}
+                                    {{data.balance | currency:'PKR '}}
                                 </span>
                             </span>
 
                         </td>
                     </ng-container>
                     <ng-container *ngIf="showSide">
-                        <td colspan="2">
+                        <td>
                             <nz-list nzItemLayout="horizontal">
                                 <nz-list-item>
                                     <nz-list-item-meta>
+                                        <nz-list-item-meta-avatar *ngIf="data.customer_image; else initialsTemplate">
+
+                                        </nz-list-item-meta-avatar>
+                                        <ng-template #initialsTemplate>
+                                            <div class="avatar-initials ant-list-item-meta-avatar">{{
+                                                getInitials(data.customer_name) }}
+                                            </div>
+                                        </ng-template>
                                         <nz-list-item-meta-title>
                                             <span class="flex space-between">
-                                                <span>{{ data.subject }}</span>
-                                                <span style="    display: inline-grid;
-                                                width: max-content;">
-                                                    <span>{{ data.total | currency :'PKR'}}</span>
-                                                    <span *ngIf="data.state===states.PaymentConfirmation"
-                                                        class="remainingAmount">
-                                                        Balance: {{data.balance | currency:'PKR'}}
-                                                    </span> </span>
+                                                <span>{{data.customer_name +': '+ data.subject }}</span>
+
                                             </span>
                                         </nz-list-item-meta-title>
                                         <nz-list-item-meta-description>
-                                            <span class="flex space-between">
                                                 <span>
                                                     SALE - {{data.sale_no}}
                                                     <nz-divider nzType="vertical"></nz-divider>
                                                     <span class="dateDisplay"> {{
                                                         data.date_created | date : 'dd MMM yyyy' }}</span>
                                                 </span>
-                                                <button nz-button nzType="primary"
-                                                    [className]="data.state===states.Invoiced? 'green-button':'default'"
-                                                    [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"
-                                                    nzShape="round">
-                                                    {{ stateNames[data.state] }}
-                                                </button>
-                                            </span>
+
                                         </nz-list-item-meta-description>
                                     </nz-list-item-meta>
                                 </nz-list-item>
                             </nz-list>
 
+                        </td>
+                        <td>
+                            <span class="listSecondSection">
+                                <span style="    display: inline-grid;
+                                                width: max-content;">
+                                    <span>{{ data.total | currency :'PKR '}}</span>
+                                    <span *ngIf="data.state===states.PaymentConfirmation" class="remainingAmount">
+                                        {{data.balance | currency:'PKR '}}
+                                    </span>
+                                </span>
+                                <button nz-button nzType="primary"
+                                    [className]="data.state===states.Invoiced? 'green-button':'default'"
+                                    [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
+                                    {{ stateNames[data.state] }}
+                                </button>
+                            </span>
                         </td>
                     </ng-container>
                 </tr>

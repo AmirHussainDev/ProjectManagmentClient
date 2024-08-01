@@ -34,7 +34,7 @@
 </div>
 <app-create-customer-drawer *ngIf="visible" [visible]="visible" [customers]="listOfDisplayData"
     (closeDrawer)="close($event)"></app-create-customer-drawer>
-<nz-table #nestedTable [nzPageSize]="1000" nzShowPagination="false" #editRowTable #sortTable [nzData]="listOfDisplayData" nzTableLayout="fixed">
+<nz-table #nestedTable [nzPageSize]="1000" nzShowPagination="false" #editRowTable #sortTable [nzData]="listOfDisplayData" >
     <thead>
         <tr>
             <th [width]="'2%'"></th>
@@ -114,7 +114,7 @@
                     {{ stateNames[detail.state] }}
                 </button> </td>
             <td>
-                <span>{{detail.total | currency :'PKR'}}</span>
+                <span>{{detail.total | currency :'PKR '}}</span>
 
             </td>
         </tr>

@@ -60,7 +60,7 @@
 </ng-template>
 
 <nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfData"
-    nzTableLayout="fixed">
+    >
     <thead>
         <tr>
             <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">

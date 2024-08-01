@@ -82,6 +82,12 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadPurchaseDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
 
+  getInitials(name: string): string {
+    if (!name) return '';
+    const initials = name.split(' ').map(word => word[0]).join('');
+    return initials.toUpperCase();
+  }
+  
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {

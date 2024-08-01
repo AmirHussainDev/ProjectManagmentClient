@@ -13,6 +13,8 @@ export class ChangePasswordComponent implements OnInit {
   changePasswordForm!: FormGroup;
   readonly data = inject(NZ_MODAL_DATA);
 updating=false;
+passwordVisible=false;
+autoCompletePassword='';
   constructor(private fb: FormBuilder, private modal: NzModalRef,private userService:UserService,    private notification: NzNotificationService,
     ) { }
 

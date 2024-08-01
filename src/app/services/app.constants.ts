@@ -23,7 +23,7 @@ export const AppPermissions = {
     ViewPermissions: 20,
     UpdatePermissions: 21,
     SwitchOrganization: 23,
-    CreateOrganization:24
+    CreateOrganization: 24
 }
 
 export const PermissionName = {
@@ -51,7 +51,7 @@ export const PermissionName = {
     [AppPermissions.UpdatePermissions]: "Update Permissions",
     [AppPermissions.SwitchOrganization]: "Switch Organization",
     [AppPermissions.CreateOrganization]: "Create Organization",
-    
+
 }
 
 export const DefaultPermissions = {
@@ -127,6 +127,7 @@ export const POStates = {
     Completed: 4
 }
 
+
 export const SitesGraphKeys = {
     "siteTotalBudget": "Total Budget",
     "siteExpensesSum": "All Expenses",
@@ -157,4 +158,26 @@ export const SiteStateNames = {
     [SiteStates.Approved]: 'IN-PROGRESS',
     [SiteStates.Cancelled]: 'CANCELLED',
     [SiteStates.Completed]: 'COMPLETED'
+}
+
+export const StatusIcons = {
+    [ContractStates.Draft]: 'file',
+    [ContractStates.PendingApproval]: 'file-sync',
+    [ContractStates.Approved]: 'check',
+    [ContractStates.Cancelled]: 'close-circle',
+    [ContractStates.Completed]: 'file-protect',
+    [SaleStates.Draft]: 'file',
+    [SaleStates.PaymentConfirmation]: 'dollar',
+    [SaleStates.Invoiced]: 'delivered-procedure',
+    [SaleStates.Cancelled]: 'close-circle',
+    [POStates.Draft]: 'file',
+    [POStates.PendingInvoice]: 'file-sync',
+    [POStates.PaymentProcessing]: 'dollar',
+    [POStates.Cancelled]: 'close-circle',
+    [POStates.Completed]: 'file-protect',
+    [SiteStates.Draft]: 'file',
+    [SiteStates.PendingApproval]: 'file-sync',
+    [SiteStates.Approved]: 'check',
+    [SiteStates.Cancelled]: 'close-circle',
+    [SiteStates.Completed]: 'file-protect'
 }

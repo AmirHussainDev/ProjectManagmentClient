@@ -1,5 +1,5 @@
 import { Component, TemplateRef } from '@angular/core';
-import { SaleStates, SaleStateNames } from '../../../../services/app.constants';
+import { SaleStates, SaleStateNames, StatusIcons } from '../../../../services/app.constants';
 import { AppService } from '../../../../services/app.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
@@ -30,6 +30,7 @@ export class SaleListingComponent {
   listOfDisplayData: any[] = [];
   suffixIconSearch: string | TemplateRef<void> | undefined;
   sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
+  statusIcons = StatusIcons;
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
@@ -107,13 +108,17 @@ export class SaleListingComponent {
     this.getAndSetSaleRequests(params);
 
   }
-
+  getInitials(name: string): string {
+    if (!name) return '';
+    const initials = name.split(' ').map(word => word[0]).join('');
+    return initials.toUpperCase();
+  }
   onSaleQueryParamsChange(params: NzTableQueryParams): void {
     console.log(params);
     const { pageSize, pageIndex, sort, filter } = params;
     if (this.sort && this.appService.areArraysDifferent(this.sort, sort)) {
       this.sort = sort;
-      this.listOfDisplayData=this.appService.sortDataArray(this.listOfDisplayData,this.sort)
+      this.listOfDisplayData = this.appService.sortDataArray(this.listOfDisplayData, this.sort)
       return;
     }
     this.sort = sort;

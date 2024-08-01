@@ -32,7 +32,6 @@
                             [state]="{tracingId: 2}">
                             <button nz-button nzType="primary" [nzSize]="'small'">
                                 <span nz-icon nzType="plus"> </span>
-                                New Purchase
                             </button>
                         </a>
                     </div>
@@ -54,7 +53,14 @@
                                         <nz-list-item (click)="showSide=true"
                                             [routerLink]="['/', 'purchase','purchase']"
                                             [queryParams]="{ PO: data.purchase_no }">
-                                            <nz-list-item-meta [nzAvatar]="apiUrl +'/images/'+data.filename">
+                                            <nz-list-item-meta>
+                                                <nz-list-item-meta-avatar *ngIf="data.filename; else initialsTemplate"
+                                                    [nzSrc]="apiUrl + '/images/' + data.filename"></nz-list-item-meta-avatar>
+                                                <ng-template #initialsTemplate>
+                                                    <div class="avatar-initials ant-list-item-meta-avatar">{{
+                                                        getInitials(data.vendor_name) }}
+                                                    </div>
+                                                </ng-template>
                                                 <nz-list-item-meta-title>
                                                     <span class="flex space-between">
                                                         <span>{{data.vendor_name}} - {{ data.subject }}</span>
@@ -78,20 +84,23 @@
                                     </nz-list>
                                 </td>
                                 <td style="text-align: end;">
-                                    <span style="    display: inline-grid;
+                                    <span class="listSecondSection">
+                                        <span style="    display: inline-grid;
                                             width: max-content;">
-                                        <span>{{data.state===states.PendingInvoice?'':
-                                            data.total | currency :'PKR'}}</span>
-                                        <span *ngIf="data.state===states.PaymentProcessing&&data.balance"
-                                            class="remainingAmount">
-                                            Balance: {{data.balance | currency:'PKR'}}
+                                            <span>{{data.state===states.PendingInvoice?'':
+                                                data.total | currency :'PKR '}}</span>
+                                            <span *ngIf="data.state===states.PaymentProcessing&&data.balance"
+                                                class="remainingAmount">
+                                                {{data.balance | currency:'PKR '}}
+                                            </span>
                                         </span>
+                                        <button nz-button nzType="primary"
+                                            [className]="data.state===states.Completed? 'green-button':'default'"
+                                            [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'"
+                                            nzShape="round">
+                                            {{ stateNames[data.state] }}
+                                        </button>
                                     </span>
-                                    <button nz-button nzType="primary"
-                                        [className]="data.state===states.Completed? 'green-button':'default'"
-                                        [nzDanger]="data.state===states.Cancelled" [nzSize]="'small'" nzShape="round">
-                                        {{ stateNames[data.state] }}
-                                    </button>
                                 </td>
                             </tr>
                         </tbody>

@@ -23,7 +23,6 @@
     </span> <a [routerLink]="['./','new']" [state]="{tracingId: 2}">
         <button nz-button nzType="primary" [nzSize]="'small'">
             <span nz-icon nzType="plus"> </span>
-            New Site
         </button>
     </a>
 </div>
@@ -54,7 +53,7 @@
                                 <nz-list-item-meta-title>
                                     <span class="flex space-between">
                                         <span>{{data.name}} - {{ data.owner }}</span>
-                                        <span>{{data.amount | currency :'PKR'}}</span>
+                                        <span>{{data.amount | currency :'PKR '}}</span>
                                     </span>
 
                                 </nz-list-item-meta-title>

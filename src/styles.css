@@ -426,3 +426,93 @@ ul {
 cursor: pointer;
 background-color: #d3d3d3;
   }
+
+  @media (max-width: 600px) {
+    table{
+        width: max-content;
+    }
+th{
+    font-size: 10px !important;
+    text-wrap: nowrap;
+}  
+td{
+    font-size: 10px !important;
+    text-wrap: nowrap;
+}  
+.ant-table-cell{
+    padding: 4px !important;
+}
+
+.ant-list-item-meta-avatar {
+    margin-right: 8px !important;
+}
+
+.ant-list-item-meta-title{
+    font-size: 11px;
+}
+.ant-list-item-meta-description{
+    line-height: 1.7;
+    font-size: 10px;
+}
+.listSecondSection{
+    span{
+        font-size: 10px;
+    }
+}
+}
+
+.listSecondSection {
+    display: grid;
+    width: inherit;
+    align-items: end;
+    font-size: 10px;
+    float: right;
+    justify-content: flex-end;
+    .ant-btn-sm{
+    max-width: 73px;
+    text-wrap: wrap !important;
+    height: auto;
+    padding: 3px 2px 3px 2px;
+
+    margin-left: auto;
+    font-size: 11px;
+    span{
+        font-size: 8px;
+        text-rendering: geometricPrecision;
+        LINE-HEIGHT: 0.6;
+        letter-spacing: 0.4px;
+    }
+    }
+   
+    
+}
+.ant-btn-sm{
+    span{
+        font-size: 8px;
+        text-rendering: geometricPrecision;
+        LINE-HEIGHT: 0.6;
+        letter-spacing: 0.4px;
+    }
+}
+.ant-table{
+    display: block;
+    overflow: auto;
+}
+.ant-list-items{
+    text-wrap: wrap;
+}
+.avatar-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+    width: 30px;
+    height: 30px;
+    /* font-size: 14px; */
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    border-radius: 50%;
+    background-color: #BB86FC;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+  }

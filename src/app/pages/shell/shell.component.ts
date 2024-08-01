@@ -35,6 +35,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   appPermissions = AppPermissions;
   currentOrganizationId: number;
   organization: Organization;
+  initialLoaded = true;
   constructor(private userService: UserService,
     private appService: AppService, private fb: FormBuilder,
     private media: MediaMatcher,
@@ -49,6 +50,10 @@ export class ShellComponent implements OnInit, OnDestroy {
     })
   }
   ngOnInit() {
+    const isMobile=this.isMobile()
+    if(isMobile){
+      this.isCollapsed=true;
+    }
     this.loggedInUser = this.userService.getUserDetails();
     this.appService.getSubOrganizations(true);
     this.organization = this.appService.organization;
@@ -84,7 +89,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   }
 
   onSiteChange() {
-    
+
     this.siteSubscription = this.siteForm.valueChanges.subscribe(change => {
       this.setCurrentSite(change.site);
     });
@@ -111,7 +116,7 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   logout() {
     this.userService.logout()
-    this.appService.setSubOrganization({id:0,name:''} as SubOrganization)
+    this.appService.setSubOrganization({ id: 0, name: '' } as SubOrganization)
   }
 
   ngOnDestroy() {

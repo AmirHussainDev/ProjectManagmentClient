@@ -25,7 +25,9 @@
             <span>
               <a class="nav-link" [routerLink]="['/']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Dashboard
+                
+                {{isCollapsed? '': 'Dashboard'}}
+
               </a>
             </span>
           </li>
@@ -35,7 +37,8 @@
             <span nz-icon style="font-size: 18px;" nzType="user-switch"></span>
             <span>
               <a class="nav-link" [routerLink]="['/purchase/customers']" (click)="isMobile()?isCollapsed=true:null">
-                Customers
+                
+                {{isCollapsed? '': 'Customers'}}
               </a>
             </span>
           </li>
@@ -45,7 +48,7 @@
             <span>
               <a class="nav-link" [routerLink]="['/purchase/sales']" [queryParams]="{status:saleState.Quote}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Quotes
+                {{isCollapsed? '': 'Quotes'}}
               </a>
             </span>
           </li>
@@ -55,7 +58,9 @@
             <span>
               <a class="nav-link" [routerLink]="['/purchase/sales']" [queryParams]="{status:saleState.Invoiced  }"
                 (click)="isMobile()?isCollapsed=true:null">
-                Sale Invoices
+                
+                {{isCollapsed? '': 'Sale Invoices'}}
+
               </a>
             </span>
           </li>
@@ -173,7 +178,8 @@
           </span>
           <span class="flex center space-between" [style.width]="isMobile()?'100%':'auto'">
             <span>
-              <button nz-button class="header-button" style="color: #836d89; font-size: 12px;" (click)="toggleOrganizations()">
+              <button nz-button class="header-button" style="color: #836d89; font-size: 12px;"
+                (click)="toggleOrganizations()">
                 <nz-avatar style="width: 24px;height: 24px;margin-right: 5px;"
                   [nzSrc]="currentSubOrganization?.filename"></nz-avatar>
 
