@@ -366,7 +366,7 @@ export class PurchaseComponent implements OnInit {
   calculateTotal(): void {
     const itemsArray = this.purchaseDetails.get('items') as FormArray;
 
-    const discountTotal = itemsArray.value.reduce((total: any, product: any) => total + (product.unit_price * product.discount / 100), 0);
+    const discountTotal = itemsArray.value.reduce((total: any, product: any) => total + (product.qty * product.unit_price * product.discount / 100), 0);
     const itemCost = itemsArray.value.reduce((total: any, product: any) => total + ((product.unit_price * (100 - product.discount) / 100) * product.qty), 0);
 
     this.purchaseDetails.patchValue({
@@ -394,41 +394,14 @@ export class PurchaseComponent implements OnInit {
       return
     }
     const itemsArray = this.purchaseDetails.get('items') as FormArray;
-    const item = itemsArray.at(index);
+    const item = itemsArray.at(index) as FormGroup;
 
     if (item) {
-      const total = (item.get('unit_price')?.value ?? (100 - item.get('discount')?.value ?? 0) / 100) * (item.get('qty')?.value ?? 0);
-      item.patchValue({ total: total });
-
+       this.setItemTotal(item)
       this.calculateTotal();
     }
   }
-
-
-
-  onPriceChange(index: number): void {
-    if (this.loading) {
-      return
-    }
-    const itemsArray = this.purchaseDetails.get('items') as FormArray;
-    const item = itemsArray.at(index);
-
-    if (item) {
-      const total = (item.get('unit_price')?.value ?? 0 * (100 - item.get('discount')?.value ?? 0) / 100) * (item.get('qty')?.value ?? 0);
-      item.patchValue({ total: total });
-
-      this.calculateTotal();
-    }
-  }
-
-  onDiscountChange(index: number): void {
-    if (this.loading) {
-      return;
-    }
-
-    const itemsArray = this.purchaseDetails.get('items') as FormArray;
-    const item = itemsArray.at(index);
-
+  setItemTotal(item: FormGroup){
     if (item) {
       const unitPrice = item.get('unit_price')?.value ?? 0;
       const discountPercentage = item.get('discount')?.value ?? 0;
@@ -439,6 +412,34 @@ export class PurchaseComponent implements OnInit {
 
       // Update the 'total' form control with the calculated total value
       item.patchValue({ total: total });
+    }
+  }
+
+
+
+  onPriceChange(index: number): void {
+    if (this.loading) {
+      return
+    }
+    const itemsArray = this.purchaseDetails.get('items') as FormArray;
+    const item = itemsArray.at(index) as FormGroup;
+
+    if (item) {
+      this.setItemTotal(item)
+      this.calculateTotal();
+    }
+  }
+
+  onDiscountChange(index: number): void {
+    if (this.loading) {
+      return;
+    }
+
+    const itemsArray = this.purchaseDetails.get('items') as FormArray;
+    const item = itemsArray.at(index) as FormGroup;
+
+    if (item) {
+      this.setItemTotal(item)
 
       // Recalculate the total of all items
       this.calculateTotal();

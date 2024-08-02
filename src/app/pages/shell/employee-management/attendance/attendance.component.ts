@@ -65,19 +65,21 @@ export class AttendanceComponent implements OnInit, OnDestroy {
             this.isVisible = true;
             switch (error.code) {
               case error.PERMISSION_DENIED:
-                console.error("User denied the request for Geolocation.");
+                alert("User denied the request for Geolocation.");
                 break;
               case error.POSITION_UNAVAILABLE:
-                console.error("Location information is unavailable.");
+                alert("Location information is unavailable.");
                 break;
               case error.TIMEOUT:
-                console.error("The request to get user location timed out.");
+                alert("The request to get user location timed out.");
                 break;
             }
+            this.router.navigate(['employee']);
           }
         );
       } else {
-        console.error("Geolocation is not supported by this browser.");
+        alert("Geolocation is not supported by this browser.");
+        this.router.navigate(['employee'])
       }
     }, 2000)
   }

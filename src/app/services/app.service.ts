@@ -566,18 +566,29 @@ export class AppService {
     return false;
   }
 
- sortDataArray(dataArray: DataObject[], sortDefinition: KeyValue[]): DataObject[] {
+  sortDataArray(dataArray: DataObject[], sortDefinition: KeyValue[]): DataObject[] {
     return dataArray.sort((a, b) => {
       for (const sort of sortDefinition) {
         const key = sort.key;
         const order = sort.value;
   
+        let aValue = a[key];
+        let bValue = b[key];
+  
+        // Convert date strings to Date objects
+        if (typeof aValue === 'string' && !isNaN(Date.parse(aValue))) {
+          aValue = new Date(aValue);
+        }
+        if (typeof bValue === 'string' && !isNaN(Date.parse(bValue))) {
+          bValue = new Date(bValue);
+        }
+  
         if (order === 'ascend') {
-          if (a[key] > b[key]) return 1;
-          if (a[key] < b[key]) return -1;
+          if (aValue > bValue) return 1;
+          if (aValue < bValue) return -1;
         } else if (order === 'descend') {
-          if (a[key] > b[key]) return -1;
-          if (a[key] < b[key]) return 1;
+          if (aValue > bValue) return -1;
+          if (aValue < bValue) return 1;
         }
       }
       return 0;

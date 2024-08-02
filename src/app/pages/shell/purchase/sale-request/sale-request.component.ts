@@ -354,7 +354,7 @@ export class SaleRequestComponent implements OnInit {
   calculateTotal(): void {
     const itemsArray = this.SaleRequestDetails.get('items') as FormArray;
     const itemsArrayValue = itemsArray.getRawValue()
-    const discountTotal = itemsArrayValue.reduce((total: any, product: any) => total + (product.unit_price * product.discount / 100), 0);
+    const discountTotal = itemsArrayValue.reduce((total: any, product: any) => total + (product.qty * product.unit_price * product.discount / 100), 0);
     const itemCost = itemsArrayValue.reduce((total: any, product: any) => total + ((product.unit_price * (100 - product.discount) / 100) * product.qty), 0);
     const returnAmount = this.sumReturnAmount(itemsArrayValue);
     this.SaleRequestDetails.patchValue({
@@ -441,12 +441,10 @@ export class SaleRequestComponent implements OnInit {
       return
     }
     const itemsArray = this.SaleRequestDetails.get('items') as FormArray;
-    const item = itemsArray.at(index);
+    const item = itemsArray.at(index) as FormGroup;
 
     if (item) {
-      const total = (item.get('unit_price')?.value ?? (100 - item.get('discount')?.value ?? 0) / 100) * (item.get('qty')?.value ?? 0);
-      item.patchValue({ total: total });
-
+      this.setItemTotal(item)
       this.calculateTotal();
     }
   }
@@ -458,11 +456,10 @@ export class SaleRequestComponent implements OnInit {
       return
     }
     const itemsArray = this.SaleRequestDetails.get('items') as FormArray;
-    const item = itemsArray.at(index);
+    const item = itemsArray.at(index) as FormGroup;
 
     if (item) {
-      const total = (item.get('unit_price')?.value ?? 0 * (100 - item.get('discount')?.value ?? 0) / 100) * (item.get('qty')?.value ?? 0);
-      item.patchValue({ total: total });
+      this.setItemTotal(item)
 
       this.calculateTotal();
     }
@@ -474,8 +471,17 @@ export class SaleRequestComponent implements OnInit {
     }
 
     const itemsArray = this.SaleRequestDetails.get('items') as FormArray;
-    const item = itemsArray.at(index);
+    const item = itemsArray.at(index) as FormGroup;
 
+    if (item) {
+      this.setItemTotal(item)
+
+      // Recalculate the total of all items
+      this.calculateTotal();
+    }
+  }
+
+  setItemTotal(item: FormGroup){
     if (item) {
       const unitPrice = item.get('unit_price')?.value ?? 0;
       const discountPercentage = item.get('discount')?.value ?? 0;
@@ -486,12 +492,8 @@ export class SaleRequestComponent implements OnInit {
 
       // Update the 'total' form control with the calculated total value
       item.patchValue({ total: total });
-
-      // Recalculate the total of all items
-      this.calculateTotal();
     }
   }
-
 
 
   index = 0;

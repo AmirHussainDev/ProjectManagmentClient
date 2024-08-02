@@ -98,6 +98,11 @@
                                     <td></td>
                                     <td></td>
                                     <td>
+                                        <h5
+                                        [innerHTML]="SaleRequestDetails.get('items_discount_total')?.value| currency:'PKR '">
+                                    </h5>
+                                    </td>
+                                    <td>
                                         <h5 [innerHTML]="SaleRequestDetails.get('item_cost')?.value| currency:'PKR '">
                                         </h5>
                                     </td>
