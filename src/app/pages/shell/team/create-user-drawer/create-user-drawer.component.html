@@ -118,9 +118,15 @@
     </nz-form>
 
     <ng-template #footerTpl>
+        <span class="flex space-between">
+        <div *ngIf="this.isEdit">
+            <button nz-button nzType="primary"  [nzDanger]="true" style="margin-right: 8px;" (click)="deleteUser()">Delete</button>
+
+        </div>
         <div style="float: right">
             <button nz-button style="margin-right: 8px;" (click)="close()">Cancel</button>
             <button nz-button nzType="primary" [disabled]="!userForm.valid" (click)="addUser()">Submit</button>
         </div>
+    </span>
     </ng-template>
 </nz-drawer>

@@ -6,12 +6,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HasPermissionDirective } from '../../../directives/permissions.directive';
 import { PdfGeneratorService } from '../../../services/pdf-generator.service';
 import { SelectModalControlComponent } from '../components/select-modal-control/select-modal-control.component';
+import { UserHasPermissionDirective } from '../../../directives/filterUserBasedOnPermission.directive';
 
 
 
 @NgModule({
   declarations: [ChangePasswordComponent,
     HasPermissionDirective,
+    UserHasPermissionDirective,
     SelectModalControlComponent],
   imports: [
     CommonModule,
@@ -22,7 +24,7 @@ import { SelectModalControlComponent } from '../components/select-modal-control/
   providers:[
     PdfGeneratorService,
   ],
-  exports:[ChangePasswordComponent,HasPermissionDirective,SelectModalControlComponent],
+  exports:[ChangePasswordComponent,HasPermissionDirective,UserHasPermissionDirective,SelectModalControlComponent],
 
 })
 export class SharedModule { }

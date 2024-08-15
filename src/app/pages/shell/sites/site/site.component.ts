@@ -10,7 +10,7 @@ import { Subscription, Observable, Observer } from 'rxjs';
 import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
-import { SiteStateNames, SiteStates, SitesGraphKeys } from '../../../../services/app.constants';
+import { AppPermissions, SiteStateNames, SiteStates, SitesGraphKeys } from '../../../../services/app.constants';
 import { SiteDetails } from '../../../../services/app.interfact';
 import * as Highcharts from 'highcharts';
 
@@ -30,14 +30,14 @@ export class SiteComponent implements OnInit, OnDestroy {
   siteStates = SiteStates;
   stateNames = SiteStateNames;
   site_id = 0;
-
+  permissions = AppPermissions;
 
   isHighcharts = typeof Highcharts === 'object';
   title = 'UnivHighCharts';
   Highcharts: typeof Highcharts = Highcharts;
   chartConstructor: string = 'chart';
   chartOptions: Highcharts.Options = {};
-  sitesGraphKeys:any=SitesGraphKeys
+  sitesGraphKeys: any = SitesGraphKeys
   listOfData: User[] = [
   ];
   defaultItemValues = {
@@ -56,6 +56,7 @@ export class SiteComponent implements OnInit, OnDestroy {
     id: new FormControl(),
     name: new FormControl(),
     budget: new FormControl(),
+    site_supervisors: new FormControl(),
     owner: new FormControl(),
     contact_no: new FormControl(),
     state: new FormControl(this.siteStates.Draft),
@@ -144,9 +145,10 @@ export class SiteComponent implements OnInit, OnDestroy {
 
     this.siteDetails = this.fb.group({
       id: new FormControl(),
-      name: new FormControl('',[Validators.required]),
-      budget: new FormControl(0,[Validators.required]),
-      owner: new FormControl(null,[Validators.required]),
+      name: new FormControl('', [Validators.required]),
+      budget: new FormControl(0, [Validators.required]),
+      owner: new FormControl(null, [Validators.required]),
+      site_supervisors: new FormControl(null, [Validators.required]),
       contact_no: new FormControl(),
       state: new FormControl(this.siteStates.Draft),
       address: new FormControl(),
@@ -181,13 +183,13 @@ export class SiteComponent implements OnInit, OnDestroy {
   }
   async loadStatistics() {
 
-this.showChart=false;
+    this.showChart = false;
     const serdata: {} = await this.appService.retireveSiteStatisticsById(this.site_id)
     // Iterate through the data to organize it by vendor name
     // Initialize an empty object to store series data
     const series: any[] = []
     Object.entries(serdata).forEach((key) => {
-      if(key[0]!=='siteId'&&key[0]!=='siteName'){
+      if (key[0] !== 'siteId' && key[0] !== 'siteName') {
         series.push({
           name: this.sitesGraphKeys[key[0]],
           data: [key[1]]
@@ -199,7 +201,7 @@ this.showChart=false;
     // Convert seriesData object into an array
 
 
-this.showChart=true;
+    this.showChart = true;
     // Assign the series to your chartOptions
     this.chartOptions.series = series as any;
   }
@@ -232,6 +234,7 @@ this.showChart=true;
         organization: response.organization_id,
         subOrganization: response.sub_organization_id,
         owner: response.owner,
+        site_supervisors: JSON.parse(response.site_supervisors||'[]'),
         site_start_date: response.site_start_date,
         site_end_date: response.site_end_date,
         name: response.name,
@@ -251,7 +254,10 @@ this.showChart=true;
   }
   async submitRequest() {
     const response: any = await this.appService.createSite({
-      ...this.siteDetails.value as SiteDetails,
+      ...{
+        ...this.siteDetails.value,
+        site_supervisors: JSON.stringify(this.siteDetails.value.site_supervisors || []),
+      } as unknown as SiteDetails,
       state: this.siteStates.PendingApproval
     } as any)
     if (response) {
@@ -309,10 +315,12 @@ this.showChart=true;
       ...detailsDifference
     }
 
-    const response: any = await this.appService.updateSiteRequest({
-      ...body,
-      state: this.siteStates.Approved
-    })
+    const response: any = await this.appService.updateSiteRequest(
+      {
+        ...body,
+        site_supervisors: JSON.stringify(body.site_supervisors || []),
+        state: this.siteStates.Approved
+      })
     if (response) {
       this.notification.create(
         'success',
@@ -386,7 +394,7 @@ this.showChart=true;
 
   disableAndEnableSpecificControls() {
     const stateControl = this.siteDetails.get('state');
-    if (stateControl && stateControl.value !== this.siteStates.Draft && stateControl && stateControl.value !== this.siteStates.PendingApproval ) {
+    if (stateControl && stateControl.value !== this.siteStates.Draft && stateControl && stateControl.value !== this.siteStates.PendingApproval) {
       console.log(this.siteDetails);
       Object.keys(this.siteDetails.controls).forEach(controlName => {
         const control = this.siteDetails.get(controlName);
@@ -395,7 +403,9 @@ this.showChart=true;
             controlName !== 'terms' &&
             stateControl.value === this.siteStates.PendingApproval)
             ||
-            stateControl.value === this.siteStates.Completed)
+            stateControl.value === this.siteStates.Completed
+            ||
+            stateControl.value === this.siteStates.Approved)
 
         ) {
           control.disable();

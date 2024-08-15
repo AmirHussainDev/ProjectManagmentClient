@@ -69,8 +69,8 @@
                             [nzShowPagination]="false" style="margin-bottom: 12px;">
                             <thead>
                                 <tr>
-                                    <th *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">Custom</th>
-                                    <th>Item</th>
+                                    <th width="5%" *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">Custom</th>
+                                    <th width="30%">Item</th>
                                     <th>Quantity</th>
                                     <th>Unit
                                         Price
@@ -87,15 +87,16 @@
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <td><button *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft"
+                                    <td width="5%"  *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">
+                                        <button
                                             style="float: left;" nz-button nzType="primary" nzSize="small"
                                             nzShape="round" (click)="addProductRow()">
                                             <span nz-icon nzTheme="outline" nzType="plus"></span>
 
                                         </button>
                                     </td>
-                                    <td></td>
-                                    <td></td>
+                                    <td width="30%"></td>
+                                    <td ></td>
                                     <td></td>
                                     <td>
                                         <h5
@@ -119,9 +120,9 @@
                                                 </label>
                                             </td>
                                             <td>
-                                                <input
+                                                <textarea [nzAutosize]="{ minRows: 1, maxRows: 6 }"
                                                     *ngIf="(SaleRequestDetails.controls.state.value!==SaleStates.Draft ||control.controls.isCustom?.value)"
-                                                    nz-input-number formControlName="name">
+                                                    nz-input-number formControlName="name"> </textarea>
                                                 <app-select-modal-control
                                                     *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft&&!control.controls.isCustom?.value"
                                                     formControlName="selected_item" [data]="vendorItems"

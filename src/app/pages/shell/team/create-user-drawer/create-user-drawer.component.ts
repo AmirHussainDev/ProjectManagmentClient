@@ -32,7 +32,7 @@ export class CreateUserDrawerComponent implements OnInit {
       sub_organization_id: [null, [Validators.required]],
       organization_id: [parseInt(localStorage.getItem('organization_id') || '0')],
       password: ['p@ssw0rD'],
-      email: ['', [Validators.required]],
+      email: [''],
       contact_no: ['', [Validators.required]],
       address: [''],
       is_admin: [false],
@@ -49,7 +49,7 @@ export class CreateUserDrawerComponent implements OnInit {
         role: [this.selectedUser.role_id, [Validators.required]],
         sub_organization_id: [this.selectedUser.sub_organization_id, [Validators.required]],
         organization_id: [parseInt(localStorage.getItem('organization_id') || '0')],
-        email: [this.selectedUser.email, [Validators.required]],
+        email: [this.selectedUser.email],
         contact_no: [this.selectedUser.contact_no, [Validators.required]],
         address: [this.selectedUser.address],
         is_admin: [this.selectedUser.is_admin],
@@ -75,6 +75,14 @@ export class CreateUserDrawerComponent implements OnInit {
       this.closeDrawer.emit(true);  
     }
   }
+
+  async deleteUser(){
+      await this.userService.updateUser({ deleted: true ,...this.userForm.value} as unknown as UserUpdateObj,this.selectedUser.id)
+      this.notification.create('success','User deleted successfully','')
+      this.closeDrawer.emit(true);  
+  }
+
+  
   objectKeys(obj: any): { key: string, value: any }[] {
     return Object.keys(obj).map(key => ({ key: key, value: obj[key] }));
   }

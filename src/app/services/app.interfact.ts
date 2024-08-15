@@ -29,6 +29,7 @@ export interface Site {
     id: number;
     name: string;
     organization_id: string;
+    site_supervisors?: string;
 }
 
 export type RoleCreateObj = Omit<Role, "id">
@@ -253,6 +254,8 @@ export interface SiteDetails {
     budget: FormControl;
     owner: FormControl;
     contact_no: FormControl;
+    site_supervisors: FormControl;
+
     state: FormControl;
     address: FormControl;
     site_start_date: FormControl;
@@ -379,7 +382,7 @@ export interface EmployeeForm {
     id: FormControl;
     organization: FormControl;
     subOrganization: FormControl;
-    position: FormControl;
+    // position: FormControl;
     employee: FormControl;
     supervisor: FormControl;
     isSalaryHourly: FormControl;
@@ -395,7 +398,7 @@ export interface Employee {
     id: number;
     organization: number;
     subOrganization: number;
-    position: string;
+    // position: string;
     employee: any;
     supervisor: any;
     salary: number;

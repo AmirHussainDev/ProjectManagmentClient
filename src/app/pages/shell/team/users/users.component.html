@@ -6,7 +6,7 @@
 
         <nz-input-group id="search" [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
             <input type="text" placeholder="Search here" name="searchValue" id="searchValue" [(ngModel)]="searchValue"
-            autocomplete="false"  (keyup)="search()" nz-input />
+                autocomplete="false" (keyup)="search()" nz-input />
 
         </nz-input-group>
         <ng-template #inputClearTpl>
@@ -36,14 +36,16 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of sortTable.data; let i=index">
-            <td>{{ data.name }}</td>
-            <td>{{ data.reportTo }}</td>
-            <td>{{ data.roleName }}</td>
-            <td>{{ data.sub_organization }}</td>
-            <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="startEdit(i)">Edit</a></td>
-            <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="openChangePasswordModal(i)">Change <span
-                        nz-icon nzType="unlock" nzTheme="outline"></span></a> </td>
-        </tr>
+        <ng-container *ngFor="let data of sortTable.data; let i=index">
+            <tr *ngIf="!data.deleted">
+                <td>{{ data.name }}</td>
+                <td>{{ data.reportTo }}</td>
+                <td>{{ data.roleName }}</td>
+                <td>{{ data.sub_organization }}</td>
+                <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="startEdit(i)">Edit</a></td>
+                <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="openChangePasswordModal(i)">Change <span
+                            nz-icon nzType="unlock" nzTheme="outline"></span></a> </td>
+            </tr>
+        </ng-container>
     </tbody>
 </nz-table>

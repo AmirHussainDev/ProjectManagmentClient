@@ -17,42 +17,37 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     {
       title: 'Employee',
       compare: (a: any, b: any) => a.employeeName.localeCompare(b.employeeName),
-      priority: false
+      priority: 1
     },
-    {
-      title: 'Position',
-      compare: (a: any, b: any) => a.position.localeCompare(b.position),
-      priority: false
-    },
+    // {
+    //   title: 'Position',
+    //   compare: (a: any, b: any) => a.position.localeCompare(b.position),
+    //   priority: false
+    // },
     {
       title: 'Supervisor',
       compare: (a: any, b: any) => a.supervisorName - b.supervisorName,
       priority: 2
     },
     {
-      title: 'Salary',
-      compare: (a: Employee, b: Employee) => a.salary - b.salary,
-      priority: 3
-    },
-    {
       title: 'Overtime',
       compare: (a: any, b: any) => a.overtime - b.overtime,
-      priority: 3
+      priority: 4
     },
     {
       title: 'Signout Required',
       compare: (a: any, b: any) => a.siginout_required - b.siginout_required,
-      priority: 3
+      priority: 5
     },
     {
       title: 'Working Hours',
       compare: (a: any, b: any) => a.workingHours - b.workingHours,
-      priority: 3
+      priority: 6
     },
     {
       title: 'Action',
       compare: (a: any, b: any) => (a.id || 0) - (b.id || 0),
-      priority: 3
+      priority: 7
     }
   ];
   listOfData: Employee[] = [
@@ -70,6 +65,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   listOfDisplayData: Employee[] = [];
   isNew: boolean;
   editableItem: Employee;
+  loggedInUser: User;
   constructor(
     private appService: AppService,
     private userService: UserService) {
@@ -77,17 +73,29 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loggedInUser = this.userService.loggedInUser;
+    this.getUsers();
+    if(this.loggedInUser.is_admin){
+      this.listOfColumn.push(
+        {
+          title: 'Salary',
+          compare: (a: Employee, b: Employee) => a.salary - b.salary,
+          priority: 3
+        },)
+
+        this.listOfColumn = this.listOfColumn.sort((a, b) => a.priority - b.priority);
+      }
+
+  }
+  async getUsers() {
+    this.users = await this.userService.getOrganizationUsers()
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.populateEmployeeData();
         this.currentOrganizationId = change.id
       }
     });
-    this.getUsers();
-  }
 
-  async getUsers() {
-    this.users = await this.userService.getOrganizationUsers()
   }
 
   ngOnDestroy(): void {
@@ -121,7 +129,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     // this.editCache[id].edit = true;
     this.editableItem = this.editCache[id].data;
     // this.editCache[id].edit = true;
-   
+
   }
 
   cancelEdit(id: number): void {
@@ -136,7 +144,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     const index = this.listOfData.findIndex(item => item.id === id);
     await this.appService.updateEmployee({
       id: this.editCache[id].data.id,
-      position: this.editCache[id].data.position,
+      // position: this.editCache[id].data.position,
       employee: this.editCache[id].data.employee,
       supervisor: this.editCache[id].data.supervisor,
       salary: this.editCache[id].data.salary,
@@ -164,7 +172,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   search(): void {
     this.searchVisible = false;
     if (this.searchValue) {
-      this.listOfDisplayData = this.listOfData.filter((item: any) => (item.position && item.position.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.employeeName && item.employeeName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.supervisorName && item.supervisorName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      this.listOfDisplayData = this.listOfData.filter((item: any) => (item.employeeName && item.employeeName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1) || (item.supervisorName && item.supervisorName.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
 
     } else {

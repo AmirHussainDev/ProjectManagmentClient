@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: ':siteId', component: SiteComponent,
-    data:{name:'Site', permission:AppPermissions.AddSites},
+    data:{name:'Site', permission:AppPermissions.ManageSites},
     canActivate:[AuthGuard]
   },
   {

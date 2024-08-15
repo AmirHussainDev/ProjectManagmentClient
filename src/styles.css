@@ -488,7 +488,7 @@ td{
 }
 .ant-btn-sm{
     span{
-        font-size: 8px;
+        font-size: 11px;
         text-rendering: geometricPrecision;
         LINE-HEIGHT: 0.6;
         letter-spacing: 0.4px;

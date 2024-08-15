@@ -27,7 +27,7 @@
                 <form nz-form [formGroup]="contractDetails" (ngSubmit)="submitForm()">
                     <div #content>
                         <nz-row nzGutter="2" style="margin-bottom: 12px;">
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="contractor">Contractor</nz-form-label>
@@ -42,7 +42,7 @@
                         </nz-row>
                         <nz-row nzGutter="2" style="margin-bottom: 12px;">
 
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="contract_type">Contract
@@ -68,7 +68,7 @@
 
                         <nz-row nzGutter="2" style="margin-bottom: 12px;"
                             *ngIf="contractDetails.get('contract_type')?.value===contractorType.DurationBased">
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="contract_start_date">Start Date</nz-form-label>
@@ -78,7 +78,7 @@
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="contract_end_date">End Date</nz-form-label>
@@ -91,7 +91,7 @@
                         </nz-row>
                         <nz-row nzGutter="2" style="margin-bottom: 12px;"
                         *ngIf="contractDetails.get('contract_type')?.value===contractorType.DurationBased">
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="payment_schedule">No of Days</nz-form-label>
@@ -100,7 +100,7 @@
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label nzRequired nzFor="include_weekends">Include Weekends</nz-form-label>
                                     <nz-form-control nzErrorTip="The input is not valid date!">
@@ -110,7 +110,7 @@
                             </nz-col>
                         </nz-row>
                         <nz-row nzGutter="2" style="margin-bottom: 12px;">
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12"
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24"
                             *ngIf="contractDetails.get('contract_type')?.value===contractorType.MeasurementBased">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
@@ -120,7 +120,7 @@
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
-                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="total">Amount</nz-form-label>

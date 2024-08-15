@@ -25,7 +25,7 @@ export class EmployeeContractComponent implements OnInit {
     this.employeeForm = this.fb.group({
       id: [0, []],
       employee: [0, [Validators.required]],
-      position: ['', [Validators.required]],
+      // position: ['', [Validators.required]],
       isSalaryHourly: [false],
       salary: [0, [Validators.required]],
       overtime: [false],
@@ -45,7 +45,7 @@ export class EmployeeContractComponent implements OnInit {
       this.employeeForm = this.fb.group({
         id: [this.editableItem.id],
         employee: [this.editableItem.employee, [Validators.required]],
-        position: [this.editableItem.position, [Validators.required]],
+        // position: [this.editableItem.position, [Validators.required]],
         isSalaryHourly: [this.editableItem.isSalaryHourly],
         salary: [this.editableItem.salary, [Validators.required]],
         overtime: [this.editableItem.overtime],
@@ -67,7 +67,7 @@ export class EmployeeContractComponent implements OnInit {
     this.isNew ?
       await this.appService.createEmployee(
         {
-        position: this.employeeForm.value.position,
+        // position: this.employeeForm.value.position,
         employee: this.employeeForm.value.employee,
         supervisor: this.employeeForm.value.supervisor,
         salary: this.employeeForm.value.salary,
@@ -79,7 +79,7 @@ export class EmployeeContractComponent implements OnInit {
       } as any) :
       await this.appService.updateEmployee({
         id: this.editableItem.id,
-        position: this.employeeForm.value.position,
+        // position: this.employeeForm.value.position,
         employee: this.employeeForm.value.employee,
         supervisor: this.employeeForm.value.supervisor,
         salary: this.employeeForm.value.salary,

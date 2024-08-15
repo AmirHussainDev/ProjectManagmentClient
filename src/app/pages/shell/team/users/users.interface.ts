@@ -1,4 +1,5 @@
 export interface User {
+    deleted?: boolean;
     is_contractor: any;
     is_employee: any;
     email: any;

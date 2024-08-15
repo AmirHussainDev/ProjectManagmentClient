@@ -1,8 +1,9 @@
 <div>
     <nz-input-group [nzSuffix]="!isDisabled?suffixIconSearch:undefined">
-        <input [value]="this.modelValue==='all'?(value?.name||'') :(value||'')" (click)="openModal()"
+        <textarea  [nzAutosize]="{ minRows: 1, maxRows: 6 }" [value]="this.modelValue==='all'?(value?.name||'') :(value||'')" (click)="openModal()"
             (keydown)="stopEvent($event)" (keyup)="stopEvent($event)" (keypress)="stopEvent($event)"
-            [disabled]="isDisabled" /> </nz-input-group>
+            [disabled]="isDisabled">
+        </textarea> </nz-input-group>
     <ng-template #suffixIconSearch>
         <span nz-icon nzType="search"></span>
     </ng-template>

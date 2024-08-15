@@ -36,12 +36,13 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of sortTable.data">
+<ng-container *ngFor="let data of sortTable.data">
+        <tr  *filterUser="{ user: loggedInUser, permissionName: 0, isAdmin: this.loggedInUser.is_admin , isContractor: false,userIds:[data.employee,data.supervisor] }">
             <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
                 <td>{{ data.employee|username }}</td>
-                <td>{{ data.position }}</td>
+                <!-- <td>{{ data.position }}</td> -->
                 <td>{{ data.supervisor |username }}</td>
-                <td>{{ data.salary }} {{data.isSalaryHourly?'/h':'/m'}}</td>
+                <td *filterUser="{ user: loggedInUser, permissionName: 0, isAdmin: this.loggedInUser.is_admin , isContractor: false,userIds:[] }">{{ data.salary }} {{data.isSalaryHourly?'/h':'/m'}}</td>
                 <td>{{ data.overtime }}</td>
                 <td>{{ data.siginout_required }}</td>
                 <td>{{ data.workingHours }}</td>
@@ -51,7 +52,7 @@
             <ng-template #editTemplate>
                 <td>{{ data.employee|username }}</td>
 
-                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.position" /></td>
+                <!-- <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.position" /></td> -->
 
                 <td>
                     <nz-select id="supervisor" [(ngModel)]="editCache[data.id].data.supervisor"
@@ -78,5 +79,6 @@
                 </td>
             </ng-template>
         </tr>
+    </ng-container>
     </tbody>
 </nz-table>

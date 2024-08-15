@@ -114,7 +114,36 @@
                             </nz-col>
 
                         </nz-row>
+                        <nz-row nzGutter="2" style="margin-bottom: 12px;">
 
+
+                            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
+
+                                <!-- <nz-form-item *ngIf="purchaseDetails.get('isSiteBased')?.value">
+                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sites</nz-form-label>
+                                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                        <nz-select nzMode="multiple" class="inputField" formControlName="site_ids"
+                                            placeholder="Select sites">
+                                            <nz-option *ngFor="let siteItem of sites" [nzValue]="siteItem.id"
+                                                [nzLabel]="siteItem.label"></nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                </nz-form-item> -->
+
+                                <nz-form-item>
+                                    <nz-form-label [nzMd]="8" [nzSm]="24"[nzXs]="12" nzRequired nzFor="site_supervisors">Supervisors</nz-form-label>
+                                    <nz-form-control  [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid!">
+                                      <nz-select nzMode="multiple" id="reports_to" formControlName="site_supervisors" placeholder="Select user">
+                                        <ng-container *ngFor="let user of listOfData">
+                                            <ng-container *filterUser="{ user: user, permissionName: permissions.ManageSites, isAdmin: false, isContractor: false }">
+                                              <nz-option [nzValue]="user?.id" [nzLabel]="user?.name"></nz-option>
+                                            </ng-container>
+                                          </ng-container>
+                                      </nz-select>
+                                    </nz-form-control>
+                                  </nz-form-item>
+                            </nz-col>
+                        </nz-row>
                         <nz-row nzGutter="2" style="margin-bottom: 12px;">
                             <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
                                 <nz-form-item>
@@ -163,7 +192,7 @@
 
     <nz-row nzGutter="4" style="margin-bottom: 12px;">
         <nz-col [nzMd]="16" [nzSm]="24" [nzXs]="24">
-           
+
             <nz-card style="width:100%">
                 <app-expenses [site_id]="site_id"></app-expenses>
             </nz-card>

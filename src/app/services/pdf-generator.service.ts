@@ -113,21 +113,19 @@ export class PdfGeneratorService {
                 {
                     table: {
                         headerRows: 1,
-                        widths: this.invoice.type == 'customer' ? ['*', 'auto', 'auto', 'auto', 'auto', 'auto'] : ['*', 'auto', 'auto', 'auto', 'auto'],
+                        widths: this.invoice.type == 'customer' ? ['5%', '15%', '40%', '12%', '14%', '14%'] : ['40%', '15%', '15%', '15%', '15%'],
                         body:
                             this.invoice.type == 'customer' ? [
-                                ['Quote number', 'Date', 'Subject', 'Status', 'Amount', 'Balance'],
-                                ...this.invoice.items.map(p => ([p.sale_no, this.formatDate(p.date_created), p.subject, this.saleStateName[p.state], p.total, p.balance])),
-                                [{ text: 'Total Balance', colSpan: 5 }, {}, {}, {}, {}, this.invoice.items.reduce((acc, p) => acc + parseFloat(p.balance), 0)]
+                                [{ text: 'Sale #', style: 'columnStyle' }, { text: 'Date', style: 'columnStyle' }, { text: 'Subject', style: 'columnStyle' }, { text: 'Status', style: 'columnStyle' }, { text: 'Amount', style: 'columnStyleNumeric' }, { text: 'Balance', style: 'columnStyleNumeric' }],
+                                ...this.invoice.items.map(p => ([{ text: p.sale_no, style: 'columnStyle' }, { text: this.formatDate(p.date_created), style: 'columnStyle' }, { text: p.subject, style: 'columnStyle' }, { text: this.saleStateName[p.state], style: 'columnStyle' }, { text: p.total, style: 'columnStyleNumeric' }, { text: p.balance, style: 'columnStyleNumeric' }])),
+                                [{ text: 'Total Balance', colSpan: 5, style: 'columnStyle' }, {}, {}, {}, {}, { text: this.invoice.items.reduce((acc, p) => acc + parseFloat(p.balance || 0), 0), style: 'columnStyleNumeric' }]
                             ] : [
-                                ['Product', 'Unit Price', 'Quantity', 'Discount', 'Amount'],
-                                ... this.invoice.items.map(item => {
-                                    // Create a new array combining the item and its return details
-                                    const combinedItems = [[item.name, item.unit_price, item.qty, item.discount, item.total]];
-                                    totalAmount += Number(item.total)
-                                    return combinedItems;
-                                }).flat(),
-                                [{ text: 'Total Amount', colSpan: 3 }, {}, {}, this.invoice.items_discount_total, totalAmount]
+                                [{ text: 'Item', style: 'columnStyle' }, { text: 'Unit Price', style: 'columnStyleNumeric' }, { text: 'Quantity', style: 'columnStyleNumeric' }, { text: 'Discount', style: 'columnStyleNumeric' }, { text: 'Amount', style: 'columnStyleNumeric' }],
+                                ...this.invoice.items.map(item => {
+                                    totalAmount += Number(item.total||0);
+                                    return [{ text: item.name, style: 'columnStyle' }, { text: item.unit_price, style: 'columnStyleNumeric' }, { text: item.qty, style: 'columnStyleNumeric' }, { text: item.discount, style: 'columnStyleNumeric' }, { text: item.total, style: 'columnStyleNumeric' }];
+                                }),
+                                [{ text: 'Total Amount', colSpan: 3, style: 'columnStyle' }, {}, {}, { text: this.invoice.items_discount_total, style: 'columnStyleNumeric' }, { text: totalAmount, style: 'columnStyleNumeric' }]
                             ]
                     }
                 },
@@ -136,33 +134,27 @@ export class PdfGeneratorService {
                     style: 'sectionHeader'
                 } : {},
                 this.invoice.type == 'Sale' ? {
-
                     table: {
                         headerRows: 1,
-                        widths: ['*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
-                        body:
-                            [
-                                ['Product', 'Unit Price', 'Quantity', 'Discount', 'Amount', 'Reason', 'Date'],
-                                ... this.invoice.items.map(item => {
-                                    // Create a new array combining the item and its return details
-                                    const combinedItems = [...item.return_details.map((returnDetail: any) => {
-                                        totalReturnAmount += Number(returnDetail.returnAmount);
-                                        return [
-                                            item.name,
-                                            item.unit_price || '',
-                                            returnDetail.qty || 0,
-                                            returnDetail.charge || 0,
-                                            returnDetail.returnAmount || 0,
-                                            returnDetail.reason,
-                                            this.formatDate(returnDetail.date_created),
-                                        ]
-                                    })];
-
-                                    return combinedItems;
-                                }).flat(),
-                                [{ text: 'Total Return Amount', colSpan: 3 }, {}, {}, {}, {}, {}, totalReturnAmount]
-
-                            ]
+                        widths: ['20%', '15%', '12%', '12%', '10%', '21%', '10%'],
+                        body: [
+                            [{ text: 'Product', style: 'columnStyle' }, { text: 'Unit Price', style: 'columnStyleNumeric' }, { text: 'Quantity', style: 'columnStyleNumeric' }, { text: 'Discount', style: 'columnStyleNumeric' }, { text: 'Amount', style: 'columnScolumnStyleNumerictyle' }, { text: 'Reason', style: 'columnStyle' }, { text: 'Date', style: 'columnStyleNumeric' }],
+                            ...this.invoice.items.map(item => {
+                                return item.return_details.map((returnDetail: any) => {
+                                    totalReturnAmount += Number(returnDetail.returnAmount);
+                                    return [
+                                        { text: item.name, style: 'columnStyle' },
+                                        { text: item.unit_price || '', style: 'columnStyleNumeric' },
+                                        { text: returnDetail.qty || 0, style: 'columnStyleNumeric' },
+                                        { text: returnDetail.charge || 0, style: 'columnStyleNumeric' },
+                                        { text: returnDetail.returnAmount || 0, style: 'columnStyleNumeric' },
+                                        { text: returnDetail.reason, style: 'columnStyle' },
+                                        { text: this.formatDate(returnDetail.date_created), style: 'columnStyleNumeric' },
+                                    ];
+                                });
+                            }).flat(),
+                            [{ text: 'Total Return Amount', colSpan: 5, style: 'columnStyle' },{},{},{},{}, { text: totalReturnAmount, colSpan: 2,style: 'columnStyleNumeric' },{}]
+                        ]
                     }
                 } : {},
                 this.invoice.type == 'Sale' || this.invoice.type == 'purchase' ? {
@@ -224,6 +216,21 @@ export class PdfGeneratorService {
                 },
             ],
             styles: {
+                columnStyle:{
+                    fontSize: 12,
+                    alignment: 'left',        
+                                textAlign:'right',
+
+                    noWrap: false,  // Allows text to wrap within the column
+                    wordBreak: 'break-all', // Ensures words break if too long for the column width
+                },
+                columnStyleNumeric:{
+                    fontSize: 12,
+                    alignment: 'right',
+                    textAlign:'right',
+                    noWrap: false,  // Allows text to wrap within the column
+                    wordBreak: 'break-all', // Ensures words break if too long for the column width
+                },
                 sectionHeader: {
                     bold: true,
                     fontSize: 12,

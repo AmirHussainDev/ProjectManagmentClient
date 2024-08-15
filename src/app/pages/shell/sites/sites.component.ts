@@ -3,6 +3,7 @@ import { AppService } from '../../../services/app.service';
 import { Site } from '../../../services/app.interfact';
 import { Subscription } from 'rxjs';
 import { SiteStateNames, SiteStates } from '../../../services/app.constants';
+import { UserService } from '../../../services/user.service';
 
 
 
@@ -44,7 +45,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   subOrgSubscription: Subscription;
   visible = false;
   sites: any[];
-  constructor(private appService: AppService) {
+  constructor(private appService: AppService,private userService: UserService) {
 
   }
 
@@ -73,7 +74,11 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   async populateSiteData() {
-    this.sites = await this.appService.getSites();
+    const response = await this.appService.getSites();
+    this.sites = response.filter(site => {
+      const siteSupervisors = site.site_supervisors ? JSON.parse(site.site_supervisors) : [];
+      return this.userService.loggedInUser.is_admin || !siteSupervisors.length || siteSupervisors.includes(this.userService.loggedInUser.id);
+    });
     this.listOfDisplayData = this.sites;
   }
 
