@@ -63,6 +63,7 @@ export class PurchaseComponent implements OnInit {
     amount_paid: new FormControl(0),
     additional_cost: new FormControl(0),
     created_by: new FormControl(0),
+    date_created:new FormControl(new Date()),
     shipment_charges: new FormControl(0),
     total: new FormControl(0),
     balance: new FormControl(0),
@@ -85,6 +86,7 @@ export class PurchaseComponent implements OnInit {
       value: 'name',
       name: 'Item'
     }]
+  created_by_users: User[];
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -115,6 +117,7 @@ export class PurchaseComponent implements OnInit {
       additional_cost: new FormControl(0),
       overall_discount: new FormControl(0),
       created_by: new FormControl(0),
+      date_created:new FormControl(new Date()),
       shipment_charges: new FormControl(0),
       total: new FormControl(0),
       balance: new FormControl(0),
@@ -158,9 +161,13 @@ export class PurchaseComponent implements OnInit {
       } else {
         id = params['PO']
       }
-      this.purchaseDetails.reset({ state: POStates.Draft, id: 0 });
+      this.created_by_users = [this.userService.loggedInUser]
+
+      this.purchaseDetails.reset({
+         created_by: this.userService.loggedInUser.id,
+        date_created: new Date(), 
+        state: POStates.Draft, id: 0 ,payment_history: [],items: [],});
       this.clearItems();
-      this.purchaseDetails.reset({ state: POStates.Draft, id: 0, items: [], payment_history: [] });
       this.purchaseDetails.controls['id'].setValue(id || 0);
 
       await this.setPurchaseRequestDetails();
@@ -206,6 +213,7 @@ export class PurchaseComponent implements OnInit {
   async getExistingPurchase() {
     const response = await this.appService.retirevePOById(this.purchaseDetails.controls['id'].value)
     if (response) {
+      this.created_by_users = [response.created_by]
 
       this.purchaseDetails.patchValue({
         id: response.id,
@@ -221,7 +229,8 @@ export class PurchaseComponent implements OnInit {
         item_cost: response.item_cost,
         amount_paid: response.amount_paid,
         additional_cost: response.additional_cost,
-        created_by: response.created_by,
+        created_by: response.created_by.id,
+        date_created: new Date(response.date_created),
         shipment_charges: response.shipment_charges,
         total: response.total,
         balance: response.balance,
@@ -607,7 +616,10 @@ export class PurchaseComponent implements OnInit {
 
   disableAndEnableSpecificControls() {
     const stateControl = this.purchaseDetails.get('state');
-
+    if (stateControl && stateControl.value == this.POStates.Draft) {
+      this.purchaseDetails.controls.created_by.disable()
+      this.purchaseDetails.controls.date_created.disable()
+    }
     if (stateControl && stateControl.value !== this.POStates.Draft) {
       const itemsArray = this.purchaseDetails.get('items') as FormArray;
       if (stateControl.value === this.POStates.PendingInvoice) {

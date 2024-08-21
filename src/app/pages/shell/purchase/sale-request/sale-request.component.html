@@ -24,6 +24,27 @@
                         <div nz-row [nzGutter]="16">
                             <div nz-col class="gutter-row" [nzSpan]="12">
                                 <nz-form-item>
+                                    <nz-form-label nzRequired nzFor="created_by">Created By</nz-form-label>
+                                    <nz-form-control nzErrorTip="The input is not valid date!">
+                                        <nz-select id="created_by" formControlName="created_by"
+                                            placeholder="created_by">
+                                            <nz-option *ngFor="let user of created_by_users" [nzValue]="user?.id"
+                                                [nzLabel]="user?.name"></nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <div nz-col class="gutter-row" [nzSpan]="12">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired nzFor="date_created">Date Created</nz-form-label>
+                                    <nz-form-control nzErrorTip="The input is not valid date!">
+                                        <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
+                                            formControlName="date_created"></nz-date-picker>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <div nz-col class="gutter-row" [nzSpan]="12">
+                                <nz-form-item>
                                     <nz-form-label nzRequired nzFor="customer">Customer</nz-form-label>
                                     <nz-form-control nzErrorTip="The input is not valid date!">
                                         <nz-select id="customer" formControlName="customer" placeholder="Select user">
@@ -37,7 +58,7 @@
                                     <nz-form-label nzRequired nzFor="invoice_date">Invoice
                                         Date</nz-form-label>
                                     <nz-form-control nzErrorTip="The input is not valid date!">
-                                        <nz-date-picker class="inputField"
+                                        <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
                                             formControlName="invoice_date"></nz-date-picker>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -47,7 +68,7 @@
                                     <nz-form-label nzRequired nzFor="due_date">Due
                                         Date</nz-form-label>
                                     <nz-form-control nzErrorTip="The input is not valid date!">
-                                        <nz-date-picker class="inputField" formControlName="due_date"></nz-date-picker>
+                                        <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField" formControlName="due_date"></nz-date-picker>
                                     </nz-form-control>
                                 </nz-form-item>
                             </div>
@@ -69,7 +90,8 @@
                             [nzShowPagination]="false" style="margin-bottom: 12px;">
                             <thead>
                                 <tr>
-                                    <th width="5%" *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">Custom</th>
+                                    <th width="5%" *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">
+                                        Custom</th>
                                     <th width="30%">Item</th>
                                     <th>Quantity</th>
                                     <th>Unit
@@ -87,21 +109,20 @@
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <td width="5%"  *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">
-                                        <button
-                                            style="float: left;" nz-button nzType="primary" nzSize="small"
+                                    <td width="5%" *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft">
+                                        <button style="float: left;" nz-button nzType="primary" nzSize="small"
                                             nzShape="round" (click)="addProductRow()">
                                             <span nz-icon nzTheme="outline" nzType="plus"></span>
 
                                         </button>
                                     </td>
                                     <td width="30%"></td>
-                                    <td ></td>
+                                    <td></td>
                                     <td></td>
                                     <td>
                                         <h5
-                                        [innerHTML]="SaleRequestDetails.get('items_discount_total')?.value| currency:'PKR '">
-                                    </h5>
+                                            [innerHTML]="SaleRequestDetails.get('items_discount_total')?.value| currency:'PKR '">
+                                        </h5>
                                     </td>
                                     <td>
                                         <h5 [innerHTML]="SaleRequestDetails.get('item_cost')?.value| currency:'PKR '">
@@ -222,14 +243,17 @@
                                         <nz-form-label nzFor="shipment_charges">Shipping Charges
                                         </nz-form-label>
                                         <nz-form-control nzErrorTip="The input is not valid date!">
-                                            <input nz-input class="inputField" (change)="calculateOverAllDiscountAndTotal()" formControlName="shipment_charges">
+                                            <input nz-input class="inputField"
+                                                (change)="calculateOverAllDiscountAndTotal()"
+                                                formControlName="shipment_charges">
                                         </nz-form-control>
                                     </nz-form-item>
                                     <nz-form-item>
                                         <nz-form-label nzFor="additional_cost">Additional Cost
                                         </nz-form-label>
                                         <nz-form-control nzErrorTip="The iinput is not valid date!">
-                                            <input (change)="calculateOverAllDiscountAndTotal()" nz-input class="inputField" formControlName="additional_cost">
+                                            <input (change)="calculateOverAllDiscountAndTotal()" nz-input
+                                                class="inputField" formControlName="additional_cost">
                                         </nz-form-control>
                                     </nz-form-item>
                                     <nz-form-item>
@@ -378,6 +402,12 @@
                                 (click)="confirmPaymentDetails(true)" style="margin-bottom: 12px;margin-right: 12px;">
                                 Save
                             </button>
+                            <button
+                            *ngIf="SaleRequestDetails.controls.state.value==SaleStates.Draft"
+                            nz-button nzType="primary" [disabled]="SaleRequestDetails.invalid"
+                            (click)="submitRequest(true)" style="margin-bottom: 12px;margin-right: 12px;">
+                            Save as Draft
+                        </button>
                         </span>
                     </span>
                 </form>

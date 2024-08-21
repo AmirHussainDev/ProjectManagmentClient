@@ -172,6 +172,10 @@ export class PdfGeneratorService {
                                 {
                                     text: `Total`,
                                     style: 'summaryText'
+                                },
+                                {
+                                    text: `Balance`,
+                                    style: 'summaryText'
                                 }],
                             [
                                 { text: this.invoice.shipment_charges || '0', alignment: 'right', italics: true },
@@ -183,6 +187,10 @@ export class PdfGeneratorService {
                                 },
                                 {
                                     text: this.invoice.total || '0',
+                                    style: 'summaryText', alignment: 'right', italics: true
+                                },
+                                {
+                                    text: this.invoice.balance || '0',
                                     style: 'summaryText', alignment: 'right', italics: true
                                 }],
                             ],
@@ -321,6 +329,7 @@ class Invoice {
     additional_cost?: any;
     overall_discount?: any;
     overall_discount_total?: any;
+    balance?: string;
     constructor() {
         // Initially one empty product row we will show 
         this.items.push(new Product());

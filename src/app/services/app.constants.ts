@@ -82,7 +82,7 @@ export const DefaultPermissions = {
 }
 
 export const SaleStates = {
-    Draft: 0,
+    Draft: -1,
     Quote: 1,
     PaymentConfirmation: 2,
     Cancelled: 3,
@@ -97,7 +97,7 @@ export const SaleStateNames = {
 }
 
 export const ContractStates = {
-    Draft: 0,
+    Draft: -1,
     PendingApproval: 1,
     Approved: 2,
     Cancelled: 3,
@@ -120,7 +120,7 @@ export const ContractStateNames = {
     [ContractStates.Completed]: 'COMPLETED'
 }
 export const POStates = {
-    Draft: 0,
+    Draft: -1,
     PendingInvoice: 1,
     PaymentProcessing: 2,
     Cancelled: 3,
@@ -145,7 +145,7 @@ export const InvoiceStateNames = {
 }
 
 export const SiteStates = {
-    Draft: 0,
+    Draft: -1,
     PendingApproval: 1,
     Approved: 4,
     Cancelled: 3,

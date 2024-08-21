@@ -137,6 +137,7 @@ export interface SaleDetails {
     additional_cost: FormControl;
     overall_discount: FormControl;
     created_by: FormControl;
+    date_created: FormControl;
     shipment_charges: FormControl;
     total: FormControl;
     balance: FormControl;
@@ -200,6 +201,7 @@ export interface PurchaseDetails {
     additional_cost: FormControl;
     overall_discount: FormControl;
     created_by: FormControl;
+    date_created: FormControl;
     shipment_charges: FormControl;
     total: FormControl;
     balance: FormControl;

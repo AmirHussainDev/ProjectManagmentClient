@@ -20,7 +20,26 @@
         <div class="purchase-request" id="print-section">
             <nz-card style="width:100%" nzBordered="false">
                 <form nz-form [formGroup]="purchaseDetails" (ngSubmit)="submitForm()">
+                   
                     <div #content>
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="created_by">Created By</nz-form-label>
+                                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                    <nz-select id="created_by" formControlName="created_by"
+                                        placeholder="created_by">
+                                        <nz-option *ngFor="let user of created_by_users" [nzValue]="user?.id"
+                                            [nzLabel]="user?.name"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="date_created">Date Created</nz-form-label>
+                                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                    <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
+                                        formControlName="date_created"></nz-date-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+                        
                         <nz-form-item>
                             <nz-form-control nzErrorTip="Please select a vendor">
                                 <div nz-col>
@@ -67,13 +86,13 @@
                             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="invoice_date">Invoice
                                 Date</nz-form-label>
                             <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                <nz-date-picker class="inputField" formControlName="invoice_date"></nz-date-picker>
+                                <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField" formControlName="invoice_date"></nz-date-picker>
                             </nz-form-control>
                         </nz-form-item>
                         <nz-form-item>
                             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="due_date">Due Date</nz-form-label>
                             <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                <nz-date-picker class="inputField" formControlName="due_date"></nz-date-picker>
+                                <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField" formControlName="due_date"></nz-date-picker>
                             </nz-form-control>
                         </nz-form-item>
                         <nz-form-item>

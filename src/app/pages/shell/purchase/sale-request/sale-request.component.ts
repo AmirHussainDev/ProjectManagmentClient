@@ -82,6 +82,7 @@ export class SaleRequestComponent implements OnInit {
   currentOrganizationId: number;
   fileList: NzUploadFile[] = []
   returningItem: boolean;
+  created_by_users: User[] = [];
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -94,6 +95,7 @@ export class SaleRequestComponent implements OnInit {
     private pdfGeneratorService: PdfGeneratorService,
     private imageCompress: NgxImageCompressService
   ) {
+
     this.SaleRequestDetails = this.fb.group({
       id: new FormControl(),
       sale_no: new FormControl(),
@@ -105,10 +107,11 @@ export class SaleRequestComponent implements OnInit {
       overall_discount_total: new FormControl(0),
       item_cost: new FormControl(0),
       amount_paid: new FormControl(0),
+      date_created: new FormControl(new Date()),
+      created_by: new FormControl({ value: this.userService.loggedInUser.id, disabled: true }),
       payment_history: this.fb.array<FormGroup<PaymentHistory>>([]),
       additional_cost: new FormControl(0),
       overall_discount: new FormControl(0),
-      created_by: new FormControl(0),
       shipment_charges: new FormControl(0),
       total: new FormControl(0),
       balance: new FormControl(0),
@@ -124,6 +127,7 @@ export class SaleRequestComponent implements OnInit {
   }
   submitForm() { }
   ngOnInit(): void {
+
     this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.currentOrganizationId = change.id
@@ -141,7 +145,14 @@ export class SaleRequestComponent implements OnInit {
           }
           this.SaleRequestDetails.enable();
           this.clearItems();
-          this.SaleRequestDetails.reset({ state: SaleStates.Draft, id: 0, items: [], payment_history: [] });
+          this.created_by_users = [this.userService.loggedInUser]
+
+          this.SaleRequestDetails.reset({
+            state: SaleStates.Draft,
+            created_by: this.userService.loggedInUser.id,
+            date_created: new Date(),
+            id: 0, items: [], payment_history: []
+          });
           this.SaleRequestDetails.updateValueAndValidity();
           this.SaleRequestDetails.controls['id'].setValue(id || 0);
           await this.setSaleRequestRequestDetails();
@@ -187,10 +198,17 @@ export class SaleRequestComponent implements OnInit {
       await this.getExistingSaleRequest();
     } else {
       this.SaleRequestDetails.controls['organization_id'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
-      this.vendorItems = await this.appService.getInventory()
       this.nodes = this.transformToNodeStructure(this.vendorItems)
       this.expandableKey = this.nodes.map(res => res.key) || [];
       this.SaleRequestDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
+    }
+    if(this.SaleRequestDetails.controls.state.value==this.SaleStates.Draft){
+      this.vendorItems = await this.appService.getInventory()
+      this.SaleRequestDetails.controls.items.controls.forEach((item,index)=>{
+        const selected_item= this.vendorItems.find(inItem=>inItem.name===item.controls.name.value);
+        item.patchValue({selected_item});
+        this.onItemChange(selected_item,index)
+      })
     }
     this.disableAndEnableSpecificControls()
     this.loading = false;
@@ -215,7 +233,7 @@ export class SaleRequestComponent implements OnInit {
   async getExistingSaleRequest() {
     const response = await this.appService.retireveSaleById(this.SaleRequestDetails.controls['id'].value)
     if (response && response) {
-
+      this.created_by_users = [response.created_by]
       this.SaleRequestDetails.patchValue({
         id: response.id,
         subject: response.subject,
@@ -225,12 +243,13 @@ export class SaleRequestComponent implements OnInit {
         customer: response.customer.id,
         items_discount_total: response.items_discount_total,
         due_date: new Date(response.due_date),
+        date_created: new Date(response.date_created),
         invoice_date: new Date(response.invoice_date),
         overall_discount_total: response.overall_discount_total,
         item_cost: response.item_cost,
         amount_paid: response.amount_paid,
         additional_cost: response.additional_cost,
-        created_by: response.created_by,
+        created_by: response.created_by.id,
         shipment_charges: response.shipment_charges,
         total: response.total,
         balance: response.balance,
@@ -278,7 +297,7 @@ export class SaleRequestComponent implements OnInit {
       discount: new FormControl(object.discount),
       total: new FormControl(object.total),
       isCustom: new FormControl(object.isCustom),
-      date_created: new FormControl(object.date_created),
+      date_created: new FormControl(new Date(object.date_created)),
       min_unit_price: new FormControl(object.min_unit_price),
       max_qty: new FormControl(object.max_qty),
       return_details: this.getReturnItemsFormArray(object.return_details || []),
@@ -381,7 +400,7 @@ export class SaleRequestComponent implements OnInit {
     const SaleRequestValue = this.SaleRequestDetails.getRawValue();
     const overallDiscount = SaleRequestValue.item_cost * (SaleRequestValue.overall_discount / 100)
     this.SaleRequestDetails.controls.overall_discount_total.setValue(overallDiscount);
-    this.SaleRequestDetails.controls.total.setValue(SaleRequestValue.item_cost + Number(SaleRequestValue.shipment_charges||'0') + Number(SaleRequestValue.additional_cost||'0') - overallDiscount);
+    this.SaleRequestDetails.controls.total.setValue(SaleRequestValue.item_cost + Number(SaleRequestValue.shipment_charges || '0') + Number(SaleRequestValue.additional_cost || '0') - overallDiscount);
     this.calculateBalance()
   }
   removeProduct(index: number): void {
@@ -481,7 +500,7 @@ export class SaleRequestComponent implements OnInit {
     }
   }
 
-  setItemTotal(item: FormGroup){
+  setItemTotal(item: FormGroup) {
     if (item) {
       const unitPrice = item.get('unit_price')?.value ?? 0;
       const discountPercentage = item.get('discount')?.value ?? 0;
@@ -504,19 +523,19 @@ export class SaleRequestComponent implements OnInit {
     }
   }
 
-  async submitRequest() {
+  async submitRequest(save=false) {
     const response: any = await this.appService.addSaleRequest({
       details: {
         ...this.SaleRequestDetails.value as SaleOrder,
-        state: SaleStates.PaymentConfirmation
+        state:save? SaleStates.Draft: SaleStates.PaymentConfirmation
       },
       products: this.SaleRequestDetails.controls['items'].value as any
-    })
+    });
     if (response) {
       this.notification.create(
         'success',
         'Sale request - ' + response['sale_no'],
-        'Sale request submitted successfly. Please check for invoice and update later'
+        `Sale request ${save?'saved':'submitted'} successfly. Please check for invoice and update later`
       ).onClose.subscribe((resp) => {
         this.router.navigate(['purchase', 'sales'])
       });
@@ -660,7 +679,10 @@ export class SaleRequestComponent implements OnInit {
   }
   disableAndEnableSpecificControls() {
     const stateControl = this.SaleRequestDetails.get('state');
-
+    if (stateControl && stateControl.value == this.SaleStates.Draft) {
+      this.SaleRequestDetails.controls.created_by.disable()
+      this.SaleRequestDetails.controls.date_created.disable()
+    }
     if (stateControl && stateControl.value !== this.SaleStates.Draft) {
       const itemsArray = this.SaleRequestDetails.get('items') as FormArray;
       Object.keys(this.SaleRequestDetails.controls).forEach(controlName => {

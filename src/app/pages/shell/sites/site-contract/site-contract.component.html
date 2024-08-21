@@ -73,7 +73,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="contract_start_date">Start Date</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <nz-date-picker class=" inputField"
+                                        <nz-date-picker nzFormat="MM-dd-yyyy" class=" inputField"
                                             formControlName="contract_start_date" (ngModelChange)="setNoOfDays()"></nz-date-picker>
                                     </nz-form-control>
                                 </nz-form-item>
@@ -83,7 +83,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="contract_end_date">End Date</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <nz-date-picker class=" inputField"
+                                        <nz-date-picker nzFormat="MM-dd-yyyy" class=" inputField"
                                             formControlName="contract_end_date" (ngModelChange)="setNoOfDays()"> </nz-date-picker>
                                     </nz-form-control>
                                 </nz-form-item>
