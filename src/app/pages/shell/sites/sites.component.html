@@ -20,9 +20,16 @@
             <span nz-icon nzType="search"></span>
         </ng-template>
 
-    </span> <a [routerLink]="['./','new']" [state]="{tracingId: 2}">
+    </span>  <a [routerLink]="['./','new']" [state]="{tracingId: 2}">
         <button nz-button nzType="primary" [nzSize]="'small'">
             <span nz-icon nzType="plus"> </span>
+        </button>
+       
+        
+    </a>
+    <a (click)="export()" style="margin-left: 10px;">
+        <button nz-button nzType="primary" [nzSize]="'small'">
+            <span nz-icon nzType="download"> </span>
         </button>
     </a>
 </div>

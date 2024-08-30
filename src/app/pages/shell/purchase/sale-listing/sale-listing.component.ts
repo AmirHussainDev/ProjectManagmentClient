@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ExportSheetService } from '../../../../services/export-sheet.service';
 
 @Component({
   selector: 'app-sale-listing',
@@ -35,9 +36,13 @@ export class SaleListingComponent {
     private appService: AppService,
     private media: MediaMatcher,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private exportSheetService:ExportSheetService
   ) { }
-
+  export(): void {
+    const data = this.listOfDisplayData ;
+    this.exportSheetService.exportDataToXLSX(data, 'Sale Requests');
+  }
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {

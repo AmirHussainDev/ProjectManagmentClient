@@ -2,9 +2,10 @@
     <h5>Owner Payment</h5>
     <h5>{{total | currency:'PKR '}}</h5>
 
-    <h5><button nz-button nzType="primary" (click)="showModal()">
+    <h5><button nz-button nzType="primary"  [nzSize]="'small'" (click)="showModal()">
         <span nz-icon nzType="plus"> </span>
-        </button></h5>
+        </button>
+    </h5>
 </div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Add Owner Payment" (nzOnCancel)="handleCancel()"
     [nzOkDisabled]="addOwnerPaymentForm.invalid" (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">

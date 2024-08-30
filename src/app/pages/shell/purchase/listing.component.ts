@@ -7,6 +7,7 @@ import { HttpParams } from '@angular/common/http';
 import { InvoiceStateNames, POStates } from '../../../services/app.constants';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ExportSheetService } from '../../../services/export-sheet.service';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
     private media: MediaMatcher,
     private route: ActivatedRoute,
     private router: Router,
+    private exportSheetService:ExportSheetService
 
   ) { }
   total = 1;
@@ -88,6 +90,12 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
     return initials.toUpperCase();
   }
   
+  export(): void {
+    const data = this.listOfDisplayData ;
+
+    this.exportSheetService.exportDataToXLSX(data, 'Purchase Request');
+  }
+
   ngOnInit(): void {
     this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {

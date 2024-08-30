@@ -4,6 +4,7 @@ import { Site } from '../../../services/app.interfact';
 import { Subscription } from 'rxjs';
 import { SiteStateNames, SiteStates } from '../../../services/app.constants';
 import { UserService } from '../../../services/user.service';
+import { ExportSheetService } from '../../../services/export-sheet.service';
 
 
 
@@ -45,7 +46,8 @@ export class SitesComponent implements OnInit, OnDestroy {
   subOrgSubscription: Subscription;
   visible = false;
   sites: any[];
-  constructor(private appService: AppService,private userService: UserService) {
+  constructor(private appService: AppService,private userService: UserService,private   exportSheetService: ExportSheetService
+  ) {
 
   }
 
@@ -80,6 +82,11 @@ export class SitesComponent implements OnInit, OnDestroy {
       return this.userService.loggedInUser.is_admin || !siteSupervisors.length || siteSupervisors.includes(this.userService.loggedInUser.id);
     });
     this.listOfDisplayData = this.sites;
+  }
+
+  export(): void {
+    const data = this.listOfDisplayData ;
+    this.exportSheetService.exportDataToXLSX(data, 'Sites');
   }
 
 

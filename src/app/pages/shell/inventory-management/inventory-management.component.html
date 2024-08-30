@@ -27,11 +27,11 @@
                 </ng-template>
 
             </span>
-            <!-- <button (click)="isVisible=!isVisible"
-                nz-button nzType="primary" [nzSize]="'small'">
-                <span nz-icon nzType="plus"></span>
-
-            </button> -->
+            <a (click)="export()" style="margin-left: 10px;">
+                <button nz-button nzType="primary" [nzSize]="'small'">
+                    <span nz-icon nzType="download"> </span>
+                </button>
+            </a>
         </div>
         <nz-modal [(nzVisible)]="isVisible" nzTitle="Add inventory item" (nzOnCancel)="handleCancel()"
             (nzOnOk)="submitForm()" [nzOkText]="'Submit'" [nzOkDisabled]="!inventoryItemForm.valid">

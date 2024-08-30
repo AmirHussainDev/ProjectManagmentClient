@@ -34,6 +34,11 @@
                                 <span nz-icon nzType="plus"> </span>
                             </button>
                         </a>
+                        <a (click)="export()" style="margin-left: 10px;">
+                            <button nz-button nzType="primary" [nzSize]="'small'">
+                                <span nz-icon nzType="download"> </span>
+                            </button>
+                        </a>
                     </div>
                     <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData"
                         [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total" [nzPageIndex]="pageIndex"

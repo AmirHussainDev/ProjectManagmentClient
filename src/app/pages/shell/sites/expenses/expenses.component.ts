@@ -3,6 +3,7 @@ import { Expense, ExpenseForm, SubOrganization } from '../../../../services/app.
 import { AppService } from '../../../../services/app.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../../services/user.service';
+import { ExportSheetService } from '../../../../services/export-sheet.service';
 
 @Component({
   selector: 'app-expenses',
@@ -71,7 +72,8 @@ export class ExpensesComponent implements OnInit {
   constructor(
     private appService: AppService,
     private userService: UserService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+  private exportSheetService:ExportSheetService) {
     this.addExpenseForm = new FormGroup({
       id: new FormControl(0),
       name: new FormControl('', [Validators.required]),
@@ -92,6 +94,10 @@ export class ExpensesComponent implements OnInit {
     this.isVisible = true;
   }
 
+  export(): void {
+    const data = this.listOfData ;
+    this.exportSheetService.exportDataToXLSX(data, 'Expenses-'+this.site_id);
+  }
   async handleOk() {
     try {
       this.isOkLoading = true;

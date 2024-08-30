@@ -4,6 +4,7 @@ import { Subscription, async } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { index } from 'd3';
+import { ExportSheetService } from '../../../services/export-sheet.service';
 
 @Component({
   selector: 'app-inventory-management',
@@ -60,6 +61,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   ];
 
   constructor(private fb: FormBuilder,
+    private exportSheetService:ExportSheetService,
 
     private appService: AppService) {
     this.inventoryItemForm = this.fb.group({
@@ -85,6 +87,11 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
     } else {
       this.expandSet.delete(name);
     }
+  }
+
+  export(): void {
+    const data = this.listOfDisplayData ;
+    this.exportSheetService.exportDataToXLSX(data, 'Inventory');
   }
 
   handleCancel(): void {

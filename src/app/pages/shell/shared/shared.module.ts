@@ -7,6 +7,7 @@ import { HasPermissionDirective } from '../../../directives/permissions.directiv
 import { PdfGeneratorService } from '../../../services/pdf-generator.service';
 import { SelectModalControlComponent } from '../components/select-modal-control/select-modal-control.component';
 import { UserHasPermissionDirective } from '../../../directives/filterUserBasedOnPermission.directive';
+import { ExportSheetService } from '../../../services/export-sheet.service';
 
 
 
@@ -23,6 +24,7 @@ import { UserHasPermissionDirective } from '../../../directives/filterUserBasedO
   ],
   providers:[
     PdfGeneratorService,
+    ExportSheetService
   ],
   exports:[ChangePasswordComponent,HasPermissionDirective,UserHasPermissionDirective,SelectModalControlComponent],
 
