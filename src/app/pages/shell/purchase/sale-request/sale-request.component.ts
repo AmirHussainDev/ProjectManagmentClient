@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,10 +13,11 @@ import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
 import { ItemControl, SaleDetails, SaleOrder, SaleItemControl, SaleItemReturnControl, PaymentHistory } from '../../../../services/app.interfact';
-import { SaleStateNames, SaleStates } from '../../../../services/app.constants';
+import { RestrictNavigationMessage, SaleStateNames, SaleStates } from '../../../../services/app.constants';
 import { Customer } from '../customers/customers.interface';
 import { PdfGeneratorService } from '../../../../services/pdf-generator.service';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
+import { CanDeactivateGuard } from '../../../../guards/can-deactivate.guard';
 
 interface TreeNode {
   title: string;
@@ -39,7 +40,7 @@ interface Item {
   templateUrl: './sale-request.component.html',
   styleUrls: ['./sale-request.component.css']
 })
-export class SaleRequestComponent implements OnInit {
+export class SaleRequestComponent implements OnInit, OnDestroy, CanDeactivateGuard {
   @ViewChild('content', { static: false }) content: ElementRef;
   vendorItems: any[] = [];
   nodes: TreeNode[];
@@ -83,6 +84,7 @@ export class SaleRequestComponent implements OnInit {
   fileList: NzUploadFile[] = []
   returningItem: boolean;
   created_by_users: User[] = [];
+  routeSubscription: Subscription;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -126,6 +128,23 @@ export class SaleRequestComponent implements OnInit {
     });
   }
   submitForm() { }
+
+  canDeactivate(): boolean {
+    if (this.shouldConfirmNavigation()) {
+      return confirm(RestrictNavigationMessage);
+    }
+    return true;
+  }
+
+  private shouldConfirmNavigation(): boolean {
+    // Your logic to determine if the confirmation is needed
+    return (this.SaleRequestDetails.dirty || this.SaleRequestDetails.touched);
+  }
+
+  ngOnDestroy(): void {
+    this.routeSubscription ? this.routeSubscription.unsubscribe() : null;
+  }
+
   ngOnInit(): void {
 
     this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
@@ -135,8 +154,15 @@ export class SaleRequestComponent implements OnInit {
           this.listOfData = resp;
         });
 
-        this.route.queryParams.subscribe(async (params) => {
+        this.routeSubscription = this.route.queryParams.subscribe(async (params) => {
           // Use this queryParams object to load data
+          if (this.SaleRequestDetails.dirty || this.SaleRequestDetails.touched) {
+            const confirmNavigation = confirm(RestrictNavigationMessage);
+            if (!confirmNavigation) {
+              return;
+            }
+          }
+
           this.isSpinning = true;
           let id = 0
           if (!params['SALE'] || params['SALE'] === 'new') {
@@ -202,12 +228,14 @@ export class SaleRequestComponent implements OnInit {
       this.expandableKey = this.nodes.map(res => res.key) || [];
       this.SaleRequestDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
     }
-    if(this.SaleRequestDetails.controls.state.value==this.SaleStates.Draft){
+    if (this.SaleRequestDetails.controls.state.value == this.SaleStates.Draft) {
       this.vendorItems = await this.appService.getInventory()
-      this.SaleRequestDetails.controls.items.controls.forEach((item,index)=>{
-        const selected_item= this.vendorItems.find(inItem=>inItem.name===item.controls.name.value);
-        item.patchValue({selected_item});
-        this.onItemChange(selected_item,index)
+      this.SaleRequestDetails.controls.items.controls.forEach((item, index) => {
+        const selected_item = this.vendorItems.find(inItem => inItem.name === item.controls.name.value);
+        item.patchValue({ selected_item });
+        setTimeout(() => {
+          this.onItemChange(selected_item, index)
+        }, 500)
       })
     }
     this.disableAndEnableSpecificControls()
@@ -216,18 +244,20 @@ export class SaleRequestComponent implements OnInit {
 
   onItemChange(item: any, index: number) {
     const itemGroup = this.SaleRequestDetails.controls.items.controls[index] as FormGroup<SaleItemControl>
-    const itemName = itemGroup.controls.selected_item.value.item_name
-    const maxQty = itemGroup.controls.selected_item.value.qty;
-    const minUnitPrice = itemGroup.controls.selected_item.value.avg_unit_price;
-    const vendor = item.vendor ? item.vendor : itemGroup.controls.selected_item.value.vendor_id;
-    itemGroup.controls.name.setValue(itemName);
-    itemGroup.controls.vendor.setValue(vendor);
-    itemGroup.controls.name.setValue(itemName);
-    itemGroup.controls.max_qty.setValue(maxQty);
-    itemGroup.controls.min_unit_price.setValue(minUnitPrice);
-    itemGroup.controls.qty.setValidators([Validators.max(maxQty)]);
-    itemGroup.controls.unit_price.setValidators([Validators.min(minUnitPrice)]);
-    itemGroup.updateValueAndValidity();
+    if (itemGroup.controls.selected_item.value) {
+      const itemName = itemGroup.controls.selected_item.value.item_name
+      const maxQty = itemGroup.controls.selected_item.value.qty;
+      const minUnitPrice = itemGroup.controls.selected_item.value.avg_unit_price;
+      const vendor = item.vendor ? item.vendor : itemGroup.controls.selected_item.value.vendor_id;
+      itemGroup.controls.name.setValue(itemName);
+      itemGroup.controls.vendor.setValue(vendor);
+      itemGroup.controls.name.setValue(itemName);
+      itemGroup.controls.max_qty.setValue(maxQty);
+      itemGroup.controls.min_unit_price.setValue(minUnitPrice);
+      itemGroup.controls.qty.setValidators([Validators.max(maxQty)]);
+      itemGroup.controls.unit_price.setValidators([Validators.min(minUnitPrice)]);
+      itemGroup.updateValueAndValidity();
+    }
   }
 
   async getExistingSaleRequest() {
@@ -523,11 +553,11 @@ export class SaleRequestComponent implements OnInit {
     }
   }
 
-  async submitRequest(save=false) {
+  async submitRequest(save = false) {
     const response: any = await this.appService.addSaleRequest({
       details: {
         ...this.SaleRequestDetails.value as SaleOrder,
-        state:save? SaleStates.Draft: SaleStates.PaymentConfirmation
+        state: save ? SaleStates.Draft : SaleStates.PaymentConfirmation
       },
       products: this.SaleRequestDetails.controls['items'].value as any
     });
@@ -535,7 +565,7 @@ export class SaleRequestComponent implements OnInit {
       this.notification.create(
         'success',
         'Sale request - ' + response['sale_no'],
-        `Sale request ${save?'saved':'submitted'} successfly. Please check for invoice and update later`
+        `Sale request ${save ? 'saved' : 'submitted'} successfly. Please check for invoice and update later`
       ).onClose.subscribe((resp) => {
         this.router.navigate(['purchase', 'sales'])
       });
@@ -671,7 +701,8 @@ export class SaleRequestComponent implements OnInit {
       terms: details.terms,
       email: details.customer.email || '',
       additionalDetails: details.notes || '',
-      customer: this.listOfData.find(item => item.id == details.customer)
+      customer: this.listOfData.find(item => item.id == details.customer),
+      created_by:this.created_by_users[0],
     }
     this.pdfGeneratorService.generatePDF(action)
     return;

@@ -7,6 +7,7 @@ import { SaleListingComponent } from './sale-listing/sale-listing.component';
 import { CustomersComponent } from './customers/customers.component';
 import { AppPermissions } from '../../../services/app.constants';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { CanDeactivateGuard } from '../../../guards/can-deactivate.guard';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
           {
             path: 'purchase', component: PurchaseComponent,
             data: { name: ' ' , permission:AppPermissions.AddPurchaseRequest},
-            canActivate:[AuthGuard]
+            canActivate:[AuthGuard],
+            canDeactivate: [CanDeactivateGuard],
           },
         ]
       },
@@ -32,12 +34,14 @@ const routes: Routes = [
         children: [{
           path: 'sale', component: SaleRequestComponent,
           data: { name: ' ' , permission:AppPermissions.AddSales},
-          canActivate:[AuthGuard]
+          canActivate:[AuthGuard],
+          canDeactivate: [CanDeactivateGuard],
         }]
       },
       {
         path: 'sale', component: SaleRequestComponent,
-        data: { name: ' ' }
+        data: { name: ' ' },
+        canDeactivate: [CanDeactivateGuard],
       },
       {
         path: 'customers', component: CustomersComponent,

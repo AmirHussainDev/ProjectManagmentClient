@@ -181,3 +181,5 @@ export const StatusIcons = {
     [SiteStates.Cancelled]: 'close-circle',
     [SiteStates.Completed]: 'file-protect'
 }
+
+export const RestrictNavigationMessage="Are you sure you want to navigate away? Any unsaved changes may be lost."

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AppService } from '../../../../services/app.service';
 import { ItemControl, PaymentHistory, PurchaseDetails, PurchaseItem, PurchaseOrder } from '../../../../services/app.interfact';
@@ -13,15 +13,16 @@ import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import _ from 'lodash'
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { InvoiceStateNames, POStates } from '../../../../services/app.constants';
+import { InvoiceStateNames, POStates, RestrictNavigationMessage } from '../../../../services/app.constants';
 import { PdfGeneratorService } from '../../../../services/pdf-generator.service';
 import { DataUrl, NgxImageCompressService, UploadResponse } from 'ngx-image-compress';
+import { CanComponentDeactivate } from '../../../../guards/can-deactivate.guard';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
   styleUrls: ['./purchase.component.css']
 })
-export class PurchaseComponent implements OnInit {
+export class PurchaseComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   @ViewChild('content', { static: false }) content: ElementRef;
   vendors: any[] = [];
   vendorItems: { name: string, isCustom?: boolean }[] = [];
@@ -63,7 +64,7 @@ export class PurchaseComponent implements OnInit {
     amount_paid: new FormControl(0),
     additional_cost: new FormControl(0),
     created_by: new FormControl(0),
-    date_created:new FormControl(new Date()),
+    date_created: new FormControl(new Date()),
     shipment_charges: new FormControl(0),
     total: new FormControl(0),
     balance: new FormControl(0),
@@ -79,6 +80,7 @@ export class PurchaseComponent implements OnInit {
   })
   sites: any[];
   subOrgSubscription: Subscription;
+  routerSubscription: Subscription;
   currentOrganizationId: number;
   fileList: NzUploadFile[] = [];
   displayControlColumns = [
@@ -117,7 +119,7 @@ export class PurchaseComponent implements OnInit {
       additional_cost: new FormControl(0),
       overall_discount: new FormControl(0),
       created_by: new FormControl(0),
-      date_created:new FormControl(new Date()),
+      date_created: new FormControl(new Date()),
       shipment_charges: new FormControl(0),
       total: new FormControl(0),
       balance: new FormControl(0),
@@ -135,12 +137,28 @@ export class PurchaseComponent implements OnInit {
   ngOnInit(): void {
     this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-        this.currentOrganizationId = change.id
-        this.setUpPurchaseForm()
-
+          this.currentOrganizationId = change.id
+          this.setUpPurchaseForm();
       }
     });
   }
+  ngOnDestroy(): void {
+    this.routerSubscription ? this.routerSubscription.unsubscribe() : null;
+  }
+
+  canDeactivate(): boolean {
+    if (this.shouldConfirmNavigation()) {
+      return confirm(RestrictNavigationMessage);
+    }
+    return true;
+  }
+
+  private shouldConfirmNavigation(): boolean {
+    // Your logic to determine if the confirmation is needed
+    return  (this.purchaseDetails.dirty  || this.purchaseDetails.touched);
+  }
+
+
   close() {
     this.router.navigate(['/', 'purchase'], {
       queryParams: {
@@ -151,7 +169,13 @@ export class PurchaseComponent implements OnInit {
   }
   async setUpPurchaseForm() {
     await this.loadSitesVendorsAndUsers();
-    this.route.queryParams.subscribe(async (params) => {
+    this.routerSubscription = this.route.queryParams.subscribe(async (params) => {
+      if (this.purchaseDetails.dirty || this.purchaseDetails.touched) {
+        const confirmNavigation = confirm(RestrictNavigationMessage);
+       if(!confirmNavigation){
+        return;
+       } 
+      }
       // Use this queryParams object to load data
       this.isSpinning = true;
       let id = 0
@@ -164,9 +188,10 @@ export class PurchaseComponent implements OnInit {
       this.created_by_users = [this.userService.loggedInUser]
 
       this.purchaseDetails.reset({
-         created_by: this.userService.loggedInUser.id,
-        date_created: new Date(), 
-        state: POStates.Draft, id: 0 ,payment_history: [],items: [],});
+        created_by: this.userService.loggedInUser.id,
+        date_created: new Date(),
+        state: POStates.Draft, id: 0, payment_history: [], items: [],
+      });
       this.clearItems();
       this.purchaseDetails.controls['id'].setValue(id || 0);
 
@@ -406,11 +431,11 @@ export class PurchaseComponent implements OnInit {
     const item = itemsArray.at(index) as FormGroup;
 
     if (item) {
-       this.setItemTotal(item)
+      this.setItemTotal(item)
       this.calculateTotal();
     }
   }
-  setItemTotal(item: FormGroup){
+  setItemTotal(item: FormGroup) {
     if (item) {
       const unitPrice = item.get('unit_price')?.value ?? 0;
       const discountPercentage = item.get('discount')?.value ?? 0;
@@ -608,6 +633,7 @@ export class PurchaseComponent implements OnInit {
       terms: details.terms,
       email: details.vendor.email || '',
       additionalDetails: details.notes || '',
+      created_by:this.created_by_users[0]
     }
     this.pdfGeneratorService.generatePDF(action)
     return;

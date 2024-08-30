@@ -28,7 +28,7 @@ export class EmployeeManagementService {
       return hourlyRate;
     } else {
       const workingHoursPerDay = workingHours; // Assuming 8 hours of work per day
-      const hourlyRate = salary / workingHoursPerDay;
+      const hourlyRate = salary * workingHoursPerDay;
       return hourlyRate;
     }
   }

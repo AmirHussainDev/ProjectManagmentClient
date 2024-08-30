@@ -29,6 +29,7 @@ export class UserService {
     localStorage.setItem('token', '')
     localStorage.removeItem('selectedOrganzation')
     localStorage.removeItem('sub_organization_id')
+    localStorage.setItem('redirectUrl',this.router.url)
     this.router.navigate(['/login']);
   }
 

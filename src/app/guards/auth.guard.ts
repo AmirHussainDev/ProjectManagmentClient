@@ -34,12 +34,12 @@ export class AuthGuard implements CanActivate {
             
           });
           modal.afterClose.subscribe(()=>{
+            localStorage.removeItem('redirectUrl');
             this.router.navigate([this.router.lastSuccessfulNavigation?.previousNavigation]);
           })
         }
         return false;
       }
-      return true;
       return true;
     } else {
       // Navigate to the login page with extras
