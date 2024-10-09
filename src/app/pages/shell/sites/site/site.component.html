@@ -120,7 +120,7 @@
                             <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
 
                                 <!-- <nz-form-item *ngIf="taskDetails.get('isSiteBased')?.value">
-                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="assignee">Sites</nz-form-label>
+                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="assignee">Projects</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
                                         <nz-select nzMode="multiple" class="inputField" formControlName="site_ids"
                                             placeholder="Select sites">
@@ -135,7 +135,7 @@
                                     <nz-form-control  [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid!">
                                       <nz-select nzMode="multiple" id="reports_to" formControlName="site_supervisors" placeholder="Select user">
                                         <ng-container *ngFor="let user of listOfData">
-                                            <ng-container *filterUser="{ user: user, permissionName: permissions.ManageSites, isAdmin: false, isContractor: false }">
+                                            <ng-container *filterUser="{ user: user, permissionName: permissions.ManageProjects, isAdmin: false, isContractor: false }">
                                               <nz-option [nzValue]="user?.id" [nzLabel]="user?.name"></nz-option>
                                             </ng-container>
                                           </ng-container>

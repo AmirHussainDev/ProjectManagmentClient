@@ -30,7 +30,7 @@ const routes: Routes = [
       },
       {
         path: 'board', component: BoardComponent,
-        data: { name: ' ' , permission:AppPermissions.ManageSales},
+        data: { name: ' ' , permission:AppPermissions.ManageTasks},
         canActivate:[AuthGuard],
         children: [{
           path: 'task', component: TaskComponent,
@@ -40,7 +40,7 @@ const routes: Routes = [
         },]
       },{
         path: 'report', component: ReportComponent,
-        data: { name: ' ' , permission:AppPermissions.ManageSales},
+        data: { name: ' ' , permission:AppPermissions.ManageTasks},
         canActivate:[AuthGuard],
         children: [{
           path: 'task', component: TaskComponent,

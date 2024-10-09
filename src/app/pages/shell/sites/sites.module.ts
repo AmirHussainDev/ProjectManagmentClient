@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SitesComponent } from './sites.component';
-import { SitesRoutingModule } from './sites-routing.module';
+import { ProjectsComponent } from './sites.component';
+import { ProjectsRoutingModule } from './sites-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import * as AllIcons from '@ant-design/icons-angular/icons';
 import { IconDefinition } from '@ant-design/icons-angular';
@@ -31,7 +31,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 
 @NgModule({
     declarations: [
-        SitesComponent,
+        ProjectsComponent,
         SiteComponent,
         ExpensesComponent,
         OwnerPaymentsComponent,
@@ -46,7 +46,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     ],
     imports: [
         CommonModule,
-        SitesRoutingModule,
+        ProjectsRoutingModule,
         NgZorroAntdModule,
         ReactiveFormsModule,
         FormsModule,
@@ -55,4 +55,4 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
         HighchartsChartModule
     ]
 })
-export class SitesModule { }
+export class ProjectsModule { }

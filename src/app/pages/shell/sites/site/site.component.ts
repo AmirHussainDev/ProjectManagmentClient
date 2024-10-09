@@ -10,7 +10,7 @@ import { Subscription, Observable, Observer } from 'rxjs';
 import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../team/users/users.interface';
-import { AppPermissions, SiteStateNames, SiteStates, SitesGraphKeys } from '../../../../services/app.constants';
+import { AppPermissions, SiteStateNames, SiteStates, ProjectsGraphKeys } from '../../../../services/app.constants';
 import { SiteDetails } from '../../../../services/app.interfact';
 import * as Highcharts from 'highcharts';
 
@@ -37,7 +37,7 @@ export class SiteComponent implements OnInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   chartConstructor: string = 'chart';
   chartOptions: Highcharts.Options = {};
-  sitesGraphKeys: any = SitesGraphKeys
+  sitesGraphKeys: any = ProjectsGraphKeys
   listOfData: User[] = [
   ];
   defaultItemValues = {
@@ -165,7 +165,7 @@ export class SiteComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadAndUsers();
-    this.setSitesData()
+    this.setProjectsData()
     this.route.paramMap.subscribe(paramMap => {
       // Use this queryParams object to load data
       if (!paramMap.get('siteId')) {
@@ -208,8 +208,8 @@ export class SiteComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
   }
-  async setSitesData() {
-    const resp: any = await this.appService.getAndSetSites();
+  async setProjectsData() {
+    const resp: any = await this.appService.getAndSetProjects();
     const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
     this.sites = [...sitesData];
   }

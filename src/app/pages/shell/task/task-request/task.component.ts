@@ -163,7 +163,7 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
     })
   }
   async setUpTaskForm() {
-    await this.loadSitesProjectsAndUsers();
+    await this.loadProjectsProjectsAndUsers();
     this.routerSubscription = this.route.queryParams.subscribe(async (params) => {
       if (this.taskDetails.dirty || this.taskDetails.touched) {
         const confirmNavigation = confirm(RestrictNavigationMessage);
@@ -195,8 +195,8 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
 
   }
  
-  async setSitesData() {
-    const resp: any = await this.appService.getAndSetSites();
+  async setProjectsData() {
+    const resp: any = await this.appService.getAndSetProjects();
     const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
     this.sites = [...sitesData];
   }
@@ -259,10 +259,10 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
 
 
 
-  async loadSitesProjectsAndUsers() {
+  async loadProjectsProjectsAndUsers() {
     // this.projects = await this.appService.getProjects()
     this.listOfData = await this.appService.getOrganizationEmployees();
-    // await this.setSitesData();
+    // await this.setProjectsData();
   }
 
 

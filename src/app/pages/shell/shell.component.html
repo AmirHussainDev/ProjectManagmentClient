@@ -32,7 +32,7 @@
             </span>
           </li>
         </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.ManageSales">
+        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.ManageTasks">
           
           <li nz-menu-item
             [class.selected-route]="currentRoutes.indexOf('board')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
@@ -71,13 +71,13 @@
         </ul>
       
         <!-- <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li *appHasPermission="appPermissions.ManageSites" nz-menu-item style="margin-top: 12px;"
+          <li *appHasPermission="appPermissions.ManageProjects" nz-menu-item style="margin-top: 12px;"
             [class.selected-route]="currentRoutes.indexOf('sites')>-1">
             <span nz-icon style="font-size: 18px;" nzType="build" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/sites']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Sites
+                Projects
               </a>
             </span>
           </li>

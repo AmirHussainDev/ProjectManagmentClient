@@ -42,12 +42,12 @@ export class AppService {
     const isMobile = this.media && this.media.matchMedia('(max-width: 600px)');
     return isMobile?.matches || viewHeight > viewWidth;
   }
-  getAndSetSites() {
+  getAndSetProjects() {
     const organization_id = localStorage.getItem('organization_id');
     return this.http.get(`${this.apiUrl}/sites/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
   }
 
-  setSites(sites: any) {
+  setProjects(sites: any) {
     this.sites.next(sites);
   }
 
@@ -191,7 +191,7 @@ export class AppService {
   }
 
 
-  async getProjects(): Promise<any[]> {
+  async getClientProjects(): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`${this.apiUrl}/organizations/project/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
@@ -229,10 +229,10 @@ export class AppService {
   }
 
 
-  async getSites(): Promise<Site[]> {
+  async getProjects(): Promise<Site[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/${organization_id}/${this.currentSubOrgId}`, { headers: this.header }).toPromise()
       return response as Site[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -646,7 +646,7 @@ export class AppService {
         client: this.currentSubOrgId,
         created_by: this.userService.loggedInUser.id
       }
-      const response = await this.http.post(`${this.apiUrl}/Sites`, body, { headers: this.header }).toPromise()
+      const response = await this.http.post(`${this.apiUrl}/Projects`, body, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -656,7 +656,7 @@ export class AppService {
 
 
 
-  async retireveSites(params: HttpParams): Promise<any[]> {
+  async retireveProjects(params: HttpParams): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`${this.apiUrl}/contractors/${organization_id}/${this.currentSubOrgId}`, { headers: this.header, params }).toPromise()
@@ -671,7 +671,7 @@ export class AppService {
   async retireveSiteById(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -682,7 +682,7 @@ export class AppService {
 
   async retireveSiteStatisticsById(id: any): Promise<any> {
     try {
-      const response = await this.http.get(`${this.apiUrl}/Sites/${id}/statistics`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/${id}/statistics`, { headers: this.header }).toPromise()
       return response as any;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -694,7 +694,7 @@ export class AppService {
   async retireveAllSiteStatistics(clientId: number): Promise<any> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/statistics/all/${organization_id}/${clientId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/statistics/all/${organization_id}/${clientId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
       return response as any;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -706,7 +706,7 @@ export class AppService {
   async updateSiteRequest(details: SiteDetails): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.put(`${this.apiUrl}/Sites/${organization_id}/${this.currentSubOrgId}/${details.id}`, details, { headers: this.header }).toPromise()
+      const response = await this.http.put(`${this.apiUrl}/Projects/${organization_id}/${this.currentSubOrgId}/${details.id}`, details, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -722,7 +722,7 @@ export class AppService {
         client: this.currentSubOrgId,
         created_by: this.userService.loggedInUser.id
       }
-      const response = await this.http.post(`${this.apiUrl}/Sites/expenses`, body, { headers: this.header }).toPromise()
+      const response = await this.http.post(`${this.apiUrl}/Projects/expenses`, body, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -733,7 +733,7 @@ export class AppService {
   async retrieveExpensesBySiteId(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/expenses/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/expenses/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -743,7 +743,7 @@ export class AppService {
   }
   async updateSiteExpense(details: Expense) {
     try {
-      const response = await this.http.put(`${this.apiUrl}/Sites/expenses`, details, { headers: this.header }).toPromise()
+      const response = await this.http.put(`${this.apiUrl}/Projects/expenses`, details, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -760,7 +760,7 @@ export class AppService {
         client: this.currentSubOrgId,
         created_by: this.userService.loggedInUser.id
       }
-      const response = await this.http.post(`${this.apiUrl}/Sites/ownerpayment`, body, { headers: this.header }).toPromise()
+      const response = await this.http.post(`${this.apiUrl}/Projects/ownerpayment`, body, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -771,7 +771,7 @@ export class AppService {
   async retrieveOwnerPaymentsBySiteId(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/ownerpayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/ownerpayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -782,7 +782,7 @@ export class AppService {
 
   async updateSiteOwnerPayment(details: OwnerPayment) {
     try {
-      const response = await this.http.put(`${this.apiUrl}/Sites/ownerpayment`, details, { headers: this.header }).toPromise()
+      const response = await this.http.put(`${this.apiUrl}/Projects/ownerpayment`, details, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -793,7 +793,7 @@ export class AppService {
   async retrieveContractorsPaymentsBySiteId(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/contractorspayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/contractorspayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -805,7 +805,7 @@ export class AppService {
   async retrieveContractPaymentsBySiteId(id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/contractorspayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/contractorspayment/${organization_id}/${this.currentSubOrgId}/${id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -851,7 +851,7 @@ export class AppService {
         client: this.currentSubOrgId,
         created_by: this.userService.loggedInUser.id,
       }
-      const response = await this.http.post(`${this.apiUrl}/Sites/contractpayment`, body, { headers: this.header }).toPromise()
+      const response = await this.http.post(`${this.apiUrl}/Projects/contractpayment`, body, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       console.error('Error posting task request', error);
@@ -862,7 +862,7 @@ export class AppService {
   async retrieveSiteContractPaymentBySiteId(id: any, contract_id: any): Promise<any[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/Sites/contractpayment/${organization_id}/${this.currentSubOrgId}/${id}/${contract_id}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/Projects/contractpayment/${organization_id}/${this.currentSubOrgId}/${id}/${contract_id}`, { headers: this.header }).toPromise()
       return response as any[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing

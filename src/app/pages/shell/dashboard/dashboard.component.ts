@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
 import * as Highcharts from 'highcharts';
-import { SitesGraphKeys, TaskSeverity, TaskStateNames } from '../../../services/app.constants';
+import { ProjectsGraphKeys, TaskSeverity, TaskStateNames } from '../../../services/app.constants';
 import { Client } from '../../../services/app.interfact';
 import more from 'highcharts/highcharts-more';
 more(Highcharts);
@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'UnivHighCharts';
   Highcharts: typeof Highcharts = Highcharts;
   chartConstructor: string = 'chart';
-  sitesGraphKeys: any = SitesGraphKeys
+  sitesGraphKeys: any = ProjectsGraphKeys
   chartOptions: Highcharts.Options = {};
   siteChartOptions: Highcharts.Options = {};
   stateNames = TaskStateNames;

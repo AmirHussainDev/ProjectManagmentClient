@@ -59,7 +59,7 @@ export class ShellComponent implements OnInit, OnDestroy {
     this.organization = this.appService.organization;
     this.titleService.setTitle(this.organization.name)
     this.setFavicon(this.organization.icon)
-    this.setSitesData();
+    this.setProjectsData();
     this.onSiteChange();
     this.extractRoutePath(this.router.url)
     this.router.events.pipe(
@@ -101,11 +101,11 @@ export class ShellComponent implements OnInit, OnDestroy {
     });
   }
 
-  async setSitesData() {
-    const resp: any = await this.appService.getAndSetSites();
+  async setProjectsData() {
+    const resp: any = await this.appService.getAndSetProjects();
     const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
     this.sites = [...sitesData];
-    this.appService.setSites(this.sites);
+    this.appService.setProjects(this.sites);
     this.siteForm.patchValue({ site: this.sites[0] })
     this.setCurrentSite(undefined);
   }

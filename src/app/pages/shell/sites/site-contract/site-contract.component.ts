@@ -106,7 +106,7 @@ export class SiteContractComponent {
   submitForm() { }
   ngOnInit(): void {
     this.loadAndUsers();
-    this.setSitesData()
+    this.setProjectsData()
     this.route.paramMap.subscribe(paramMap => {
       // Use this queryParams object to load data
       if (!paramMap.get('contractId')) {
@@ -146,8 +146,8 @@ export class SiteContractComponent {
   
     }
   }
-  async setSitesData() {
-    const resp: any = await this.appService.getAndSetSites();
+  async setProjectsData() {
+    const resp: any = await this.appService.getAndSetProjects();
     const sitesData = resp && resp.length ? resp.map((site: any) => { return { label: site.name, ...site } }) : [];
     this.sites = [...sitesData];
   }

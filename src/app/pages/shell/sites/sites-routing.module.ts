@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SitesComponent } from './sites.component';
+import { ProjectsComponent } from './sites.component';
 import { SiteContractorsComponent } from './site-contractors/site-contractors.component';
 import { SiteContractComponent } from './site-contract/site-contract.component';
 import { SiteComponent } from './site/site.component';
@@ -9,13 +9,13 @@ import { AuthGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: '', component: SitesComponent,
-    data:{name:'All Sites', permission:AppPermissions.ManageSites},
+    path: '', component: ProjectsComponent,
+    data:{name:'All Projects', permission:AppPermissions.ManageProjects},
     canActivate:[AuthGuard]
   },
   {
     path: ':siteId', component: SiteComponent,
-    data:{name:'Site', permission:AppPermissions.ManageSites},
+    data:{name:'Site', permission:AppPermissions.ManageProjects},
     canActivate:[AuthGuard]
   },
   {
@@ -29,5 +29,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SitesRoutingModule {
+export class ProjectsRoutingModule {
 }

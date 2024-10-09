@@ -13,7 +13,7 @@ import { ExportSheetService } from '../../../services/export-sheet.service';
   templateUrl: './sites.component.html',
   styleUrl: './sites.component.css'
 })
-export class SitesComponent implements OnInit, OnDestroy {
+export class ProjectsComponent implements OnInit, OnDestroy {
   siteStates = SiteStates
   siteStateNames = SiteStateNames
   expandSet = new Set<number>();
@@ -76,7 +76,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   async populateSiteData() {
-    const response = await this.appService.getSites();
+    const response = await this.appService.getProjects();
     this.sites = response.filter(site => {
       const siteSupervisors = site.site_supervisors ? JSON.parse(site.site_supervisors) : [];
       return this.userService.loggedInUser.is_admin || !siteSupervisors.length || siteSupervisors.includes(this.userService.loggedInUser.id);
@@ -86,7 +86,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   export(): void {
     const data = this.listOfDisplayData ;
-    this.exportSheetService.exportDataToXLSX(data, 'Sites');
+    this.exportSheetService.exportDataToXLSX(data, 'Projects');
   }
 
 

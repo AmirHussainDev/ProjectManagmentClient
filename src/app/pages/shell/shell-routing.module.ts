@@ -16,8 +16,8 @@ const routes: Routes = [
         data: { name: 'Team' }
       },
       {
-        path: 'sites', loadChildren: () => import('./sites/sites.module').then(m => m.SitesModule),
-        data: { name: 'Sites' }
+        path: 'sites', loadChildren: () => import('./sites/sites.module').then(m => m.ProjectsModule),
+        data: { name: 'Projects' }
       },
       {
         path: 'task', loadChildren: () => import('./task/task.module').then(m => m.TaskModule),
