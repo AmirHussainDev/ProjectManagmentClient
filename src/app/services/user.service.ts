@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User, UserCreateObj, UserUpdateObj } from '../pages/shell/team/users/users.interface';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { SubOrganization } from './app.interfact';
+import { Client } from './app.interfact';
 import { AppService } from './app.service';
 
 
@@ -28,7 +28,7 @@ export class UserService {
     localStorage.setItem('token', '')
     localStorage.setItem('token', '')
     localStorage.removeItem('selectedOrganzation')
-    localStorage.removeItem('sub_organization_id')
+    localStorage.removeItem('client_id')
     localStorage.setItem('redirectUrl',this.router.url)
     this.router.navigate(['/login']);
   }

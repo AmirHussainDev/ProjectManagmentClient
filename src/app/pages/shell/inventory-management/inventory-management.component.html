@@ -46,7 +46,7 @@
                     <nz-form-item *ngIf="inventoryItemForm.get('stock_in')?.value">
                         <nz-form-label nzRequired>PO Number</nz-form-label>
                         <nz-form-control>
-                            <input nz-input formControlName="purchase_id" />
+                            <input nz-input formControlName="task_id" />
                         </nz-form-control>
                     </nz-form-item>
                     <nz-form-item *ngIf="!inventoryItemForm.get('stock_in')?.value">
@@ -62,9 +62,9 @@
                         </nz-form-control>
                     </nz-form-item>
                     <nz-form-item>
-                        <nz-form-label nzRequired>Vendor</nz-form-label>
+                        <nz-form-label nzRequired>Project</nz-form-label>
                         <nz-form-control>
-                            <input nz-input formControlName="vendor_id" />
+                            <input nz-input formControlName="project_id" />
                         </nz-form-control>
                     </nz-form-item>
                     <nz-form-item>
@@ -113,7 +113,7 @@
                         <td [nzExpand]="expandSet.has(data.item_name)" [nzExpandIcon]="expandIcon"></td>
 
                         <td> {{data.item_name}} </td>
-                        <td> {{data.vendor_name}} </td>
+                        <td> {{data.project_name}} </td>
                         <td> {{data.qty}} </td>
                         <td> {{data.latest_unit_price | currency : 'PKR ' }} </td>
                         <td> {{data.avg_unit_price | currency : 'PKR ' }} </td>
@@ -132,12 +132,12 @@
                             </thead>
             <tbody>
                 <ng-container *ngFor="let subData of data.subDetails; let i = index">
-                    <tr [className]="subData.stock_in?'purchase-row':'sale-row'">
+                    <tr [className]="subData.stock_in?'task-row':'sale-row'">
                         <td>
-                            <a *ngIf="subData.stock_in" [routerLink]="['/', 'purchase','purchase']"
-                                [queryParams]="{ PO: subData.purchase_no }" href="">PO -{{subData.purchase_no}}</a>
+                            <a *ngIf="subData.stock_in" [routerLink]="['/', 'task','task']"
+                                [queryParams]="{ PO: subData.task_no }" href="">PO -{{subData.task_no}}</a>
                             <a *ngIf="!subData.stock_in && subData.sale_no"
-                                [routerLink]="['/','purchase', 'sales','sale']"
+                                [routerLink]="['/','task', 'sales','sale']"
                                 [queryParams]="{ SALE: subData.sale_no }" href="">SALE
                                 -{{subData.sale_no||subData.sale_id}}</a>
 

@@ -11,8 +11,8 @@ export interface User {
     reports_to: number;
     role_id: number;
     organization_id:number;
-    sub_organization_id:number;
-    sub_organization?:string;
+    client_id:number;
+    client?:string;
     reportTo?:string;
     roleName?:string;
     password?:string;

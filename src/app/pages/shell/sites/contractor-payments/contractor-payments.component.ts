@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import {  ContractPayment, SubOrganization } from '../../../../services/app.interfact';
+import {  ContractPayment, Client } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
 import { UserService } from '../../../../services/user.service';
 
@@ -21,7 +21,7 @@ export class ContractorPaymentsComponent implements OnInit {
     },
     {
       title: 'Title',
-      compare: (a: ContractPayment, b: ContractPayment) => a.subject.localeCompare(b.subject),
+      compare: (a: ContractPayment, b: ContractPayment) => a.title.localeCompare(b.title),
       priority: 2,
       with:'30%'
     },

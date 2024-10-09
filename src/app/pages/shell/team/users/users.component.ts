@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../services/user.service';
 import { User } from './users.interface';
 import { AppService } from '../../../../services/app.service';
-import { SubOrganization } from '../../../../services/app.interfact';
+import { Client } from '../../../../services/app.interfact';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ChangePasswordComponent } from '../../shared-components/change-password/change-password.component';
 import { AppPermissions } from '../../../../services/app.constants';
@@ -32,8 +32,8 @@ export class UsersComponent implements OnInit {
       priority: 3
     },
     {
-      title: 'Sub Organization',
-      compare: (a: User, b: User) => a.sub_organization_id - b.sub_organization_id,
+      title: 'Default Client',
+      compare: (a: User, b: User) => a.client_id - b.client_id,
       priority: 3
     },
     {
@@ -54,7 +54,7 @@ export class UsersComponent implements OnInit {
   isEdit = false;
   userRoles: any[];
   selectedUser: User;
-  subOrganizations: SubOrganization[];
+  clients: Client[];
   appPermissions = AppPermissions;
   searchVisible: boolean;
   searchValue: any;
@@ -87,10 +87,10 @@ export class UsersComponent implements OnInit {
   async populateUserData() {
     this.listOfData = await this.userService.getOrganizationUsers();
     this.userRoles = await this.appService.getRoles();
-    this.subOrganizations = await this.appService.getSubOrganizations();
+    this.clients = await this.appService.getClient();
 
     this.userRoles = this.userRoles.map(role => ({ key: role.role_name, value: role.id }))
-    this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
+    this.clients = this.clients.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as Client[]
     this.mapUserData();
     this.listOfDisplayData = this.listOfData;
 
@@ -105,11 +105,11 @@ export class UsersComponent implements OnInit {
       const reportToUser = this.listOfData.find(user => user.id == data.reports_to)
       data.reports_to = reportToUser?.id;
       data.role_id = currentRole?.value;
-      const subOrg = this.subOrganizations.find(sub => sub.id === parseInt(data.sub_organization_id.toString()))
-      data.sub_organization_id = subOrg?.id as number;
+      const client = this.clients.find(sub => sub.id === parseInt(data.client_id.toString()))
+      data.client_id = client?.id as number;
       return {
         ...data,
-        sub_organization: subOrg?.name,
+        client: client?.name,
         roleName: currentRole?.key, reportTo: this.listOfData.find(user => user.id == data.reports_to)?.name
       }
     }

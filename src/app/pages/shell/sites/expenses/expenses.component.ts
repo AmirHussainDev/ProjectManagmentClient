@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Expense, ExpenseForm, SubOrganization } from '../../../../services/app.interfact';
+import { Expense, ExpenseForm, Client } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../../services/user.service';
@@ -12,7 +12,7 @@ import { ExportSheetService } from '../../../../services/export-sheet.service';
 })
 export class ExpensesComponent implements OnInit {
   addExpenseForm: FormGroup<ExpenseForm>;
-  vendorItems: any[] = [];
+  projectItems: any[] = [];
   @Input() site_id: number;
   @Input() state: number;
   
@@ -64,9 +64,9 @@ export class ExpensesComponent implements OnInit {
   total=0;
   ExpenseRoles: any[];
   users: any[];
-  subOrganizations: SubOrganization[];
-  displayControlColumns=[{value:'vendor_name',
-  name:'Vendor Name'},
+  clients: Client[];
+  displayControlColumns=[{value:'project_name',
+  name:'Project Name'},
   {value:'name',
   name:'Item'}]
   constructor(
@@ -81,7 +81,7 @@ export class ExpensesComponent implements OnInit {
       quantity: new FormControl(0, [Validators.required]),
       amount: new FormControl({ value: 0, disabled: true }),
       refered_by: new FormControl(0),
-      purchase_id: new FormControl(0),
+      task_id: new FormControl(0),
       is_paid: new FormControl(0),
       site: new FormControl(this.site_id),
       note: new FormControl(),
@@ -114,7 +114,7 @@ export class ExpensesComponent implements OnInit {
     }
   }
   async addExpense() {
-    this.subOrganizations = await this.appService.saveSiteExpense({ ...this.addExpenseForm.getRawValue(), site: this.site_id });
+    this.clients = await this.appService.saveSiteExpense({ ...this.addExpenseForm.getRawValue(), site: this.site_id });
   }
   handleCancel(): void {
     this.isVisible = false;
@@ -140,10 +140,10 @@ export class ExpensesComponent implements OnInit {
     this.listOfData = await this.appService.retrieveExpensesBySiteId(this.site_id)
     this.users = await this.userService.getOrganizationUsers();
     this.ExpenseRoles = await this.appService.getRoles();
-    this.subOrganizations = await this.appService.getSubOrganizations();
-    this.vendorItems = await this.appService.getInventory()
+    this.clients = await this.appService.getClient();
+    this.projectItems = await this.appService.getInventory()
     this.ExpenseRoles = this.ExpenseRoles.map(role => ({ key: role.role_name, value: role.id }))
-    this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
+    this.clients = this.clients.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as Client[]
     // this.mapExpenseData();
     this.updateEditCache();
     this.total = this.listOfData.reduce((sum, payment) => {
@@ -154,8 +154,8 @@ export class ExpensesComponent implements OnInit {
   index = 0;
   addItem(input: HTMLInputElement): void {
     const value = input.value;
-    if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
-      this.vendorItems = [...this.vendorItems, { name: input.value, isCustom: true }];
+    if (!this.projectItems.some(pro => !value || pro.name === value.trim())) {
+      this.projectItems = [...this.projectItems, { name: input.value, isCustom: true }];
       input.value = ''
     }
   }
@@ -170,11 +170,11 @@ export class ExpensesComponent implements OnInit {
   //     data.quantity = reportToExpense?.quantity || 0;
   //     data.is_general = reportToExpense?.is_general || false;
   //     data.refered_by = reportToExpense?.refered_by || 0;
-  //     data.purchase_id = reportToExpense?.refered_by || 0;
+  //     data.task_id = reportToExpense?.refered_by || 0;
   //     data.is_paid = reportToExpense?.is_paid || false;
   //     data.site = reportToExpense?.site || 0;
   //     data.organization = reportToExpense?.organization || 0;
-  //     data.subOrganization = reportToExpense?.subOrganization || 0;
+  //     data.client = reportToExpense?.client || 0;
   //     data.created_by = reportToExpense?.created_by || 0;
   //   }
   //   )
@@ -217,7 +217,7 @@ export class ExpensesComponent implements OnInit {
   }
 
   onExpenseNameChange(event: any) {
-    const selectedItem = this.vendorItems.find(pro => pro.name === event.trim())
+    const selectedItem = this.projectItems.find(pro => pro.name === event.trim())
     if (selectedItem.isCustom) {
       this.addExpenseForm.controls.is_general.setValue(true)
       this.addExpenseForm.controls.is_paid.enable()
@@ -226,7 +226,7 @@ export class ExpensesComponent implements OnInit {
       this.addExpenseForm.controls.is_paid.setValue(false)
       this.addExpenseForm.controls.quantity.setValue(0)
       this.addExpenseForm.controls.amount.setValue(0)
-      this.addExpenseForm.controls.purchase_id?.setValue(0);
+      this.addExpenseForm.controls.task_id?.setValue(0);
       this.addExpenseForm.controls.unit_price?.setValue(0);
 
     } else {
@@ -235,7 +235,7 @@ export class ExpensesComponent implements OnInit {
       this.addExpenseForm.controls.quantity.setValue(0)
       this.addExpenseForm.controls.amount.setValue(0)
       this.addExpenseForm.controls.is_paid.disable()
-      this.addExpenseForm.controls.purchase_id?.setValue(selectedItem.purchase_id);
+      this.addExpenseForm.controls.task_id?.setValue(selectedItem.task_id);
       this.addExpenseForm.controls.unit_price?.setValue(selectedItem.unit_price);
       this.addExpenseForm.controls.unit_price.disable()
 
@@ -244,7 +244,7 @@ export class ExpensesComponent implements OnInit {
 
   onQuantityChange() {
     if (!this.addExpenseForm.controls.is_general.value) {
-      const selectedItem = this.vendorItems.find(pro => pro.name === this.addExpenseForm.controls.name.value)
+      const selectedItem = this.projectItems.find(pro => pro.name === this.addExpenseForm.controls.name.value)
       this.addExpenseForm.patchValue({ amount: this.addExpenseForm.controls.quantity.value * parseFloat(selectedItem.unit_price) })
     } else {
       this.onUnitPriceChange()

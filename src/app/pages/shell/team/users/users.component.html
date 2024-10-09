@@ -24,7 +24,7 @@
     </span>
     <button *appHasPermission="appPermissions.UpdateUsers" nz-button nzType="primary" (click)="open()">Add</button>
 </div>
-<app-create-user-drawer *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible"
+<app-create-user-drawer *ngIf="visible" [clients]="clients" [visible]="visible"
     [userRoles]="userRoles" [users]="listOfData" (closeDrawer)="close($event)" [isEdit]="isEdit"
     [selectedUser]="selectedUser"></app-create-user-drawer>
 <nz-table #editRowTable #sortTable [nzData]="listOfDisplayData" [nzPageSize]="1000" nzShowPagination="false">
@@ -41,7 +41,7 @@
                 <td>{{ data.name }}</td>
                 <td>{{ data.reportTo }}</td>
                 <td>{{ data.roleName }}</td>
-                <td>{{ data.sub_organization }}</td>
+                <td>{{ data.client }}</td>
                 <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="startEdit(i)">Edit</a></td>
                 <td><a *appHasPermission="appPermissions.UpdateUsers" (click)="openChangePasswordModal(i)">Change <span
                             nz-icon nzType="unlock" nzTheme="outline"></span></a> </td>

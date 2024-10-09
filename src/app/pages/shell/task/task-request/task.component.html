@@ -1,0 +1,206 @@
+<nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+
+    <div class="container">
+        <div class="detailBar">
+            <span>
+                <h4> Task - {{taskDetails.get('task_no')?.value || 'New'}} /
+                    {{stateNames[taskDetails.get('state')?.value]}}
+                </h4>
+            </span>
+            <span>
+                <button nz-button nzType="primary" nz-tooltip="Generate PDF" (click)="generatePDF()"> <span nz-icon
+                        nzType="download"></span></button>
+                <button style="margin-left: 12px;" nz-button nz-tooltip="Print request" nzType="primary"
+                    (click)="printCard()"> <span nz-icon nzType="printer"></span></button>
+                <button style="margin-left: 12px;" nz-button nz-tooltip="Close request" nzType="default" nzDanger
+                    (click)="close()"> <span nz-icon nzType="close"></span></button>
+            </span>
+        </div>
+
+        <div class="task-request" id="print-section">
+            <nz-card style="width:100%" nzBordered="false">
+                <form nz-form [formGroup]="taskDetails" (ngSubmit)="submitForm()">
+
+                    <div #content>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="created_by">Created
+                                By</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-select id="created_by" formControlName="created_by" placeholder="created_by">
+                                    <nz-option *ngFor="let user of created_by_users" [nzValue]="user?.id"
+                                        [nzLabel]="user?.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="state">Status</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-select class="taskTypeSelector" formControlName="state" nzPlaceHolder="Status">
+                                    <nz-option *ngFor="let key of TaskStates | keyvalue" [nzDisabled]="this.taskStatesConnectivity[this.taskDetails.controls.state.value].indexOf(key.key)==-1"
+                                        [nzLabel]="stateNames[key.value]" [nzValue]="key.value"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="date_created">Date
+                                Created</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
+                                    formControlName="date_created"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <!-- <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired
+                                nzFor="selectedProject">Project</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select a project">
+                                <nz-select class="inputField" formControlName="selectedProject"
+                                    (ngModelChange)="onProjectSelect()" nzAllowClear nzPlaceHolder="Select a project"
+                                    style="width: 200px; margin-bottom: 12px;">
+                                    <nz-option *ngFor="let project of projects" [nzLabel]="project.name"
+                                        [nzValue]="project"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item> -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="assignee">Assignee</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-select id="assignee" formControlName="assignee" placeholder="Select user">
+                                    <nz-option *ngFor="let user of listOfData" [nzValue]="user?.employee"
+                                        [nzLabel]="user?.employeeName"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="invoice_date">Invoice
+                                Date</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField" formControlName="invoice_date"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item> -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="start_date">Start Date</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
+                                    formControlName="start_date"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item><nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="due_date">Due Date</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
+                                    formControlName="due_date"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="due_date">Severity</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-select  formControlName="severity"
+                                nzPlaceHolder="severity" [nzCustomTemplate]="defaultTemplate">
+                                <nz-option *ngFor="let key of taskSeverity | keyvalue" [nzLabel]="key.value"
+                                    [nzValue]="key.key"></nz-option>
+                            </nz-select>
+                            <ng-template #defaultTemplate let-selected>
+                                <span class="flex center">
+                                <span nz-icon nzType="project" [nzTheme]="'twotone'"
+                                    [nzTwotoneColor]="taskSeverityColors[selected.nzValue]"> </span>
+                                    <span>{{taskSeverity[selected.nzValue]}}</span>
+                                </span>
+                            </ng-template>
+
+                            </nz-form-control>
+                        </nz-form-item>
+                       
+                        <ng-template #addOnBeforeTemplate>
+                            <nz-select class="taskTypeSelector" style="width: auto;" formControlName="type"
+                                nzPlaceHolder="Type" [nzCustomTemplate]="defaultTemplate">
+                                <nz-option *ngFor="let key of taskTypes | keyvalue" [nzLabel]="key.value"
+                                    [nzValue]="key.key"></nz-option>
+                            </nz-select>
+                            <ng-template #defaultTemplate let-selected>
+                                <span nz-icon nzType="check-square" [nzTheme]="'twotone'"
+                                    [nzTwotoneColor]="taskTypeIcons[selected.nzValue]"></span>
+                            </ng-template>
+                        </ng-template>
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
+                            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                                    <input type="text" nz-input formControlName="title" />
+                                </nz-input-group>
+
+                            </nz-form-control>
+                        </nz-form-item>
+
+
+                        <nz-card style="width:100%;margin-bottom: 12px;">
+                            <nz-form-item>
+                                <nz-form-label nzFor="description">Task Description</nz-form-label>
+                                <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                    nzErrorTip="">
+                                    <textarea rows="6" nz-input formControlName="description"
+                                        placeholder="textarea with clear icon"></textarea>
+
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label nzFor="terms">Terms & Conditions</nz-form-label>
+                                <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                    nzErrorTip="">
+                                    <textarea nz-input formControlName="terms"
+                                        placeholder="textarea with clear icon"></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label nzRequired nzFor="due_date">Attachments</nz-form-label>
+
+                                <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                    nzHasFeedback nzErrorTip="Please input Organization name">
+                                    <nz-upload nzAction="null" nzListType="picture-card" [(nzFileList)]="fileList"
+                                        [nzDisabled]="taskDetails.controls.attachment.disabled"
+                                        [nzShowButton]="!taskDetails.controls.attachment.disabled && fileList.length < 4"
+                                        [nzPreview]="handlePreview" [nzDownload]="donwnloadFile"
+                                        [nzShowUploadList]="{showPreviewIcon:true,showRemoveIcon:!taskDetails.controls.attachment.disabled,showDownloadIcon:true}"
+                                        [nzBeforeUpload]="beforeUpload" (nzChange)="handleChange($event)">
+                                        <div>
+                                            <span nz-icon nzType="plus"></span>
+                                            <div style="margin-top: 8px">Upload</div>
+                                        </div>
+                                    </nz-upload>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <app-work-log *ngIf="taskDetails.get('id')?.value"
+                                [user_id]="this.taskDetails.controls.assignee.value"
+                                [task_id]="taskDetails.get('id')?.value"
+                                [contractDetails]="taskDetails.getRawValue()"></app-work-log>
+
+                        </nz-card>
+                    </div>
+
+                    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+                        (nzOnCancel)="previewVisible = false">
+                        <ng-template #modalContent>
+                            <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+                        </ng-template>
+                    </nz-modal>
+                    <span class="flex space-between">
+
+                        <span>
+                            <button *ngIf="!taskDetails.controls.id.value" nz-button nzType="primary"
+                                [disabled]="taskDetails.invalid" (click)="submitRequest()"
+                                [disabled]="taskDetails.invalid"
+                                style="margin-bottom: 12px;float: right;">Submit</button>
+
+                            <button *ngIf="taskDetails.controls.id.value" nz-button nzType="primary"
+                                [disabled]="taskDetails.invalid" (click)="updateDetails()"
+                                style="margin-bottom: 12px;float: right;">Save</button>
+
+                        </span>
+                    </span>
+                </form>
+            </nz-card>
+        </div>
+
+
+    </div>
+</nz-spin>

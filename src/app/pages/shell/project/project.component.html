@@ -1,0 +1,110 @@
+<div *appHasPermission="appPermissions.UpdateProjects" class="flex space-between" style="margin-bottom:5px">
+    <span style="display: -webkit-box;width: 100%;">
+        <h3 style="margin-right: 5px;">
+            Projects
+        </h3>
+
+        <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+            <input type="text" placeholder="Search here" [(ngModel)]="searchValue" (keyup)="search()" nz-input />
+
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+            @if (searchValue) {
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                (click)="searchValue = '';search()"></span>
+            } @else{
+            <span nz-icon nzType="search"></span>
+            }
+        </ng-template>
+        <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+        </ng-template>
+
+    </span>
+    <button nz-button nzType="primary" nzSize="small" (click)="showModal()">Add Project</button>
+</div>
+<app-project-details *ngIf="drawerVisible" [project]="selectedProject" (closeDrawer)="drawerVisible=false"
+    [visible]="drawerVisible"></app-project-details>
+
+<!-- Modal for adding Project name -->
+<nz-modal [(nzVisible)]="isModalVisible" [nzTitle]="newItem? 'Add Project':'Edit Project'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <nz-form *nzModalContent [formGroup]="addProjectForm">
+        <nz-form-item>
+            <nz-form-label nzRequired>Project Name</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input Project name">
+                <input nz-input formControlName="name" />
+            </nz-form-control>
+        </nz-form-item>
+       
+        <nz-form-item>
+            <nz-form-label nzRequired>Description</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input project description">
+                <textarea  nz-input rows="2" formControlName="description" ></textarea>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired>Project Image</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please input Project name">
+
+                <nz-upload class="avatar-uploader" nzAction="null" nzName="avatar" nzListType="picture-card"
+                    [nzShowUploadList]="false" [nzBeforeUpload]="beforeUpload" (nzChange)="handleChange($event)">
+                    <ng-container *ngIf="!avatarUrl">
+                        <span class="upload-icon" nz-icon [nzType]="loading ? 'loading' : 'plus'"></span>
+                        <div class="ant-upload-text">Upload</div>
+                    </ng-container>
+                    <img *ngIf="avatarUrl" [src]="avatarUrl" style="width: 100%" />
+                </nz-upload>
+            </nz-form-control>
+        </nz-form-item>
+
+    </nz-form>
+
+</nz-modal>
+<!-- <app-create-user-drawer *ngIf="visible" [clients]="clients" [visible]="visible"
+    [userProjects]="userProjects" [users]="listOfDisplayData" (closeDrawer)="close($event)"></app-create-user-drawer> -->
+<nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfDisplayData"
+    >
+    <thead>
+        <tr>
+            <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+                {{ column.title }}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of sortTable.data">
+            <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
+
+                <td>
+                    <div>
+                        <span style="font-size: 24px;" nz-button (click)="viewDetails(data)" nz-icon nzType="profile"
+                            nzTheme="outline"></span>
+
+                        <img *ngIf="data.filename" class="smallIcon" [src]="apiUrl +'/images/'+data.filename" alt="">
+                        <span> {{ data.name }}</span>
+                    </div>
+                </td>
+                <td>{{data.description}}</td>
+                <td>
+                    <a *appHasPermission="appPermissions.UpdateProjects"
+                        (click)="startEdit(data.id); showModal(false)">Edit</a>
+                </td>
+            </ng-container>
+            <ng-template #editTemplate>
+                <td>
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" />
+                </td>
+               
+                <td>
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.description" />
+                </td>
+               
+
+                <td>
+                    <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
+                    <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+                </td>
+            </ng-template>
+        </tr>
+    </tbody>
+</nz-table>

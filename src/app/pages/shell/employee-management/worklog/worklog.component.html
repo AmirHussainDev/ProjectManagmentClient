@@ -1,0 +1,36 @@
+<h3>Worklog</h3>
+
+<div class="flex center space-between" *ngIf="this.employee&&this.employee.id">
+  <strong>{{ currentDate | date: 'longDate' }}</strong>
+  <div *ngIf="signInTime"> {{signInTime | date : 'hh:mm a'}}</div>
+  <button nz-button nzType="primary" *ngIf="!signInTime" mat-button (click)="signIn()">Sign In</button>
+  <div *ngIf="signOutTime"> {{signOutTime | date : 'hh:mm a'}}</div>
+  <button nz-button nzType="primary" *ngIf="signInTime&&!signOutTime" mat-button (click)="signOut()">Sign Out</button>
+</div>
+
+<!-- Tabs for users belonging to supervisor -->
+<nz-tabset>
+  <nz-tab *ngFor="let user of supervisorUsers" [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+      <td>{{ user.employee?.employee.name}}</td>
+    </ng-template>
+    <app-worklog-details *ngIf="user.employee" [employee]="user.employee"
+      ></app-worklog-details>
+  </nz-tab>
+</nz-tabset>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Enable Location" [nzCancelDisabled]="true" (nzOnOk)="handleOk()">
+  <ng-container *nzModalContent>
+    <div id="geolocation-error-message">
+      <p>We need your location to provide the best experience. Please follow these steps to enable location access:</p>
+      <ul>
+        <li><strong>Chrome:</strong> Go to Settings > Privacy and Security > Site Settings > Location, and allow
+          location access for this site.</li>
+        <li><strong>Firefox:</strong> Go to Preferences > Privacy & Security > Permissions > Location, and allow
+          location access for this site.</li>
+        <li><strong>Safari:</strong> Go to Preferences > Websites > Location, and allow location access for this site.
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</nz-modal>

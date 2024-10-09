@@ -25,8 +25,8 @@ export class SiteContractComponent {
   contractorType = ContractorType;
   contractorTypeName = ContractorTypeName;
   @ViewChild('content', { static: false }) content: ElementRef;
-  vendors: any[] = [];
-  vendorItems: { name: string }[] = [];
+  projects: any[] = [];
+  projectItems: { name: string }[] = [];
   discountTotal: number = 0;
   contractTotal: number = 0;
   loading = false;
@@ -46,12 +46,12 @@ export class SiteContractComponent {
     isCustom: false,
     unit_price: 0
   }
-  currentSubOrganizationSubscription: Subscription;
+  currentClientSubscription: Subscription;
   previousContractDetails: any;
   contractDetails: FormGroup<ContractDetails> = new FormGroup({
     id: new FormControl(),
     contractor: new FormControl(),
-    subject: new FormControl(),
+    title: new FormControl(),
     details: new FormControl(),
     contract_type: new FormControl(),
     state: new FormControl(this.contractStates.Draft),
@@ -61,12 +61,12 @@ export class SiteContractComponent {
     site: new FormControl(0),
     total: new FormControl(0),
     organization: new FormControl(0),
-    subOrganization: new FormControl(0),
+    client: new FormControl(0),
     contract_start_date: new FormControl(new Date()),
     contract_end_date: new FormControl(new Date()),
     attachment: new FormControl(),
     terms: new FormControl(''),
-    no_of_units: new FormControl(0, [Validators.required]),
+    no_of_hours: new FormControl(0, [Validators.required]),
     include_weekends: new FormControl()
   })
   sites: any[];
@@ -84,7 +84,7 @@ export class SiteContractComponent {
     this.contractDetails = this.fb.group({
       id: new FormControl(),
       contractor: new FormControl(null,[Validators.required]),
-      subject: new FormControl('',[Validators.required]),
+      title: new FormControl('',[Validators.required]),
       details: new FormControl(''),
       contract_type: new FormControl(this.contractorType.DurationBased,[Validators.required]),
       state: new FormControl(this.contractStates.Draft),
@@ -94,12 +94,12 @@ export class SiteContractComponent {
       site: new FormControl(0),
       total: new FormControl(0,[Validators.required]),
       organization: new FormControl(0),
-      subOrganization: new FormControl(0),
+      client: new FormControl(0),
       contract_start_date: new FormControl(new Date()),
       contract_end_date: new FormControl(new Date()),
       attachment: new FormControl(),
       terms: new FormControl(''),
-      no_of_units: new FormControl(0, [Validators.required]),
+      no_of_hours: new FormControl(0, [Validators.required]),
       include_weekends: new FormControl()
     });
   }
@@ -122,24 +122,24 @@ export class SiteContractComponent {
 
   }
   setNoOfDays() {
-    const no_of_units = this.appService.getNumberOfDays(
+    const no_of_hours = this.appService.getNumberOfDays(
       this.contractDetails.get('contract_start_date')?.value || new Date(),
       this.contractDetails.get('contract_end_date')?.value || new Date(),
       this.contractDetails.get('include_weekends')?.value)
       this.contractDetails.patchValue({
-        no_of_units
+        no_of_hours
       });
       this.setAmountPerUnit();
   }
   setAmountPerUnit(){
     this.contractDetails.patchValue({
-      amount_per_unit:      (this.contractDetails.get('total')?.value/this.contractDetails.get('no_of_units')?.value)
+      amount_per_unit:      (this.contractDetails.get('total')?.value/this.contractDetails.get('no_of_hours')?.value)
     })
   }
   onTypeChange() {
     if(!this.loading){
       this.contractDetails.patchValue({
-        no_of_units: 0,
+        no_of_hours: 0,
         amount_per_unit: 0,
         total: 0,
       })
@@ -158,8 +158,8 @@ export class SiteContractComponent {
       await this.getExistingContract();
     } else {
       this.contractDetails.controls['organization'].setValue(parseInt(localStorage.getItem('organization_id') || ''))
-      this.currentSubOrganizationSubscription = this.appService.currentSubOrganization.subscribe(resp => {
-        this.contractDetails.controls['subOrganization'].setValue(resp.id);
+      this.currentClientSubscription = this.appService.currentClient.subscribe(resp => {
+        this.contractDetails.controls['client'].setValue(resp.id);
       });
       this.contractDetails.controls['created_by'].setValue(this.userService.loggedInUser.id);
     }
@@ -172,13 +172,13 @@ export class SiteContractComponent {
     if (response) {
       this.contractDetails.patchValue({
         id: response.id,
-        subject: response.subject,
+        title: response.title,
         details: response.details,
         state: response.state,
         created_by: response.created_by,
         total: response.total,
         organization: response.organization_id,
-        subOrganization: response.sub_organization_id,
+        client: response.client_id,
         contractor: Number(response.contractor || 0),
         contract_type: response.contract_type,
         with_material: response.with_material,
@@ -188,7 +188,7 @@ export class SiteContractComponent {
         contract_end_date: response.contract_end_date,
         attachment: response.attachment,
         terms: response.terms,
-        no_of_units: response.no_of_units,
+        no_of_hours: response.no_of_hours,
         include_weekends: response.include_weekends
       },{emitEvent:false})
     }

@@ -1,0 +1,22 @@
+<nz-row style="height: 100%;">
+    <nz-col [nzSpan]="!isMobile()&&showSide?8:24" style="height: 100%; overflow-y: auto;">
+        <div nz-row >
+            <highcharts-chart *ngIf="showChart" [Highcharts]="Highcharts" [options]="ganttChartOptions"
+                    [constructorType]="chartConstructor" style="width: 100%;display: block;"></highcharts-chart>
+        </div>
+       
+    </nz-col>
+    <nz-col class="sidebarright" [nzSpan]="!isMobile()&&showSide?16:0" *ngIf="!isMobile()&&showSide">
+        <router-outlet></router-outlet>
+    </nz-col>
+</nz-row>
+<div *ngIf="isMobile()&&showSide">
+    <nz-drawer nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]=""
+        (nzOnClose)="showSide=false">
+        <ng-container *nzDrawerContent>
+
+            <router-outlet>
+            </router-outlet>
+        </ng-container>
+    </nz-drawer>
+</div>

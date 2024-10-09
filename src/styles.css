@@ -164,7 +164,7 @@ tfoot tr td {
     margin: 7px 8px 7px -8px;
 }
 
-.purchase-row {
+.task-row {
     background: #c6ffc6;
 }
 
@@ -516,3 +516,33 @@ td{
     font-size: 10px;
     font-weight: bold;
   }
+
+  .boardCard{
+
+    background-color: #d0cfcf17;
+    padding: 10px !important;
+    border-radius: 4px;
+    height: 100%;
+    border: 1px solid;
+    width: calc(20% - 20px);
+    margin: 10px;
+    .tab-heading{
+        border-bottom: 1px solid gray;
+    }
+    .listItem{
+        box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.1), 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+        margin-bottom: 4px;
+     }
+  }
+
+  
+    .boardCardSmall{
+        background-color: #d0cfcf17;
+        padding: 10px !important;
+        border-radius: 4px;
+        height: 100%;
+        border: 1px solid;
+        width: calc(50% - 20px);
+        margin: 10px;
+    }
+  

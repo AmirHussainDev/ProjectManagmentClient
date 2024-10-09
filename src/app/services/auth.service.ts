@@ -29,7 +29,7 @@ export class AuthService {
                     this.logout(); // Perform logout action
                     return false;
                 }
-                this.setUserSubOrganization();
+                this.setUserClient();
                 return true;
             }
         }
@@ -55,7 +55,7 @@ export class AuthService {
         localStorage.removeItem('token');
     }
 
-    setUserSubOrganization() {
-        this.appService.getAndSetUserDefaultSubOrganization();
+    setUserClient() {
+        this.appService.getAndSetUserDefaultClient();
     }
 }

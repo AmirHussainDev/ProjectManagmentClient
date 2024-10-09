@@ -17,7 +17,6 @@ import { ContractorPaymentsComponent } from './contractor-payments/contractor-pa
 import { SiteContractorsComponent } from './site-contractors/site-contractors.component';
 import { SiteContractComponent } from './site-contract/site-contract.component';
 import { UsernamePipe } from "../../../pipes/username.pipe";
-import { WorkLogComponent } from './site-contract/work-log/work-log.component';
 import { ContractPaymentComponent } from './site-contract/contract-payment/contract-payment.component';
 import { SharedModule } from '../shared/shared.module';
 import { HighchartsChartModule } from 'highcharts-angular';
@@ -39,7 +38,6 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
         ContractorPaymentsComponent,
         SiteContractorsComponent,
         SiteContractComponent,
-        WorkLogComponent,
         ContractPaymentComponent,
     ],
     providers: [{ provide: NZ_I18N, useValue: en_US },

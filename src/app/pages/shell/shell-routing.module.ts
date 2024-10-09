@@ -20,12 +20,12 @@ const routes: Routes = [
         data: { name: 'Sites' }
       },
       {
-        path: 'purchase', loadChildren: () => import('./purchase/purchase.module').then(m => m.PurchaseModule),
-        data: { name: 'Purchase' }
+        path: 'task', loadChildren: () => import('./task/task.module').then(m => m.TaskModule),
+        data: { name: 'Task' }
       },
       {
-        path: 'vendor', loadChildren: () => import('./vendor/vendor.module').then(m => m.VendorModule),
-        data: { name: 'Vendor' }
+        path: 'project', loadChildren: () => import('./project/project.module').then(m => m.ProjectModule),
+        data: { name: 'Project' }
       }
       ,
       {

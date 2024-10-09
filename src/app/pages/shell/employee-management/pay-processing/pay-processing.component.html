@@ -6,11 +6,11 @@
     <thead>
         <tr>
             <th>Employee</th>
-            <th>Salary</th>
-            <th>Payment From</th>
+            <th>Hourly Rate</th>
+            <!-- <th>Payment From</th> -->
             <th>Amount</th>
             <th>Balance</th>
-            <th>Advance Balance</th>
+            <!-- <th>Advance Balance</th> -->
             <th> Proceed For Payment </th>
         </tr>
     </thead>
@@ -18,17 +18,17 @@
         <tr *ngFor="let row of paymentData">
             <td>{{ row.employee?.employee?.name}}
             <td>{{ row.employee?.salary | currency :' '}} </td>
-            <td><span>{{ row.paymentObject?.minDateCreated | date : 'dd MMM yyyy' }}
+            <!-- <td><span>{{ row.paymentObject?.minDateCreated | date : 'dd MMM yyyy' }}
                 </span>
-            </td>
+            </td> -->
             <td>{{ row.paymentObject?.totalAmount|| 0 | currency :' ' }}</td>
             <td>{{ row.paymentObject?.balance||0 | currency :' ' }}
             </td>
-            <td>
+            <!-- <td>
                 <span>{{ row.paymentObject?.advanceBalance || 0 | currency :' '}}</span>
-            </td>
+            </td> -->
             <td>
-                <a *appHasPermission="appPermissions.EmployeeSalaryManagment" nzType="primary" (click)="open(row)">Pay</a>
+                <a *appHasPermission="appPermissions.EmployeeHourlyRateManagment" nzType="primary" (click)="open(row)">Pay</a>
 
             </td>
         </tr>
@@ -37,116 +37,15 @@
 
 
 <nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right"
-    [nzTitle]="'Payment for Employee: ' +selectedEmployee?.employee?.employee.name" [nzWidth]="isMobile()?'100%': '50%'"
+    [nzTitle]="'Employee: ' +selectedEmployee?.employee?.employee.name" [nzWidth]="isMobile()?'100%': '50%'"
     (nzOnClose)="close()">
     <ng-container *nzDrawerContent>
 
-        <h3><strong> Employee Attendance </strong></h3>
-        <app-attendance-details *ngIf="selectedEmployee" [employee]="selectedEmployee.employee">
-        </app-attendance-details>
-
-
-        <nz-row nzGutter="4" style="margin-top: 12px;">
-            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
-                <nz-card style="width:100%;margin-top: 12px;">
-                    <div style="width: 100%; display: inline-block;">
-                        <h4> <b> Payment Amount </b></h4>
-                        <div>
-                            <div class="flex space-between">
-                                <span> <b>Amount:</b> </span><span> {{(selectedEmployee.paymentObject.totalAmount ||0) |
-                                    currency:'PKR ' }}</span>
-                            </div>
-                            <b>Notes</b>
-                            <div class="flex space-between" style="margin-bottom: 10px;">
-                                <span> <b>Balance:</b> </span><span> {{(selectedEmployee.paymentObject.balance ||0 )|
-                                    currency:'PKR '}}</span>
-                            </div>
-                            <input nz-input [disabled]="disablePayment" [(ngModel)]="amountPayment" />
-                            <textarea nz-input [disabled]="disablePayment" [(ngModel)]="paymentNotes" ></textarea>
-                            <button nz-button [disabled]="disablePayment" (click)="createPayment()"  nzType="primary" nzSize="small" style="margin-top: 12px;float: right;">
-                                Pay</button>
-                        </div>
-                    </div>
-
-                    <nz-collapse nzGhost>
-                        <nz-collapse-panel (nzActiveChange)="getEmployeePayments($event)" [nzHeader]="expandTitle" [nzActive]="activeSalaryHistory">
-                            <p style="margin:0;">
-                                <nz-table #basicTable nzShowPagination="false"
-                                [nzPageSize]="1000"
-                                [nzData]="payments" [nzBordered]="true">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Amount</th>
-                                            <th>Balance</th>
-                                            <th>Notes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let row of payments">
-                                            <td>{{ row.date_created | date : 'dd MMM yyyy' }}
-                                            </td>
-                                            <td>{{ row.amount | currency : ' ' }}
-                                            </td>
-                                            <td>{{ row.balance | currency : ' ' }}
-                                            </td>
-                                            <td>{{ row.payment_notes  }}
-                                            </td>
-                                            </tr>
-                                            </tbody>
-                                            </nz-table>                                
-                            </p>
-                        </nz-collapse-panel>
-
-                    </nz-collapse>
-
-                    <ng-template #expandTitle>
-                        Payment History
-                    </ng-template>
-                </nz-card>
-            </nz-col>
-
-            <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
-                <nz-card style="width:100%;margin-top: 12px;">
-                    <div style="width: 100%; display: inline-block;">
-                        <h4> <b> Advance Payments </b> </h4>
-                        <div class="flex space-between">
-                            <span> &nbsp;</span>
-                        </div>
-                        <div class="flex space-between" style="margin-bottom: 10px;">
-                            <span> <b>Balance:</b> </span><span> {{(selectedEmployee.paymentObject.advanceBalance ||0) |
-                                currency:'PKR ' }}</span>
-                        </div>
-                        <span>
-                            <input nz-input [(ngModel)]="amountPayment" />
-                            <span class="flex space-between" style="width: 100%; margin-top: 12px;float: right;">
-                                <nz-switch [(ngModel)]="advancePayment" nzCheckedChildren="Pay"
-                                    nzUnCheckedChildren="Recieve"></nz-switch>
-                                <button nz-button nzType="primary" nzSize="small">
-                                    {{advancePayment?'Pay':'Recieve'}}</button>
-                            </span>
-                        </span>
-
-                    </div>
-                    <nz-collapse nzGhost>
-                        <nz-collapse-panel [nzHeader]="expandAdvanceTitle" [nzActive]="activeAdvanceHistory">
-                            <p style="margin:0;">
-                                A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can
-                                be
-                                found as a
-                                welcome
-                                guest in many households across the world.
-                            </p>
-                        </nz-collapse-panel>
-
-                    </nz-collapse>
-
-                    <ng-template #expandAdvanceTitle>
-                        Advance History
-                    </ng-template>
-                </nz-card>
-            </nz-col>
-        </nz-row>
+        <h3><strong>Worklog and Payments </strong></h3>
+        <app-worklog-details *ngIf="selectedEmployee"
+        [worklog]="selectedEmployee.worklog"
+        [employee]="selectedEmployee.employee">
+        </app-worklog-details>
 
 
     </ng-container>

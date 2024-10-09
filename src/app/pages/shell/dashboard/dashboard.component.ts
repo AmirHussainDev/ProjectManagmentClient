@@ -5,9 +5,10 @@ import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
 import * as Highcharts from 'highcharts';
-import { SitesGraphKeys } from '../../../services/app.constants';
-
-
+import { SitesGraphKeys, TaskSeverity, TaskStateNames } from '../../../services/app.constants';
+import { Client } from '../../../services/app.interfact';
+import more from 'highcharts/highcharts-more';
+more(Highcharts);
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -21,28 +22,32 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   sitesGraphKeys: any = SitesGraphKeys
   chartOptions: Highcharts.Options = {};
   siteChartOptions: Highcharts.Options = {};
+  stateNames = TaskStateNames;
   piechartOptions: Highcharts.Options = {};
   lineChartOptions: Highcharts.Options = {};
-  subOrgSubscription: Subscription;
+  clientSubscription: Subscription;
   showTopTen = false;
   currentOrganizationId = 0;
+  currentClient: Client;
   items: any[];
   selectedItem = ''
   showMonthly = false;
-  inventoryStats: any = {};
+  projectStats: any = {};
   showChart: boolean;
+  totalApprovedHours: any;
+  totalEstimatedHours: any;
+  paidApprovedHours: any;
   constructor(private appService: AppService) {
     this.chartOptions = {
       chart: {
-        type: 'column',
-        backgroundColor: 'transparent', // Set chart background color to transparent
-        height: 300 // Set the height of the chart
-      },
-      credits: {
-        enabled: false
+        type: 'gauge',
+        plotBackgroundColor: '',
+        plotBorderWidth: 0,
+        plotShadow: false,
+        height: '80%'
       },
       title: {
-        text: 'Top 10 Products in Hand',
+        text: 'Progress %',
         align: 'left',
         style: {
           fontSize: '12px', // Title font size
@@ -57,63 +62,79 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           fontSize: '12px' // Subtitle font size
         }
       },
-      xAxis: {
-        categories: [],
-        crosshair: true,
-        accessibility: {
-          description: 'Countries'
-        },
-        labels: {
-          style: {
-            fontSize: '11px' // X-axis labels font size
-          }
-        }
+
+      pane: {
+        startAngle: -90,
+        endAngle: 90,
+        background: [], // No background
+        center: ['50%', '70%'], // Adjusted center to lower
+        size: '100%' // Size of the gauge
+      },
+      credits: {
+        enabled: false
       },
       yAxis: {
         min: 0,
-        title: {
-          text: '',
-          style: {
-            fontSize: '12px' // Y-axis title font size
-          }
-        },
+        max: 100,
+        lineWidth: 0,
+        tickPositions: [0, 50, 100],
+        tickLength: 0, // Remove the ticks
         labels: {
+          enabled: false, // Remove yAxis labels
+        },
+        plotBands: [{
+          from: 0,
+          to: 50,
+          color: '#6A55FF', // Purple color for the left side
+          thickness: '50%',
+        }, {
+          from: 50,
+          to: 100,
+          color: '#E0E0E0', // Gray color for the right side
+          thickness: '50%',
+        }]
+      },
+      series: [{
+        type: 'gauge',
+        name: 'Progress',
+        data: [52], // This value is displayed
+        dataLabels: {
+          format: '{y} %',
+          borderWidth: 0,
           style: {
-            fontSize: '11px' // Y-axis labels font size
-          }
+            fontSize: '18px', // Center value font size
+            fontWeight: 'bold'
+          },
+          y: 20, // Adjust position of label
+        },
+        dial: {
+          radius: '100%',
+          backgroundColor: '#4D4D4D', // Dark gray needle color
+          baseWidth: 10, // Needle width
+          rearLength: '0%' // No tail behind needle
+        },
+        pivot: {
+          backgroundColor: '#4D4D4D', // Same as needle
+          radius: 6 // Small pivot size
         }
-      },
-      tooltip: {
-        valueSuffix: ' ',
-        style: {
-          fontSize: '11px' // Tooltip font size
-        }
-      },
-      plotOptions: {
-        column: {
-          pointPadding: 0.2,
-          borderWidth: 0
-        }
-      },
-      series: []
+      }]
     };
+
 
     this.siteChartOptions = {
       chart: {
-        type: 'column',
-        backgroundColor: 'transparent', // Set chart background color to transparent
-        height: 300 // Set the height of the chart
-      },
-      credits: {
-        enabled: false
+        type: 'bar'
       },
       title: {
-        text: 'Site Expenses',
+        text: 'Task Breakdown by Status',
         align: 'left',
         style: {
           fontSize: '12px', // Title font size
           fontWeight: 'bold' // Title font weight
         }
+      },
+      credits: {
+        enabled: false
       },
       subtitle: {
         text:
@@ -123,56 +144,40 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           fontSize: '12px' // Subtitle font size
         }
       },
+
       xAxis: {
-        categories: [],
-        crosshair: true,
-        accessibility: {
-          description: 'Countries'
-        },
-        labels: {
-          style: {
-            fontSize: '11px' // X-axis labels font size
-          }
-        }
+        categories: [] // Initialize it as an empty array
       },
       yAxis: {
         min: 0,
         title: {
-          text: '',
-          style: {
-            fontSize: '12px' // Y-axis title font size
-          }
+          text: 'Tasks Count',
+          align: 'high'
         },
         labels: {
-          style: {
-            fontSize: '11px' // Y-axis labels font size
+          overflow: 'justify'
+        }
+      },
+      series: [{
+        type: 'bar',
+        name: 'Tasks',
+        data: []
+      }],
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            enabled: true
           }
         }
-      },
-      tooltip: {
-        valueSuffix: ' ',
-        style: {
-          fontSize: '11px' // Tooltip font size
-        }
-      },
-      plotOptions: {
-        column: {
-          pointPadding: 0.2,
-          borderWidth: 0
-        }
-      },
-      series: []
+      }
     };
 
     this.piechartOptions = {
       chart: {
-        plotShadow: false,
         type: 'pie',
-        height: 250,
-        backgroundColor: 'transparent'
       },
       title: {
-        text: 'Available Stock',
+        text: 'Tasks By Severity',
         align: 'left',
         style: {
           fontSize: '12px', // Title font size
@@ -201,23 +206,19 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
-            enabled: false
-          },
-          showInLegend: true
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.2f} %',
+            distance: -30
+          }
         }
       },
-      legend: {
-        align: 'right',
-        verticalAlign: 'middle',
-        layout: 'vertical' // optional, to display legend items vertically
-        // other legend configurations
-      },
+
       series: []
     };
 
     this.lineChartOptions = {
       chart: {
-        type: 'line',
+        type: 'column',
         backgroundColor: 'transparent', // Set chart background color to transparent
         height: 218 // Set the height of the chart
       },
@@ -250,7 +251,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
       xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        categories: []
       },
       series: [],
       responsive: {
@@ -258,9 +259,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           condition: {
             maxWidth: 500
           },
-          chartOptions: {
-
-          }
+          chartOptions: {}
         }]
       },
       legend: {
@@ -275,18 +274,24 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
   }
   ngOnInit(): void {
-    this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
+    this.clientSubscription = this.appService.currentClient.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.currentOrganizationId = change.id;
-        this.loadInventory(this.currentOrganizationId);
-        this.getInventoryStats(this.currentOrganizationId)
-        this.loadStatistics(this.currentOrganizationId)
+        this.currentClient = change;
+        this.loadData();
       }
     });
   }
-  async loadStatistics(subOrgId: number) {
+
+  async loadData() {
+    await this.getProjectStats(this.currentOrganizationId)
+    this.setProjectProgress(this.currentOrganizationId);
+
+    this.loadStatistics(this.currentOrganizationId)
+  }
+  async loadStatistics(clientId: number) {
     this.showChart = false;
-    const stats: any[] = await this.appService.retireveAllSiteStatistics(subOrgId);
+    const stats: any[] = this.projectStats.tasks;
 
     // Extract site names for the x-axis categories
     const siteNames = stats.map(stat => stat.siteName);
@@ -313,112 +318,218 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     });
 
-    this.showChart = true;
+    const taskCounts: any = {};
 
-    // Assign the series and categories to your chartOptions
-    this.siteChartOptions = {
-      ...this.siteChartOptions,
-      xAxis: {
-        ...this.siteChartOptions.xAxis,
-        categories: siteNames,
-      },
-      series: series as any,
-    };
+    // Populate task counts based on task states
+    this.projectStats.tasks.forEach((task: { state: string | number; }) => {
+      const moduleName = this.stateNames[task.state]; // Map state to module
+      if (!taskCounts[moduleName]) {
+        taskCounts[moduleName] = 0; // Initialize if not already set
+      }
+      taskCounts[moduleName]++; // Increment task count for this module
+    });
+
+    // Set categories for the chart based on the module names
+    if (this.siteChartOptions.xAxis && this.siteChartOptions.xAxis) {
+      (this.siteChartOptions.xAxis as Highcharts.XAxisOptions)['categories'] = Object.values(this.stateNames);
+
+    }
+    // Set series data based on task counts
+    if (this.siteChartOptions.series && this.siteChartOptions.series[0]) {
+      (this.siteChartOptions.series[0] as Highcharts.SeriesBarOptions)['data'] = Object.keys(this.stateNames).map(stateId => {
+        const moduleName = this.stateNames[stateId];
+        return taskCounts[moduleName] || 0; // Use 0 if no tasks for that module
+      });
+    }
+    setTimeout(() => {
+      this.showChart = true;
+    }, 100)
   }
 
-  async getInventoryStats(currentOrganizationId: number = 0) {
-    this.inventoryStats = await this.appService.getInventoryStatsBySubOrganization(currentOrganizationId)
-
+  async getProjectStats(currentOrganizationId: number = 0) {
+    this.projectStats = await this.appService.getProjectStatsByClient(currentOrganizationId)
+    this.totalApprovedHours = this.projectStats.worklogs.reduce((sum: number, worklog: any) => sum + (worklog.approved_hours || worklog.no_of_hours || 0), 0);
+    this.paidApprovedHours = this.projectStats.worklogs.filter((log: any) => log.paid).reduce((sum: number, worklog: any) => sum + (worklog.approved_hours || worklog.no_of_hours || 0), 0);
+    this.totalEstimatedHours = this.calculateTotalEstimatedHours(this.projectStats.tasks);
   }
 
-  async loadInventory(currentOrganizationId: number = 0) {
+  // Function to calculate the total estimated hours
+  calculateTotalEstimatedHours(tasks: any[]) {
+    return tasks.reduce((totalHours, task) => {
+      const startDate = new Date(task.start_date);
+      const dueDate = new Date(task.due_date);
+
+      // Calculate the difference in time (milliseconds)
+      const totalDays = Math.floor((dueDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) as number;
+
+      // Calculate estimated time based on 8 hours per day
+      const estimatedTime = totalDays * 8; // 8 hours per day
+      // Convert the time difference into hours
+      // const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+
+      // Add the task's estimated hours to the total
+      return totalHours + estimatedTime;
+    }, 0);
+  };
+
+
+
+  async setProjectProgress(currentOrganizationId: number = 0) {
     this.showTopTen = false;
 
-    const serdata = await this.appService.getInventory(currentOrganizationId)
-    // Iterate through the data to organize it by vendor name
-    // Initialize an empty object to store series data
-    const seriesData: any = {};
-    this.items = serdata.map((data: any) => data.item_name)
-    this.selectedItem = this.items[0]
-    // Iterate through the data to organize it by vendor name
-    serdata.forEach(item => {
-      if (!seriesData[item.vendor_name]) {
-        seriesData[item.vendor_name] = [];
-      }
-      seriesData[item.vendor_name].push({
-        name: item.item_name,
-        y: parseFloat((parseInt(item.qty) * parseInt(item.latest_unit_price)).toString())  // Convert total to float
-      });
-    });
-
-    // Convert seriesData object into an array
-    const series = Object.entries(seriesData).map(([vendorName, data]) => ({
-      name: vendorName,
-      data
-    }));
-
-
     // Assign the series to your chartOptions
-    this.chartOptions.series = series as any;
+    const totalTasks = this.projectStats.tasks.length;
 
-    const pieChartData: any[] = [];
+    // Filter tasks where the state is 4 (completed)
+    const completedTasks = this.projectStats.tasks.filter((task: { state: number; }) => task.state === 4).length;
 
-    // Iterate through the data to construct the pie chart series
-    serdata.forEach(item => {
-      pieChartData.push({
-        name: item.item_name,
-        y: parseFloat(item.qty)  // Convert total to float
-      });
+    // Calculate the completed percentage
+    const completedPercentage = Math.round((completedTasks / totalTasks) * 100);
+    const series = [];
+
+    // Insert the completed percentage at position 0
+    series[0] = {
+
+      type: 'gauge',
+      name: 'Progress',
+      data: [completedPercentage], // This value is displayed
+      dataLabels: {
+        format: '{y} %',
+        borderWidth: 0,
+        style: {
+          fontSize: '18px', // Center value font size
+          fontWeight: 'bold'
+        },
+        y: 20, // Adjust position of label
+      },
+      dial: {
+        radius: '100%',
+        backgroundColor: '#4D4D4D', // Dark gray needle color
+        baseWidth: 10, // Needle width
+        rearLength: '0%' // No tail behind needle
+      },
+      pivot: {
+        backgroundColor: '#4D4D4D', // Same as needle
+        radius: 6 // Small pivot size
+      }
+      // Inserting completed % at index 0
+    } as Highcharts.SeriesGaugeOptions;
+    this.chartOptions.series = series;
+    this.chartOptions.yAxis = {
+      min: 0,
+      max: 100,
+      lineWidth: 0,
+      tickPositions: [0, 50, 100],
+      tickLength: 0, // Remove the ticks
+      labels: {
+        enabled: false, // Remove yAxis labels
+      },
+      plotBands: [{
+        from: 0,
+        to: completedPercentage,
+        color: '#6A55FF', // Purple color for the left side
+        thickness: '50%',
+      }, {
+        from: completedPercentage,
+        to: 100,
+        color: '#E0E0E0', // Gray color for the right side
+        thickness: '50%',
+      }]
+    };
+    const severityCounts: any = {
+      Medium: 0,
+      Low: 0,
+      Critical: 0,
+      High: 0
+    };
+
+    this.projectStats.tasks.forEach((task: { severity: string | number; }) => {
+      const severityLabel = TaskSeverity[(task.severity as number)];
+      if (severityLabel) {
+        severityCounts[severityLabel]++;
+      }
     });
-
-    // Construct the series array for pie chart options
     const pieChartSeries = [{
-      name: 'Quantity',
+      name: 'Tasks',
       colorByPoint: true,
-      data: pieChartData
-    }];
+      data: [
+        { name: 'Low', y: severityCounts.Low, color: '#00FF00' },         // Green for Low
+        { name: 'Medium', y: severityCounts.Medium, color: '#0000FF' },    // Blue for Medium
+        { name: 'High', y: severityCounts.High, color: '#FF8000' },        // Orange for High
+        { name: 'Critical', y: severityCounts.Critical, color: '#FF0000' } // Red for Critical
+      ]
+    }]
 
     // Assign the series to your piechartOptions
     this.piechartOptions.series = pieChartSeries as any[];
+    setTimeout(() => {
+      this.showTopTen = true;
 
-    this.showTopTen = true;
+    }, 100)
     this.setItemBasedTrend()
   }
 
   async setItemBasedTrend() {
     this.showMonthly = false
-    const inventoryDetails = await this.appService.getInventoryItemDetails(this.selectedItem);
-    console.log(inventoryDetails)
-    const monthlyPurchaseData = Array(12).fill(0);
-    const monthlySaleData = Array(12).fill(0);
+    const worklogs = this.projectStats.worklogs;
+    const tasks = this.projectStats.tasks;
 
-    // Iterate through the data to aggregate quantities by month
-    inventoryDetails.forEach(item => {
-      const date = new Date(item.date_created);
-      const month = date.getMonth();
-      const quantity = parseInt(item.qty);
+    // Initialize data structures
+    const estimatedTimes: any = {};
+    const consumedHours: any = {};
+    const taskIds: any[] = [];
+    const taskNo: any[] = [];
 
-      if (item.stock_in) {
-        monthlyPurchaseData[month] += quantity;
-      } else {
-        monthlySaleData[month] += quantity;
-      }
+    // Calculate estimated time and consumed hours for each task
+    tasks.forEach((task: {task_no:any, start_date: string | number | Date; due_date: string | number | Date; id: string | number; title: any; }) => {
+      const startDate = new Date(task.start_date||task.due_date|| new Date());
+      const dueDate = new Date(task.due_date||task.start_date|| new Date());
+      const totalDays = Math.floor((dueDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) as number;
+
+      // Calculate estimated time based on 8 hours per day
+      const estimatedTime = totalDays * 8; // 8 hours per day
+      estimatedTimes[task.id] = estimatedTime; // Store estimated time
+      consumedHours[task.id] = 0; // Initialize consumed hours
+      taskIds.push(task.id); // Store task titles for xAxis
+      taskNo.push(task.task_no)
     });
 
-    // Construct the series array for line chart options
-    const lineChartSeries = [
-      {
-        name: 'Purchase',
-        data: monthlyPurchaseData
-      },
-      {
-        name: 'Sale',
-        data: monthlySaleData
+    // Calculate total consumed hours for each task
+    worklogs.forEach((worklog: { id: any; no_of_hours: any; approved_hours: any }) => {
+      const taskId = worklog.id; // Assuming worklog.id corresponds to task.id
+      consumedHours[taskId] += (worklog.approved_hours || worklog.no_of_hours || 0); // Sum up the hours
+    });
+
+    // Prepare series data for the chart
+    const seriesData = ([{
+      name: 'Estimated Time',
+      data: taskIds.map(id => estimatedTimes[id] || 0),
+      type: 'column', // Use 'column' for estimated time
+      color: 'blue' // You can set a color for estimated time
+    },
+    {
+      name: 'Consumed Time',
+      data: taskIds.map(id => consumedHours[id] || 0),
+      type: 'line', // Use 'line' for consumed time
+      color: 'red', // Line color
+      marker: {
+        enabled: true
       }
-    ] as any[];
-    console.log(lineChartSeries)
-    // Assign the series to your lineChartOptions
-    this.lineChartOptions.series = lineChartSeries;
-    this.showMonthly = true;
+    }] as any[]);
+
+    // Mark bars red when consumed time exceeds estimated time
+    seriesData[0].data = seriesData[0].data.map((estimate: number, index: string | number) => {
+      return consumedHours[tasks[index].id] > estimate ? { y: estimate, color: 'red' } : estimate;
+    });
+
+    // Update chart options
+    if (this.lineChartOptions.xAxis) {
+      (this.lineChartOptions.xAxis as Highcharts.XAxisOptions).categories = taskNo; // Set xAxis categories
+      this.lineChartOptions.series = seriesData; // Set series data
+    }
+
+    setTimeout(() => {
+      this.showMonthly = true
+    }, 100)
   }
 }

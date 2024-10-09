@@ -43,7 +43,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     },
   ];
 
-  subOrgSubscription: Subscription;
+  clientSubscription: Subscription;
   visible = false;
   sites: any[];
   constructor(private appService: AppService,private userService: UserService,private   exportSheetService: ExportSheetService
@@ -52,14 +52,14 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
+    this.clientSubscription = this.appService.currentClient.subscribe(change => {
       this.populateSiteData();
     });
   }
 
   ngOnDestroy(): void {
-    if (this.subOrgSubscription) {
-      this.subOrgSubscription.unsubscribe();
+    if (this.clientSubscription) {
+      this.clientSubscription.unsubscribe();
     }
   }
 

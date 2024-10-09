@@ -27,7 +27,7 @@
         [nzActive]="isActive || (siteDetails.get('state')?.value !== siteStates.Approved && siteDetails.get('state')?.value !== siteStates.Completed )"
         [nzDisabled]="(siteDetails.get('state')?.value !== siteStates.Approved && siteDetails.get('state')?.value !== siteStates.Completed )">
 
-        <div class="purchase-request" id="print-section">
+        <div class="task-request" id="print-section">
             <nz-card style="width:100%">
                 <form nz-form [formGroup]="siteDetails" (ngSubmit)="submitForm()">
                     <div #content>
@@ -119,8 +119,8 @@
 
                             <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="12">
 
-                                <!-- <nz-form-item *ngIf="purchaseDetails.get('isSiteBased')?.value">
-                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sales_person">Sites</nz-form-label>
+                                <!-- <nz-form-item *ngIf="taskDetails.get('isSiteBased')?.value">
+                                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="assignee">Sites</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
                                         <nz-select nzMode="multiple" class="inputField" formControlName="site_ids"
                                             placeholder="Select sites">

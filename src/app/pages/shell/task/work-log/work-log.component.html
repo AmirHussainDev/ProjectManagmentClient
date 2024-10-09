@@ -1,0 +1,103 @@
+<nz-collapse nzGhost style="margin:5px">
+    <nz-collapse-panel [nzHeader]="title" [nzActive]="active">
+
+
+        <ng-template #title>
+
+            <div  style="width: 100%;" class="flex center space-between">
+                <p><strong> Work Log </strong></p>
+                <button nz-button nzType="primary" (click)="showModal()" nzSize="small">
+                        <span nz-icon nzType="plus" > </span>
+                    </button>
+            </div>
+        </ng-template>
+        <nz-modal [(nzVisible)]="isVisible" nzTitle="Add Work Log" (nzOnCancel)="handleCancel()"
+            [nzOkDisabled]="addContractorWorkLogForm.invalid" (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">
+            <nz-card *nzModalContent style="width:100%">
+                <form nz-form [formGroup]="addContractorWorkLogForm" (ngSubmit)="handleOk()">
+                    <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                        <nz-col *ngIf="contractDetails.contract_type == '1'" [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
+                                    nzFor="from">From</nz-form-label>
+                                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                    <nz-range-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="date"
+                                        (ngModelChange)="onChange($event)"></nz-range-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </nz-col>
+                        <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="no_of_hours">No of
+                                    hours
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                                    {{contractDetails.contract_type == '1'?
+                                    addContractorWorkLogForm.get('no_of_hours')?.value:''}}
+                                    <nz-input-number *ngIf="contractDetails.contract_type != '1'"
+                                        (change)="setAmout($event)" class="inputField" formControlName="no_of_hours" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </nz-col>
+                    </nz-row>
+
+                    <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                        <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="24" nzRequired nzFor="name">
+                                    Log Description</nz-form-label>
+                                <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
+                                    nzErrorTip="The input is not valid date!">
+                                    <textarea class="inputField" nz-input formControlName="note"></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </nz-col>
+                    </nz-row>
+                </form>
+            </nz-card>
+        </nz-modal>
+        <ng-template #renderTemplate>
+            <div class="container">
+                <input type="text" nz-input #inputElement />
+                <a class="add-item" (click)="addItem(inputElement)">
+                    <span nz-icon nzType="plus"></span>
+                    Add item
+                </a>
+            </div>
+        </ng-template>
+
+        <nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfData">
+            <thead>
+                <tr>
+                    <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare"
+                        [nzSortPriority]="column.priority">
+                        {{ column.title }}
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of sortTable.data">
+
+                    <td>{{ data.created_by?.name }}</td>
+                    <td>
+                        {{data.date_created | date : 'dd MMM yyyy'}}
+                    </td>
+                    <td>
+                        {{data.no_of_hours}}
+                    </td>
+                    <td>
+                        {{ data.note }}</td>
+
+                    <td>
+                        <a *ngIf="!editCache[data.id]?.edit" (click)="startEdit(data.id)">Edit</a>
+                        <a *ngIf="editCache[data.id]?.edit" (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
+                        <a *ngIf="editCache[data.id]?.edit" nz-popconfirm nzPopconfirmTitle="Sure to cancel?"
+                            (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-collapse-panel>
+</nz-collapse>

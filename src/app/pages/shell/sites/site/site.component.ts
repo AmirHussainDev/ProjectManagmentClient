@@ -21,9 +21,9 @@ import * as Highcharts from 'highcharts';
 })
 export class SiteComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
-  vendors: any[] = [];
+  projects: any[] = [];
   isActive = false;
-  vendorItems: { name: string }[] = [];
+  projectItems: { name: string }[] = [];
   discountTotal: number = 0;
   siteTotal: number = 0;
   loading = false;
@@ -50,7 +50,7 @@ export class SiteComponent implements OnInit, OnDestroy {
     isCustom: false,
     unit_price: 0
   }
-  currentSubOrganizationSubscription: Subscription;
+  currentClientSubscription: Subscription;
   previoussiteDetails: any;
   siteDetails: FormGroup<SiteDetails> = new FormGroup({
     id: new FormControl(),
@@ -67,7 +67,7 @@ export class SiteComponent implements OnInit, OnDestroy {
     created_by: new FormControl(0),
     total: new FormControl(0),
     organization: new FormControl(0),
-    subOrganization: new FormControl(0)
+    client: new FormControl(0)
   })
   sites: any[];
   siteForm: any;
@@ -158,7 +158,7 @@ export class SiteComponent implements OnInit, OnDestroy {
       created_by: new FormControl(0),
       total: new FormControl(0),
       organization: new FormControl(0),
-      subOrganization: new FormControl(0)
+      client: new FormControl(0)
     });
   }
   submitForm() { }
@@ -185,7 +185,7 @@ export class SiteComponent implements OnInit, OnDestroy {
 
     this.showChart = false;
     const serdata: {} = await this.appService.retireveSiteStatisticsById(this.site_id)
-    // Iterate through the data to organize it by vendor name
+    // Iterate through the data to organize it by project name
     // Initialize an empty object to store series data
     const series: any[] = []
     Object.entries(serdata).forEach((key) => {
@@ -232,7 +232,7 @@ export class SiteComponent implements OnInit, OnDestroy {
         created_by: response.created_by,
         total: response.total,
         organization: response.organization_id,
-        subOrganization: response.sub_organization_id,
+        client: response.client_id,
         owner: response.owner,
         site_supervisors: JSON.parse(response.site_supervisors||'[]'),
         site_start_date: response.site_start_date,

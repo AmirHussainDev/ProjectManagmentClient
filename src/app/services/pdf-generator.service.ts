@@ -66,7 +66,7 @@ export class PdfGeneratorService {
                         }],
                         [{
 
-                            text: 'Veins Group of Companies,\n',
+                            text: 'Eleware ,\n',
                             fontSize: 10,
                             alignment: 'right'
                         }, {
@@ -99,7 +99,7 @@ export class PdfGeneratorService {
                     columns: [
                         [
                             {
-                                text: this.invoice.type === 'purchase' ? this.invoice.selectedVendor.name : this.invoice.type === 'sale' ? this.invoice.customer.name : this.invoice.personName,
+                                text: this.invoice.personName,
                                 bold: true
                             },
                             { text: this.invoice.address },
@@ -112,120 +112,27 @@ export class PdfGeneratorService {
                                 alignment: 'right'
                             }, {
 
-                                text: `Date: ${this.formatDate(new Date(this.invoice.invoice_date))}`,
+                                text: `Date: ${this.formatDate(new Date(this.invoice.date_created))}`,
                                 alignment: 'right'
                             },
                             {
-                                text: this.invoice.type == 'purchase' ? 'PO - ' + this.invoice['purchase_no'] : this.invoice.type == 'Sale' ? 'Sale - ' + this.invoice['sale_no'] :'',
+                                text: 'Task - ' + this.invoice['task_no'],
                                 alignment: 'right'
                             }
                         ]
                     ]
                 },
-                this.invoice.type == 'Sale' ? {
-                    text: 'Customer: '+this.invoice.customer.name,
-                    style: 'sectionHeader',
-                    margin: [0, 5, 0, 5],
-                } : {},
-                this.invoice.type == 'purchase' ? {
-                    text: 'Vendor: '+this.invoice.selectedVendor.name,
-                    style: 'sectionHeader',
-                    margin: [0, 5, 0, 5],
-                } : {},
                 {
-                    text: 'Order Details: ' + this.invoice.subject,
+                    text: 'Order Details: ' + this.invoice.title,
+                    style: 'sectionHeader'
+                },
+
+                {
+                    text: 'Description: ' + this.invoice.description,
                     style: 'sectionHeader'
                 },
                 
-                {
-                    table: {
-                        headerRows: 1,
-                        widths: this.invoice.type == 'customer' ? ['5%', '15%', '40%', '12%', '14%', '14%'] : ['40%', '15%', '15%', '15%', '15%'],
-                        body:
-                            this.invoice.type == 'customer' ? [
-                                [{ text: 'Sale #', style: 'columnStyle' }, { text: 'Date', style: 'columnStyle' }, { text: 'Subject', style: 'columnStyle' }, { text: 'Status', style: 'columnStyle' }, { text: 'Amount', style: 'columnStyleNumeric' }, { text: 'Balance', style: 'columnStyleNumeric' }],
-                                ...this.invoice.items.map(p => ([{ text: p.sale_no, style: 'columnStyle' }, { text: this.formatDate(p.date_created), style: 'columnStyle' }, { text: p.subject, style: 'columnStyle' }, { text: this.saleStateName[p.state], style: 'columnStyle' }, { text: p.total, style: 'columnStyleNumeric' }, { text: p.balance, style: 'columnStyleNumeric' }])),
-                                [{ text: 'Total Balance', colSpan: 5, style: 'columnStyle' }, {}, {}, {}, {}, { text: this.invoice.items.reduce((acc, p) => acc + parseFloat(p.balance || 0), 0), style: 'columnStyleNumeric' }]
-                            ] : [
-                                [{ text: 'Item', style: 'columnStyle' }, { text: 'Unit Price', style: 'columnStyleNumeric' }, { text: 'Quantity', style: 'columnStyleNumeric' }, { text: 'Discount', style: 'columnStyleNumeric' }, { text: 'Amount', style: 'columnStyleNumeric' }],
-                                ...this.invoice.items.map(item => {
-                                    totalAmount += Number(item.total || 0);
-                                    return [{ text: item.name, style: 'columnStyle' }, { text: item.unit_price, style: 'columnStyleNumeric' }, { text: item.qty, style: 'columnStyleNumeric' }, { text: item.discount, style: 'columnStyleNumeric' }, { text: item.total, style: 'columnStyleNumeric' }];
-                                }),
-                                [{ text: 'Total Amount', colSpan: 3, style: 'columnStyle' }, {}, {}, { text: this.invoice.items_discount_total, style: 'columnStyleNumeric' }, { text: totalAmount, style: 'columnStyleNumeric' }]
-                            ]
-                    }
-                },
-                this.invoice.type == 'Sale' ? {
-                    text: 'Return Details',
-                    style: 'sectionHeader'
-                } : {},
-                this.invoice.type == 'Sale' ? {
-                    table: {
-                        headerRows: 1,
-                        widths: ['20%', '15%', '12%', '12%', '10%', '21%', '10%'],
-                        body: [
-                            [{ text: 'Product', style: 'columnStyle' }, { text: 'Unit Price', style: 'columnStyleNumeric' }, { text: 'Quantity', style: 'columnStyleNumeric' }, { text: 'Discount', style: 'columnStyleNumeric' }, { text: 'Amount', style: 'columnScolumnStyleNumerictyle' }, { text: 'Reason', style: 'columnStyle' }, { text: 'Date', style: 'columnStyleNumeric' }],
-                            ...this.invoice.items.map(item => {
-                                return item.return_details.map((returnDetail: any) => {
-                                    totalReturnAmount += Number(returnDetail.returnAmount);
-                                    return [
-                                        { text: item.name, style: 'columnStyle' },
-                                        { text: item.unit_price || '', style: 'columnStyleNumeric' },
-                                        { text: returnDetail.qty || 0, style: 'columnStyleNumeric' },
-                                        { text: returnDetail.charge || 0, style: 'columnStyleNumeric' },
-                                        { text: returnDetail.returnAmount || 0, style: 'columnStyleNumeric' },
-                                        { text: returnDetail.reason, style: 'columnStyle' },
-                                        { text: this.formatDate(returnDetail.date_created), style: 'columnStyleNumeric' },
-                                    ];
-                                });
-                            }).flat(),
-                            [{ text: 'Total Return Amount', colSpan: 5, style: 'columnStyle' }, {}, {}, {}, {}, { text: totalReturnAmount, colSpan: 2, style: 'columnStyleNumeric' }, {}]
-                        ]
-                    }
-                } : {},
-                this.invoice.type == 'Sale' || this.invoice.type == 'purchase' ? {
-                    columns: [
-                        [{
-                            margin: [0, 5, 0, 5],
-                            columns: [[
-                                { text: `Shipping Charges` },
-                                { text: `Additional Cost` },
-                                { text: `Discount %` },
-                                {
-                                    text: `Discount`,
-                                    style: 'summaryText'
-                                },
-                                {
-                                    text: `Total`,
-                                    style: 'summaryText'
-                                },
-                                {
-                                    text: `Balance`,
-                                    style: 'summaryText'
-                                }],
-                            [
-                                { text: this.invoice.shipment_charges || '0', alignment: 'right', italics: true },
-                                { text: this.invoice.additional_cost || '0', alignment: 'right', italics: true },
-                                { text: this.invoice.overall_discount || '0', alignment: 'right', italics: true },
-                                {
-                                    text: this.invoice.overall_discount_total || '0',
-                                    style: 'summaryText', alignment: 'right', italics: true
-                                },
-                                {
-                                    text: this.invoice.total || '0',
-                                    style: 'summaryText', alignment: 'right', italics: true
-                                },
-                                {
-                                    text: this.invoice.balance || '0',
-                                    style: 'summaryText', alignment: 'right', italics: true
-                                }],
-                            ],
-
-                        }],
-                        [{ alignment: 'right', qr: `${location.href}`, fit: '100', margin: [0, 5, 0, 5] }]
-                    ]
-                } : {},
+                
                 {
                     text: 'Additional Details',
                     style: 'sectionHeader'
@@ -310,9 +217,7 @@ export class PdfGeneratorService {
         };
 
         if (action === 'download') {
-            pdfMake.createPdf(docDefinition).download(
-                this.invoice.type==='Sale'?this.invoice.type+'-'+this.invoice.sale_no:
-                this.invoice.type==='purchase'?this.invoice.type+'-'+this.invoice.purchase_no:this.invoice.type+'-'+this.invoice.personName
+            pdfMake.createPdf(docDefinition).download(this.invoice.type+'-'+this.invoice.task_no
             );
         } else if (action === 'print') {
             pdfMake.createPdf(docDefinition).print();
@@ -322,9 +227,7 @@ export class PdfGeneratorService {
 
     }
 
-    addProduct() {
-        this.invoice.items.push(new Product());
-    }
+    
     formatDate(dateString: any) {
         const date = new Date(dateString);
 
@@ -338,23 +241,6 @@ export class PdfGeneratorService {
     };
 }
 
-class Product {
-    name: string;
-    unit_price: number;
-    discount: number;
-    qty: number;
-    total: number;
-    sale_no?: any;
-    date_created?: any;
-    subject?: any;
-    state?: any;
-    balance?: any;
-    return_details?: any;
-    id?: any;
-    isCustom?: any;
-    reason?: any
-
-}
 class Invoice {
     type: string;
     invoiceDetailLabel: string;
@@ -363,27 +249,16 @@ class Invoice {
     contactNo: number;
     terms: string;
     email: string;
-    items: Product[] = [];
     additionalDetails: string;
     status: string;
-    total: number;
-    items_discount_total: number;
-    invoice_date: Date;
     created_by: any;
-    selectedVendor?: any;
-    customer?: any;
-    subject: string;
-    purchase_no?: string;
-    shipment_charges?: any;
-    additional_cost?: any;
-    overall_discount?: any;
-    overall_discount_total?: any;
-    balance?: string;
-    sale_no?: string;
+    date_created:Date;
+    title: string;
+    task_no?:string;
+    description?:string;
     id?: string;
     constructor() {
         // Initially one empty product row we will show 
-        this.items.push(new Product());
     }
 
 

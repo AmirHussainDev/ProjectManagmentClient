@@ -19,14 +19,14 @@ export class SiteContractorsComponent implements OnInit, OnDestroy {
   contracts: any[] = [];
   states = ContractStates;
   stateNames = ContractStateNames;
-  subOrgSubscription: Subscription;
+  clientSubscription: Subscription;
   sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
 
   constructor(private appService: AppService) {
 
   }
   ngOnInit(): void {
-    this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
+    this.clientSubscription = this.appService.currentClient.subscribe(change => {
       this.loadContractsDataFromServer();
     });
   }
@@ -73,6 +73,6 @@ export class SiteContractorsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subOrgSubscription) { this.subOrgSubscription.unsubscribe() }
+    if (this.clientSubscription) { this.clientSubscription.unsubscribe() }
   }
 }

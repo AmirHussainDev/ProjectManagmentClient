@@ -1,0 +1,46 @@
+nz-select {
+    width: 240px;
+  }
+  nz-divider {
+    margin: 4px 0;
+  }
+  .container {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 8px;
+  }
+  .add-item {
+    flex: 0 0 auto;
+    padding: 8px;
+    display: block;
+  }
+
+  input{
+    width: 66px;
+  }
+
+  .container{
+    background: #F1E5FF;
+    padding: 5px;
+}
+.anticon {
+  margin-right: 6px;
+  font-size: 24px;
+}
+
+::ng-deep.taskTypeSelector .ant-select-arrow{
+visibility: hidden !important;
+}
+
+::ng-deep.taskTypeSelector .ant-select-selector{
+  padding: 0px  !important;
+}
+
+::ng-deep.taskTypeSelector .ant-select-selection-item {
+  padding: 5px !important;
+}
+::ng-deep.ant-input-group-wrapper .ant-input-group-addon {
+  background: none !important;
+  border-color: transparent !important;
+
+}

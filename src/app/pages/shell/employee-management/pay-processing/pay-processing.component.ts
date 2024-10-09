@@ -11,8 +11,8 @@ import { AppPermissions } from '../../../../services/app.constants';
   styleUrl: './pay-processing.component.css'
 })
 export class PayProcessingComponent implements OnInit, OnDestroy {
-  selectedEmployee: { paymentObject: any, employee: Employee };
-  paymentData: { paymentObject: any, employee: Employee }[]
+  selectedEmployee: { paymentObject: any, employee: Employee , worklog:any[]};
+  paymentData: { paymentObject: any, employee: Employee , worklog:any[]}[]
   currentOrganizationId: number;
   constructor(
     private appService: AppService,
@@ -20,18 +20,18 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
   ) { }
   isMobile=this.appService.isMobile
   appPermissions=AppPermissions;
-  subOrganizationSubscription: Subscription;
-  activeSalaryHistory: boolean;
+  clientSubscription: Subscription;
+  activeHourlyRateHistory: boolean;
   activeAdvanceHistory: boolean;
   today: Date = new Date();
   amountPayment = 0;
   advanceAmount = 0;
-  paymentNotes = '';
+  paymentDescription = '';
   advancePayment = true;
   disablePayment = false;
   payments:any[]=[];
   ngOnInit(): void {
-    this.subOrganizationSubscription = this.appService.currentSubOrganization.subscribe((change) => {
+    this.clientSubscription = this.appService.currentClient.subscribe((change) => {
 
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.setEmployeePayments(change.id);
@@ -42,25 +42,25 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subOrganizationSubscription ? this.subOrganizationSubscription.unsubscribe : null;
+    this.clientSubscription ? this.clientSubscription.unsubscribe : null;
   }
 
-  async setEmployeePayments(subOrgId: number) {
-    this.paymentData = await this.appService.getEmployeePaymentsDetail(subOrgId)
+  async setEmployeePayments(clientId: number) {
+    this.paymentData = await this.appService.getEmployeePaymentsDetail(clientId)
   }
 
 
   visible = false;
 
-  open(employee: { paymentObject: any, employee: Employee }): void {
+  open(employee: { paymentObject: any, employee: Employee,worklog:any[] }): void {
     this.selectedEmployee = employee;
     this.visible = true;
-    this.activeSalaryHistory = false;
+    this.activeHourlyRateHistory = false;
     this.activeAdvanceHistory = false;
     this.amountPayment = 0;
 
     this.advanceAmount = 0;
-    this.disablePayment = this.selectedEmployee?.paymentObject.minDateCreated && this.employeeManagementService.isDateInLastOrCurrentMonth(this.selectedEmployee?.paymentObject.minDateCreated)
+    this.disablePayment = false
   }
 
   close(): void {
@@ -72,7 +72,7 @@ export class PayProcessingComponent implements OnInit, OnDestroy {
     const object = {
       payment_type: 'salary',
       employee: this.selectedEmployee.employee.id,
-      payment_notes: this.paymentNotes,
+      payment_description: this.paymentDescription,
       amount: this.amountPayment,
       balance: (this.selectedEmployee.paymentObject.balance + this.selectedEmployee.paymentObject.totalAmount - this.amountPayment)
     }

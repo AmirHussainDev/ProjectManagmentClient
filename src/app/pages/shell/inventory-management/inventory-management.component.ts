@@ -12,14 +12,14 @@ import { ExportSheetService } from '../../../services/export-sheet.service';
   styleUrls: ['./inventory-management.component.css']
 })
 export class InventoryManagementComponent implements OnInit, OnDestroy {
-  selectedVendor: { name: string, id: number };
+  selectedProject: { name: string, id: number };
   itemName: string;
   itemQuantity: number;
   itemUnitPrice: number;
   inventory: any[] = [];
   loading = false;
-  subOrgSubscription: Subscription
-  vendorItems: { name: string, qty: number, unit_price: number }[] = [];
+  clientSubscription: Subscription
+  projectItems: { name: string, qty: number, unit_price: number }[] = [];
   inventoryItemForm: FormGroup;
   isVisible = false;
   expandSet = new Set<string>();
@@ -34,8 +34,8 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
       priority: false
     },
     {
-      title: 'Vendor',
-      compare: (a: any, b: any) => a.vendor_name.localeCompare(b.vendor_name),
+      title: 'Project',
+      compare: (a: any, b: any) => a.project_name.localeCompare(b.project_name),
       priority: 2
     },
     {
@@ -65,11 +65,11 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
 
     private appService: AppService) {
     this.inventoryItemForm = this.fb.group({
-      purchase_id: [null],
+      task_id: [null],
       sale_id: [null],
       stock_in: [true, Validators.required],
       name: [null, Validators.required],
-      vendor_id: [0],
+      project_id: [0],
       qty: [null, Validators.required],
       unit_price: [null, Validators.required],
       description: [null],
@@ -100,7 +100,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
     this.inventoryItemForm.reset();
   }
   ngOnInit(): void {
-    this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
+    this.clientSubscription = this.appService.currentClient.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
       this.currentOrganizationId=change.id;
         this.loadInventory();
@@ -110,8 +110,8 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subOrgSubscription) {
-      this.subOrgSubscription.unsubscribe();
+    if (this.clientSubscription) {
+      this.clientSubscription.unsubscribe();
     }
   }
   async loadInventory() {
@@ -120,8 +120,8 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
      this.listOfDisplayData=this.inventory;
     this.loading = false
   }
-  async onVendorChange() {
-    this.vendorItems = await this.appService.getVendorItems(this.selectedVendor?.id)
+  async onProjectChange() {
+    this.projectItems = await this.appService.getProjectItems(this.selectedProject?.id)
 
   }
   addOrUpdateItem(): void {
@@ -162,7 +162,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
   search(): void {
     this.searchVisible = false;
     if(this.searchValue){
-      this.listOfDisplayData = this.inventory.filter((item:any) => (item.vendor_name&&item.vendor_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.item_name&&item.item_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
+      this.listOfDisplayData = this.inventory.filter((item:any) => (item.project_name&&item.project_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1)||(item.item_name&&item.item_name.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1));
       console.log(this.listOfDisplayData)
   
     }else{

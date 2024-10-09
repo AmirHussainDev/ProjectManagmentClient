@@ -43,9 +43,9 @@
                 <nz-form-item>
                     <nz-form-label>Organization </nz-form-label>
                     <nz-form-control>
-                        <nz-select id="sub_organization_id" formControlName="sub_organization_id" placeholder="Select Organization"
-                            *ngIf="subOrganizations.length">
-                            <nz-option *ngFor="let sub of subOrganizations" [nzValue]="sub.id"
+                        <nz-select id="client_id" formControlName="client_id" placeholder="Select Organization"
+                            *ngIf="clients.length">
+                            <nz-option *ngFor="let sub of clients" [nzValue]="sub.id"
                                 [nzLabel]="sub.name"></nz-option>
                         </nz-select>
                     </nz-form-control>

@@ -15,7 +15,7 @@
     <tbody>
         <tr *ngFor="let data of sortTable.data">
             <td> {{ data.contractor | username }}</td>
-            <td> {{ data.subject }}</td>
+            <td> {{ data.title }}</td>
             <td> {{ data.amount | currency: ' ' }}</td>
             <td>    <a [routerLink]="['contract',data.id]" href="">CR-{{data.id}}</a>
                   </td>

@@ -8,8 +8,8 @@ export class EmployeeManagementService {
 
   constructor() { }
 
-  calculateHourlyRate(salary: number, date: Date, workingHours: number, isSalaryHourly = true): number {
-    if (!isSalaryHourly) {
+  calculateHourlyRate(salary: number, date: Date, workingHours: number, isHourlyRateHourly = true): number {
+    if (!isHourlyRateHourly) {
       const year = date.getFullYear();
       const month = date.getMonth();
       // Get the number of days in the provided month
@@ -68,17 +68,18 @@ export class EmployeeManagementService {
   }
 
   calculateWorkingHours(employee: Employee, hoursWorked: number): number {
-    const overtime = employee.overtime;
-    const signInOutRequired = employee.siginout_required;
-    const workingHours = employee.workingHours;
+    // // const overtime = employee.overtime;
+    // // const signInOutRequired = employee.siginout_required;
+    // // const workingHours = employee.workingHours;
 
-    if (overtime) {
-      return hoursWorked;
-    } else if (!signInOutRequired) {
-      return hoursWorked == 0 ? 0 : (workingHours);
-    } else {
-      return hoursWorked > workingHours ? (workingHours || 8) : hoursWorked;
-    }
+    // if (overtime) {
+    //   return hoursWorked;
+    // } else if (!signInOutRequired) {
+    //   return hoursWorked == 0 ? 0 : (workingHours);
+    // } else {
+    //   return hoursWorked > workingHours ? (workingHours || 8) : hoursWorked;
+    // }
+    return 8;
   }
 
 

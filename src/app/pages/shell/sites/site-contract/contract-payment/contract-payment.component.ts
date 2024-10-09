@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { ContractorPaymentForm, ContractorPayment, SubOrganization } from '../../../../../services/app.interfact';
+import { ContractorPaymentForm, ContractorPayment, Client } from '../../../../../services/app.interfact';
 import { AppService } from '../../../../../services/app.service';
 import { UserService } from '../../../../../services/user.service';
 
@@ -12,7 +12,7 @@ import { UserService } from '../../../../../services/user.service';
 export class ContractPaymentComponent implements OnInit {
   @Input() contractDetails: any
   addContractorPaymentForm: FormGroup<ContractorPaymentForm>;
-  vendorItems: any[] = [];
+  projectItems: any[] = [];
   @Input() site_id: number;
   date: Date;
   balance = 0;
@@ -43,7 +43,7 @@ export class ContractPaymentComponent implements OnInit {
 
   ContractorPaymentRoles: any[];
   users: any[];
-  subOrganizations: SubOrganization[];
+  clients: Client[];
   constructor(
     private appService: AppService,
     private userService: UserService,
@@ -61,7 +61,7 @@ export class ContractPaymentComponent implements OnInit {
     const totalPaid = this.listOfData.reduce((sum, payment) => {
       return sum + (parseInt(payment.amount.toString(), 0));
     }, 0);
-    const contractorPayment = await this.appService.retrieveSiteContractWorkLogBySiteId(this.site_id, this.contractDetails.id)
+    const contractorPayment = await this.appService.retrieveWorkLogByTaskId(this.site_id)
     this.total = contractorPayment.reduce((sum, payment) => {
       return sum + (parseInt(payment.amount.toString(), 0));
     }, 0);
@@ -83,7 +83,7 @@ export class ContractPaymentComponent implements OnInit {
     }
   }
   async addContractorPayment() {
-    this.subOrganizations = await this.appService.saveSiteContractorPayment({ ...this.addContractorPaymentForm.getRawValue(), site: this.site_id });
+    this.clients = await this.appService.saveSiteContractorPayment({ ...this.addContractorPaymentForm.getRawValue(), site: this.site_id });
   }
   handleCancel(): void {
     this.isVisible = false;
@@ -122,17 +122,17 @@ export class ContractPaymentComponent implements OnInit {
   index = 0;
   addItem(input: HTMLInputElement): void {
     const value = input.value;
-    if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
-      this.vendorItems = [...this.vendorItems, { name: input.value, isCustom: true }];
+    if (!this.projectItems.some(pro => !value || pro.name === value.trim())) {
+      this.projectItems = [...this.projectItems, { name: input.value, isCustom: true }];
       input.value = ''
     }
   }
   // onChange(event: Date[]) {
   //   if (event && event.length > 1) {
-  //     const no_of_units = this.getNumberOfDays(event[0], event[1], this.contractDetails.includeWeekends)
+  //     const no_of_hours = this.getNumberOfDays(event[0], event[1], this.contractDetails.includeWeekends)
   //     this.addContractorPaymentForm.patchValue({
   //       work_from: event[0], work_to: event[1],
-  //       no_of_units, amount: no_of_units * this.contractDetails.amount_per_day
+  //       no_of_hours, amount: no_of_hours * this.contractDetails.amount_per_day
   //     });
   //   }
   // }

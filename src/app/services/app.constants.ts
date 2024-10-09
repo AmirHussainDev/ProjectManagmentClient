@@ -9,17 +9,17 @@ export const AppPermissions = {
     ManageSites: 7,
     AddCustomers: 22,
     ManageSiteContract: 8,
-    AddPurchaseRequest: 9,
-    PurchaseVerification: 10,
+    AddTaskRequest: 9,
+    TaskVerification: 10,
     InventoryUpdates: 11,
     AddEmployees: 12,
-    EmployeeAttendance: 13,
-    EmployeeSalaryManagment: 14,
+    EmployeeWorklog: 13,
+    EmployeeHourlyRateManagment: 14,
     ManagePayments: 15,
     ManageSales: 16,
     AddSales: 17,
-    ViewVendors: 18,
-    UpdateVendors: 19,
+    ViewProjects: 18,
+    UpdateProjects: 19,
     ViewPermissions: 20,
     UpdatePermissions: 21,
     SwitchOrganization: 23,
@@ -36,17 +36,17 @@ export const PermissionName = {
     [AppPermissions.AddSites]: "Add Sites",
     [AppPermissions.ManageSites]: "Manage Sites",
     [AppPermissions.ManageSiteContract]: "Manage Site Contract",
-    [AppPermissions.AddPurchaseRequest]: "Add Purchase Request",
-    [AppPermissions.PurchaseVerification]: "Purchase Verification",
+    [AppPermissions.AddTaskRequest]: "Add Task Request",
+    [AppPermissions.TaskVerification]: "Task Verification",
     [AppPermissions.InventoryUpdates]: "Inventory Updates",
     [AppPermissions.AddEmployees]: "Labour Agreement Management",
-    [AppPermissions.EmployeeAttendance]: "Labour Attendance",
-    [AppPermissions.EmployeeSalaryManagment]: "Labour Salary Management",
+    [AppPermissions.EmployeeWorklog]: "Labour Worklog",
+    [AppPermissions.EmployeeHourlyRateManagment]: "Labour HourlyRate Management",
     [AppPermissions.ManagePayments]: "Manage Payments",
     [AppPermissions.ManageSales]: "Manage Sales",
     [AppPermissions.AddSales]: "Add Sales",
-    [AppPermissions.ViewVendors]: "View Vendors",
-    [AppPermissions.UpdateVendors]: "Update Vendors",
+    [AppPermissions.ViewProjects]: "View Projects",
+    [AppPermissions.UpdateProjects]: "Update Projects",
     [AppPermissions.ViewPermissions]: "View Permissions",
     [AppPermissions.UpdatePermissions]: "Update Permissions",
     [AppPermissions.SwitchOrganization]: "Switch Organization",
@@ -64,17 +64,17 @@ export const DefaultPermissions = {
     [AppPermissions.AddSites]: false,
     [AppPermissions.ManageSites]: false,
     [AppPermissions.ManageSiteContract]: false,
-    [AppPermissions.AddPurchaseRequest]: false,
-    [AppPermissions.PurchaseVerification]: false,
+    [AppPermissions.AddTaskRequest]: false,
+    [AppPermissions.TaskVerification]: false,
     [AppPermissions.InventoryUpdates]: false,
     [AppPermissions.AddEmployees]: false,
-    [AppPermissions.EmployeeAttendance]: false,
-    [AppPermissions.EmployeeSalaryManagment]: false,
+    [AppPermissions.EmployeeWorklog]: false,
+    [AppPermissions.EmployeeHourlyRateManagment]: false,
     [AppPermissions.ManagePayments]: false,
     [AppPermissions.ManageSales]: false,
     [AppPermissions.AddSales]: false,
-    [AppPermissions.ViewVendors]: false,
-    [AppPermissions.UpdateVendors]: false,
+    [AppPermissions.ViewProjects]: false,
+    [AppPermissions.UpdateProjects]: false,
     [AppPermissions.ViewPermissions]: false,
     [AppPermissions.UpdatePermissions]: false,
     [AppPermissions.SwitchOrganization]: false,
@@ -119,13 +119,33 @@ export const ContractStateNames = {
     [ContractStates.Cancelled]: 'CANCELLED',
     [ContractStates.Completed]: 'COMPLETED'
 }
-export const POStates = {
-    Draft: -1,
-    PendingInvoice: 1,
-    PaymentProcessing: 2,
-    Cancelled: 3,
-    Completed: 4
+export const TaskStates= {
+    Backlog: -1,
+    Todo: 1,
+    InProgress:2,
+    InTesting: 3,
+    Completed: 4,
+    Cancelled: 5
 }
+
+export const TaskColors= {
+    [TaskStates.Backlog]: '#d0cfcf17',
+    [TaskStates.Todo]: '#B2C6B6',
+    [TaskStates.InProgress]: '#A1BE95',
+    [TaskStates.InTesting]: '#735DA5',
+    [TaskStates.Completed]: '#66A5AC',
+    [TaskStates.Cancelled]: '#FB6543',
+}
+export const TaskCardColors= {
+    [TaskStates.Backlog]: '#d0cfcf17',
+    [TaskStates.Todo]: '#B2C6B6',
+    [TaskStates.InProgress]: 'rgb(161 190 149 / 18%)',
+    [TaskStates.InTesting]: 'rgb(115 93 165 / 24%)',
+    [TaskStates.Completed]: 'rgb(102 165 172 / 19%)',
+    [TaskStates.Cancelled]: 'rgb(251 101 67 / 19%)',
+    
+}
+
 
 
 export const SitesGraphKeys = {
@@ -136,12 +156,13 @@ export const SitesGraphKeys = {
     "siteOwnerPaymentsSum": "Owner Payments"
 }
 
-export const InvoiceStateNames = {
-    [POStates.Draft]: 'DRAFT',
-    [POStates.PendingInvoice]: 'PENDING INVOICE',
-    [POStates.PaymentProcessing]: 'PAYMENT PROCESSING',
-    [POStates.Cancelled]: 'CANCELLED',
-    [POStates.Completed]: 'COMPLETED'
+export const TaskStateNames :any= {
+    [TaskStates.Backlog]: 'Backlog',
+    [TaskStates.Todo]: 'Todo',
+    [TaskStates.InProgress]: 'In Progress',
+    [TaskStates.InTesting]: 'In Testing',
+    [TaskStates.Completed]: 'Completed',
+    [TaskStates.Cancelled]: 'Cancelled',
 }
 
 export const SiteStates = {
@@ -170,11 +191,11 @@ export const StatusIcons = {
     [SaleStates.PaymentConfirmation]: 'dollar',
     [SaleStates.Invoiced]: 'delivered-procedure',
     [SaleStates.Cancelled]: 'close-circle',
-    [POStates.Draft]: 'file',
-    [POStates.PendingInvoice]: 'file-sync',
-    [POStates.PaymentProcessing]: 'dollar',
-    [POStates.Cancelled]: 'close-circle',
-    [POStates.Completed]: 'file-protect',
+    [TaskStates.Backlog]: 'file',
+    [TaskStates.Todo]: 'file-sync',
+    [TaskStates.InProgress]: 'file-sync',
+    [TaskStates.InTesting]: 'dollar',
+    [TaskStates.Completed]: 'file-protect',
     [SiteStates.Draft]: 'file',
     [SiteStates.PendingApproval]: 'file-sync',
     [SiteStates.Approved]: 'check',
@@ -183,3 +204,17 @@ export const StatusIcons = {
 }
 
 export const RestrictNavigationMessage="Are you sure you want to navigate away? Any unsaved changes may be lost."
+
+export const TaskTypes: { [key: number]: string }={1:'Bug',2:'Story'}
+export const TaskTypeColors: { [key: number]: string } = { 1: 'red', 2: 'blue' };
+export const TaskSeverity: { [key: number]: string }={1:'Medium',2:'Low',3:'Critical',4:'High'}
+export const TaskSeverityColors: { [key: number]: string } = { 1: 'blue', 2: 'green',3:'red',4:'orange' };
+
+export const TaskStatesConnectivity = {
+    [TaskStates.Backlog]: ['Todo','Cancelled'],
+    [TaskStates.Todo]: ['Backlog','InProgress','Cancelled'],
+    [TaskStates.InProgress]: ['Todo','InTesting'],
+    [TaskStates.InTesting]: ['InProgress','Completed'],
+    [TaskStates.Completed]: [],
+    [TaskStates.Cancelled]: ['Backlog']
+}

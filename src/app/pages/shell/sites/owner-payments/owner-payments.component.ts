@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { OwnerPayment, OwnerPaymentForm, SubOrganization } from '../../../../services/app.interfact';
+import { OwnerPayment, OwnerPaymentForm, Client } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { UserService } from '../../../../services/user.service';
@@ -11,7 +11,7 @@ import { UserService } from '../../../../services/user.service';
 })
 export class OwnerPaymentsComponent implements OnInit {
   addOwnerPaymentForm: FormGroup<OwnerPaymentForm>;
-  vendorItems: any[] = [];
+  projectItems: any[] = [];
   @Input() site_id: number;
 
   listOfColumn = [
@@ -45,7 +45,7 @@ export class OwnerPaymentsComponent implements OnInit {
 
   OwnerPaymentRoles: any[];
   users: any[];
-  subOrganizations: SubOrganization[];
+  clients: Client[];
   total: number=0;
   constructor(
     private appService: AppService,
@@ -81,7 +81,7 @@ export class OwnerPaymentsComponent implements OnInit {
     }
   }
   async addOwnerPayment() {
-    this.subOrganizations = await this.appService.saveSiteOwnerPayment({ ...this.addOwnerPaymentForm.getRawValue(), site: this.site_id });
+    this.clients = await this.appService.saveSiteOwnerPayment({ ...this.addOwnerPaymentForm.getRawValue(), site: this.site_id });
   }
   handleCancel(): void {
     this.isVisible = false;
@@ -107,10 +107,10 @@ export class OwnerPaymentsComponent implements OnInit {
     this.listOfData = await this.appService.retrieveOwnerPaymentsBySiteId(this.site_id)
     this.users = await this.userService.getOrganizationUsers();
     this.OwnerPaymentRoles = await this.appService.getRoles();
-    this.subOrganizations = await this.appService.getSubOrganizations();
-    this.vendorItems = await this.appService.getInventoryBySiteId(this.site_id)
+    this.clients = await this.appService.getClient();
+    this.projectItems = await this.appService.getInventoryBySiteId(this.site_id)
     this.OwnerPaymentRoles = this.OwnerPaymentRoles.map(role => ({ key: role.role_name, value: role.id }))
-    this.subOrganizations = this.subOrganizations.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as SubOrganization[]
+    this.clients = this.clients.map(sub => ({ ...sub, key: sub.name as string, value: sub.id as number })) as Client[]
     // this.mapOwnerPaymentData();
     this.updateEditCache();
     this.total = this.listOfData.reduce((sum, payment) => {
@@ -121,8 +121,8 @@ export class OwnerPaymentsComponent implements OnInit {
   index = 0;
   addItem(input: HTMLInputElement): void {
     const value = input.value;
-    if (!this.vendorItems.some(pro => !value || pro.name === value.trim())) {
-      this.vendorItems = [...this.vendorItems, { name: input.value, isCustom: true }];
+    if (!this.projectItems.some(pro => !value || pro.name === value.trim())) {
+      this.projectItems = [...this.projectItems, { name: input.value, isCustom: true }];
       input.value = ''
     }
   }
@@ -137,11 +137,11 @@ export class OwnerPaymentsComponent implements OnInit {
   //     data.quantity = reportToOwnerPayment?.quantity || 0;
   //     data.is_general = reportToOwnerPayment?.is_general || false;
   //     data.refered_by = reportToOwnerPayment?.refered_by || 0;
-  //     data.purchase_id = reportToOwnerPayment?.refered_by || 0;
+  //     data.task_id = reportToOwnerPayment?.refered_by || 0;
   //     data.is_paid = reportToOwnerPayment?.is_paid || false;
   //     data.site = reportToOwnerPayment?.site || 0;
   //     data.organization = reportToOwnerPayment?.organization || 0;
-  //     data.subOrganization = reportToOwnerPayment?.subOrganization || 0;
+  //     data.client = reportToOwnerPayment?.client || 0;
   //     data.created_by = reportToOwnerPayment?.created_by || 0;
   //   }
   //   )

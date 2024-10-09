@@ -7,7 +7,7 @@ import { AppPermissions } from '../../../services/app.constants';
 const routes: Routes = [
   {
     path: '', component: DashboardComponent,
-    data:{name:'Purchase Requests',permission:AppPermissions.MainDashboardView},
+    data:{name:'Task Requests',permission:AppPermissions.MainDashboardView},
     canActivate:[AuthGuard]
 
   },

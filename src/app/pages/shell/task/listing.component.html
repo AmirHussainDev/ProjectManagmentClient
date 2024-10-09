@@ -1,0 +1,129 @@
+<nz-row style="height: 100%;">
+    <nz-col [nzSpan]="!isMobile()&&showSide?8:24" style="height: 100%; overflow-y: auto;">
+        <div class="container">
+            <div class="section">
+                <div class="card-container">
+                    <div class="flex space-between" style="margin-bottom:5px">
+
+                        <span style="display: -webkit-box;width: 100%;">
+                            <h3 style="margin-right: 5px;">
+                                Tasks
+                            </h3>
+
+                            <nz-input-group [nzSuffix]="suffixIconSearch" [nzSuffix]="inputClearTpl">
+                                <input type="text" placeholder="Search here" [(ngModel)]="searchValue"
+                                    (keyup)="search()" nz-input />
+
+                            </nz-input-group>
+                            <ng-template #inputClearTpl>
+                                @if (searchValue) {
+                                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                                    (click)="searchValue = '';search()"></span>
+                                } @else{
+                                <span nz-icon nzType="search"></span>
+                                }
+                            </ng-template>
+                            <ng-template #suffixIconSearch>
+                                <span nz-icon nzType="search"></span>
+                            </ng-template>
+
+                        </span>
+                        <a (click)="showSide=true" [routerLink]="['./task']" [queryParams]="{ PO: 'new' }"
+                            [state]="{tracingId: 2}">
+                            <button nz-button nzType="primary" [nzSize]="'small'">
+                                <span nz-icon nzType="plus"> </span>
+                            </button>
+                        </a>
+                        <a (click)="export()" style="margin-left: 10px;">
+                            <button nz-button nzType="primary" [nzSize]="'small'">
+                                <span nz-icon nzType="download"> </span>
+                            </button>
+                        </a>
+                    </div>
+                    <nz-table [nzShowPagination]="false" [nzPageSize]="1000" [nzData]="listOfDisplayData"
+                        [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total" [nzPageIndex]="pageIndex"
+                        (nzQueryParams)="onTaskQueryParamsChange($event)">
+                        <thead>
+                            <tr>
+                                <th nzColumnKey="id" nzCustomFilter nzWidth="80%" [nzSortFn]="true">Task
+                                </th>
+                                <th nzColumnKey="state" [nzFilters]="filterStates" [nzFilterFn]="true">Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of listOfDisplayData" class="selectedItem">
+                                <td>
+                                    <nz-list nzItemLayout="horizontal">
+                                        <nz-list-item (click)="showSide=true"
+                                            [routerLink]="['/', 'task','list','task']"
+                                            [queryParams]="{ PO: data.task_no }">
+                                            <nz-list-item-meta>
+                                                <nz-list-item-meta-avatar *ngIf="data.filename; else initialsTemplate"
+                                                    [nzSrc]="apiUrl + '/images/' + data.filename"></nz-list-item-meta-avatar>
+                                                <ng-template #initialsTemplate>
+                                                    <div class="avatar-initials ant-list-item-meta-avatar">{{
+                                                        getInitials(data.assignee_name) }}
+                                                    </div>
+                                                </ng-template>
+                                                <nz-list-item-meta-title>
+                                                    <span class="flex space-between">
+                                                        <span>{{data.task_no}} - {{ data.title }}</span>
+
+                                                    </span>
+
+                                                </nz-list-item-meta-title>
+                                                <nz-list-item-meta-description>
+                                                    <span class="flex space-between">
+                                                        <span>
+                                                            <span> {{data.description}}</span>
+                                                            <nz-divider nzType="vertical"></nz-divider>
+                                                            <span class="dateDisplay">
+                                                                {{data.date_created | date : 'dd MMM yyyy'
+                                                                }}</span>
+                                                        </span>
+                                                    </span>
+                                                </nz-list-item-meta-description>
+                                            </nz-list-item-meta>
+                                        </nz-list-item>
+                                    </nz-list>
+                                </td>
+                                <td style="text-align: end;">
+                                    <span class="listSecondSection">
+                                        <span style="    display: inline-grid;
+                                            width: max-content;">
+                                            <span>{{data.state===states.InProgress?'':
+                                                data.total | currency :'PKR '}}</span>
+                                            <span *ngIf="data.state===states.InTesting&&data.balance"
+                                                class="remainingAmount">
+                                                {{data.balance | currency:'PKR '}}
+                                            </span>
+                                        </span>
+                                        <button nz-button nzType="primary"
+                                            [className]="data.state===states.Completed? 'green-button':'default'"
+                                            [nzDanger]="data.state===states.Completed"                                             nzShape="round">
+                                            {{ stateNames[data.state] }}
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+    </nz-col>
+    <nz-col class="sidebarright" [nzSpan]="!isMobile()&&showSide?16:0" *ngIf="!isMobile()&&showSide">
+        <router-outlet></router-outlet>
+    </nz-col>
+</nz-row>
+<div *ngIf="isMobile()&&showSide">
+    <nz-drawer nzWidth="100%" [nzVisible]="showSide" nzPlacement="right" [nzTitle]="" [nzExtra]=""
+        (nzOnClose)="showSide=false">
+        <ng-container *nzDrawerContent>
+
+            <router-outlet>
+            </router-outlet>
+        </ng-container>
+    </nz-drawer>
+</div>

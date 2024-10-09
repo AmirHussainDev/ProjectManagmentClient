@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SubOrganization } from '../../../../services/app.interfact';
+import { Client } from '../../../../services/app.interfact';
 import { AppService } from '../../../../services/app.service';
 import { AppPermissions } from '../../../../services/app.constants';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -15,7 +15,7 @@ import { DataUrl, NgxImageCompressService, UploadResponse } from 'ngx-image-comp
 })
 export class OrganizationSelectorComponent implements OnInit {
   loading = false;
-  data: SubOrganization[] = []
+  data: Client[] = []
   @Input() visible = false;
   @Output() closeDrawer = new EventEmitter<boolean>();
   appPermissions = AppPermissions
@@ -31,13 +31,17 @@ export class OrganizationSelectorComponent implements OnInit {
   ) {
     this.addOrgForm = this.fb.group({
       name: ['', [Validators.required]],
+      contact:['', [Validators.required]],
       filename: ['', [Validators.required]],
+      projectDescription: ['', [Validators.required]],
+      projectDuration:[0,Validators.required],
+      projectBudget:[0,Validators.required],
       id: ['']
     })
   }
 
   ngOnInit(): void {
-    this.getAndSetSubOrganizations();
+    this.getAndSetClient();
   }
 
   getUserInitials(name: string): string {
@@ -59,10 +63,14 @@ export class OrganizationSelectorComponent implements OnInit {
 
     }
     if (index) {
-      const element = this.data.find(org => org.id == index) || { name:'', filename :''}
+      const element = this.data.find(org => org.id == index) || { name:'', filename :'',projectDescription:'',projectDuration:0,projectBudget:0,contact:''}
       this.addOrgForm = this.fb.group({
         name: [element.name, [Validators.required]],
         filename: [element.filename, [Validators.required]],
+        contact: [element.contact,[Validators.required]],
+        projectDescription: [element.projectDescription,[Validators.required]],
+        projectDuration: [element.projectDuration,[Validators.required]],
+        projectBudget: [element.projectBudget,[Validators.required]],
         id: [index]
       })
       this.avatarUrl = element.filename || ''
@@ -72,11 +80,11 @@ export class OrganizationSelectorComponent implements OnInit {
 
   async handleOk() {
     this.newItem ?
-      await this.appService.createSubOrganization(this.addOrgForm.getRawValue())
+      await this.appService.createClient(this.addOrgForm.getRawValue())
       :
-      await this.appService.updateSubOrganization(this.addOrgForm.getRawValue())
+      await this.appService.updateClient(this.addOrgForm.getRawValue())
     this.isModalVisible = false;
-    this.getAndSetSubOrganizations();
+    this.getAndSetClient();
   }
 
   compressFile() {
@@ -178,14 +186,14 @@ export class OrganizationSelectorComponent implements OnInit {
     });
   }
 
-  async getAndSetSubOrganizations() {
+  async getAndSetClient() {
     this.loading = true;
-    this.data = await this.appService.getSubOrganizations(true);
+    this.data = await this.appService.getClient(true);
     this.loading = false;
   }
 
-  setSubOrganization(item: SubOrganization) {
-    this.appService.setSubOrganization(item);
+  setClient(item: Client) {
+    this.appService.setClient(item);
     localStorage.setItem('selectedOrganzation', JSON.stringify(item))
     this.closeDrawer.emit(true)
   }

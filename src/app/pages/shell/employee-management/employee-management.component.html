@@ -24,7 +24,7 @@
     <button *appHasPermission="appPermissions.AddEmployees" nz-button nzType="primary" (click)="open()">Add</button>
 </div>
 
-<app-employee-contract *ngIf="visible" [subOrganizations]="subOrganizations" [visible]="visible" [users]="users"
+<app-employee-contract *ngIf="visible" [clients]="clients" [visible]="visible" [users]="users"
     (closeDrawer)="close($event)" [editableItem]="editableItem" [isNew]="isNew" ></app-employee-contract>
 <nz-table #editRowTable [nzPageSize]="1000" #sortTable nzShowPagination="false" [nzData]="listOfDisplayData"
     >
@@ -37,33 +37,32 @@
     </thead>
     <tbody>
 <ng-container *ngFor="let data of sortTable.data">
-        <tr  *filterUser="{ user: loggedInUser, permissionName: 0, isAdmin: this.loggedInUser.is_admin , isContractor: false,userIds:[data.employee,data.supervisor] }">
+        <tr  *filterUser="{ user: loggedInUser, permissionName: 0, isAdmin: this.loggedInUser.is_admin , isContractor: false,userIds:[data.employee] }">
             <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
                 <td>{{ data.employee|username }}</td>
-                <!-- <td>{{ data.position }}</td> -->
-                <td>{{ data.supervisor |username }}</td>
-                <td *filterUser="{ user: loggedInUser, permissionName: 0, isAdmin: this.loggedInUser.is_admin , isContractor: false,userIds:[] }">{{ data.salary }} {{data.isSalaryHourly?'/h':'/m'}}</td>
-                <td>{{ data.overtime }}</td>
+                <td>{{ data.position }}</td>
+                <td>{{ data.salary }}</td>
+                <!-- <td *filterUser="{ user: loggedInUser, permissionName: 0, isAdmin: this.loggedInUser.is_admin , isContractor: false,userIds:[] }">{{ data.salary }} {{data.isHourlyRateHourly?'/h':'/m'}}</td> -->
+                <!-- <td>{{ data.overtime }}</td>
                 <td>{{ data.siginout_required }}</td>
-                <td>{{ data.workingHours }}</td>
+                <td>{{ data.workingHours }}</td> -->
                 <td><a *appHasPermission="appPermissions.AddEmployees" (click)="startEdit(data.id);open(false)">Edit</a>
                 </td>
             </ng-container>
             <ng-template #editTemplate>
                 <td>{{ data.employee|username }}</td>
 
-                <!-- <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.position" /></td> -->
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.position" /></td>
 
-                <td>
+                <!-- <td>
                     <nz-select id="supervisor" [(ngModel)]="editCache[data.id].data.supervisor"
                         placeholder="Select user" *ngIf="listOfData.length">
                         <nz-option *ngFor="let user of users" [nzValue]="user?.id" [nzLabel]="user?.name"></nz-option>
                     </nz-select>
-                </td>
+                </td> -->
 
-                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.salary" />
-                    {{editCache[data.id].data.isSalaryHourly?'/h':'/m'}}</td>
-                <td>
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.salary" /></td>
+                <!-- <td>
                     <label nz-checkbox [(ngModel)]="editCache[data.id].data.overtime"
                         [nzChecked]="editCache[data.id].data.overtime"></label>
                 </td>
@@ -71,7 +70,7 @@
                     <label nz-checkbox [(ngModel)]="editCache[data.id].data.siginout_required"
                         [nzChecked]="editCache[data.id].data.siginout_required"></label>
                 </td>
-                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.workingHours" /></td>
+                <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.workingHours" /></td> -->
 
                 <td>
                     <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;

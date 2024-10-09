@@ -1,10 +1,14 @@
 import { FormControl, FormArray, FormGroup } from "@angular/forms";
 import { User } from "../pages/shell/team/users/users.interface";
 
-export interface SubOrganization {
+export interface Client {
     id: number;
     organization_id: number;
     name: string;
+    contact: string;
+    projectDescription: string;
+    projectDuration: number;
+    projectBudget: number;
     key?: string;
     value?: number;
     filename?: string;
@@ -46,7 +50,7 @@ export interface RoleObj {
 export interface SaleOrder {
     id?: number;
     state: number;
-    notes: string;
+    description: string;
     item_cost: number;
     amount_paid: number;
     additional_cost: number;
@@ -54,11 +58,11 @@ export interface SaleOrder {
     shipment_charges: number;
     total: number;
     balance: number;
-    vendor_id: number;
+    project_id: number;
     organization_id: number;
-    sub_organization_id: number;
-    items: PurchaseItem[],
-    subject: string;
+    client_id: number;
+    items: TaskItem[],
+    title: string;
     items_discount_total: number;
     overall_discount_total: number;
     overall_discount: number;
@@ -83,37 +87,24 @@ export interface SaleItem {
     returned_now: boolean;
 }
 
-export interface PurchaseOrder {
+export interface TaskOrder {
     id?: number;
     state: number;
-    notes: string;
-    item_cost: number;
-    amount_paid: number;
-    isSiteBased: number;
-    site_ids: string;
-    additional_cost: number;
+    type:number;
+    description:string;
     created_by: number;
-    shipment_charges: number;
-    total: number;
-    balance: number;
-    vendor: number;
     organization_id: number;
-    sub_organization_id: number;
-    items: PurchaseItem[],
-    subject: string;
-    items_discount_total: number;
-    overall_discount_total: number;
-    overall_discount: number;
-    invoice_date: Date;
+    client_id: number;
+    title: string;
     due_date: Date;
-    sales_person: number;
+    assignee: number;
     attachment: string;
     terms: string;
 }
 
-export interface PurchaseItem {
+export interface TaskItem {
     id?: number;
-    purchase_id?: number;
+    task_id?: number;
     name: string;
     qty: number;
     unit_price: number;
@@ -125,10 +116,10 @@ export interface PurchaseItem {
 
 export interface SaleDetails {
     id: FormControl;
-    subject: FormControl;
+    title: FormControl;
     items: FormArray<FormGroup<SaleItemControl>>;
     state: FormControl;
-    notes: FormControl;
+    description: FormControl;
     items_discount_total: FormControl;
     overall_discount_total: FormControl;
     item_cost: FormControl;
@@ -142,7 +133,7 @@ export interface SaleDetails {
     total: FormControl;
     balance: FormControl;
     organization_id: FormControl;
-    sub_organization_id: FormControl;
+    client_id: FormControl;
     invoice_date: FormControl;
     due_date: FormControl;
     customer: FormControl;
@@ -161,7 +152,7 @@ export interface SaleItemReturnControl {
     date_created?: FormControl;
 }
 export interface PaymentHistory {
-    notes: FormControl;
+    description: FormControl;
     total: FormControl;
     date_created?: FormControl;
     added_by?: FormControl;
@@ -171,7 +162,7 @@ export interface SaleItemControl {
     sale_id?: FormControl;
     name: FormControl;
     selected_item: FormControl,
-    vendor: FormControl,
+    project: FormControl,
     qty: FormControl;
     actualQty: FormControl;
     unit_price: FormControl;
@@ -184,40 +175,27 @@ export interface SaleItemControl {
     isCustom?: FormControl;
     returned_now?: FormControl;
 }
-export interface PurchaseDetails {
+export interface TaskDetails {
+    severity: FormControl;
     id: FormControl;
-    subject: FormControl;
-    items: FormArray;
-    selectedVendor: FormControl;
-    isSiteBased: FormControl;
-    site_ids: FormControl;
+    title: FormControl;
+    description:FormControl;
     state: FormControl;
-    notes: FormControl;
-    items_discount_total: FormControl;
-    overall_discount_total: FormControl;
-    item_cost: FormControl;
-    payment_history: FormArray<FormGroup<PaymentHistory>>;
-    amount_paid: FormControl;
-    additional_cost: FormControl;
-    overall_discount: FormControl;
+    type:FormControl;
     created_by: FormControl;
     date_created: FormControl;
-    shipment_charges: FormControl;
-    total: FormControl;
-    balance: FormControl;
-    vendor: FormControl;
     organization_id: FormControl;
-    sub_organization_id: FormControl;
-    invoice_date: FormControl;
+    client_id: FormControl;
+    start_date:FormControl;
     due_date: FormControl;
-    sales_person: FormControl;
+    assignee: FormControl;
     attachment: FormControl;
-    purchase_no:FormControl;
+    task_no:FormControl;
     terms: FormControl;
 }
 export interface ItemControl {
     id?: FormControl;
-    purchase_id?: FormControl;
+    task_id?: FormControl;
     name: FormControl;
     qty: FormControl;
     unit_price: FormControl;
@@ -229,7 +207,7 @@ export interface ItemControl {
 
 export interface ContractDetails {
     id: FormControl;
-    subject: FormControl;
+    title: FormControl;
     details:FormControl;
     contractor: FormControl;
     state: FormControl;
@@ -241,11 +219,11 @@ export interface ContractDetails {
     created_by: FormControl;
     total: FormControl;
     organization: FormControl;
-    subOrganization: FormControl;
+    client: FormControl;
     site: FormControl;
     attachment: FormControl;
     terms: FormControl;
-    no_of_units:FormControl;
+    no_of_hours:FormControl;
     include_weekends:FormControl;
 }
 
@@ -266,7 +244,7 @@ export interface SiteDetails {
     created_by: FormControl;
     total: FormControl;
     organization: FormControl;
-    subOrganization: FormControl;
+    client: FormControl;
 }
 
 export interface Expense {
@@ -276,11 +254,11 @@ export interface Expense {
     quantity: number;
     amount: number;
     refered_by: number;
-    purchase_id?: number;
+    task_id?: number;
     is_paid: boolean;
     site: number;
     organization: number;
-    subOrganization: number;
+    client: number;
     created_by?: number;
     note: string;
     unit_price?: number;
@@ -293,11 +271,11 @@ export interface ExpenseForm {
     quantity: FormControl;
     amount: FormControl;
     refered_by: FormControl;
-    purchase_id?: FormControl;
+    task_id?: FormControl;
     is_paid: FormControl;
     site: FormControl;
     organization?: FormControl;
-    subOrganization?: FormControl;
+    client?: FormControl;
     createdBy?: FormControl;
     note: FormControl;
     unit_price: FormControl;
@@ -311,7 +289,7 @@ export interface OwnerPayment {
     is_paid: boolean;
     site: number;
     organization: number;
-    subOrganization: number;
+    client: number;
     created_by?: number;
     note: string;
 }
@@ -323,7 +301,7 @@ export interface OwnerPaymentForm {
     is_paid: FormControl;
     site: FormControl;
     organization?: FormControl;
-    subOrganization?: FormControl;
+    client?: FormControl;
     created_by?: FormControl;
     note: FormControl;
 }
@@ -333,7 +311,7 @@ export interface ContractPayment {
     id: number;
     contractor: number;
     amount: number;
-    subject: string;
+    title: string;
 }
 export interface ContractorWorkLogForm {
     id?: FormControl;
@@ -341,11 +319,11 @@ export interface ContractorWorkLogForm {
     note: FormControl;
     work_from: FormControl;
     work_to: FormControl;
-    no_of_units: FormControl;
+    no_of_hours: FormControl;
     contract: FormControl;
     site: FormControl;
     organization?: FormControl;
-    subOrganization?: FormControl;
+    client?: FormControl;
     created_by?: FormControl;
 }
 export interface ContractorWorkLog {
@@ -355,9 +333,10 @@ export interface ContractorWorkLog {
     note: string;
     work_from: Date;
     work_to: Date;
-    no_of_units: Date;
+    no_of_hours: Date;
     site: number;
-    contract: number;
+    created_by: any;
+    date_created: Date;
 }
 
 export interface ContractorPaymentForm {
@@ -367,7 +346,7 @@ export interface ContractorPaymentForm {
     contract: FormControl;
     site: FormControl;
     organization?: FormControl;
-    subOrganization?: FormControl;
+    client?: FormControl;
     created_by?: FormControl;
 }
 export interface ContractorPayment {
@@ -383,36 +362,35 @@ export interface ContractorPayment {
 export interface EmployeeForm {
     id: FormControl;
     organization: FormControl;
-    subOrganization: FormControl;
-    // position: FormControl;
+    client: FormControl;
+    position: FormControl;
     employee: FormControl;
-    supervisor: FormControl;
-    isSalaryHourly: FormControl;
+    // supervisor: FormControl;
+    // isHourlyRateHourly: FormControl;
     salary: FormControl;
-    overtime: FormControl;
-    siginout_required: FormControl;
+    // overtime: FormControl;
+    // siginout_required: FormControl;
     details: FormControl;
-    workingHours:FormControl;
+    // workingHours:FormControl;
 }
 
 
 export interface Employee {
     id: number;
     organization: number;
-    subOrganization: number;
-    // position: string;
+    client: number;
+    position: string;
     employee: any;
-    supervisor: any;
     salary: number;
-    workingHours:number;
-    isSalaryHourly:boolean;
-    overtime: boolean;
-    siginout_required: boolean;
+    // workingHours:number;
+    // isHourlyRateHourly:boolean;
+    // overtime: boolean;
+    // siginout_required: boolean;
     details: string;
     date_created:Date;
 }
 
-export interface Attendance {
+export interface Worklog {
     id: number;
     employee: number;
     sign_in: Date;
@@ -424,7 +402,8 @@ export interface Attendance {
     amount: number;
     created_by: number;
     date_created: Date;
-    attendance_date:Date,
+    worklog_date:Date;
+    paid:boolean;
 }
 
 export interface EmployeePayments {
@@ -437,7 +416,7 @@ export interface EmployeePayments {
 
     balance: number;
 
-    payment_notes: string;
+    payment_description: string;
 
     created_by: User;
 

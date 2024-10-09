@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { AppService } from '../../services/app.service';
 import { Subscription, filter, of } from 'rxjs';
-import { Organization, SubOrganization } from '../../services/app.interfact';
+import { Organization, Client } from '../../services/app.interfact';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AppPermissions, SaleStates } from '../../services/app.constants';
@@ -24,10 +24,10 @@ export class ShellComponent implements OnInit, OnDestroy {
   sites: any[] = [];
   site: any = {};
   siteForm: FormGroup;
-  showOrganizations = false;
+  showClients = false;
   siteSubscription: Subscription;
-  subOrgSubscription: Subscription;
-  currentSubOrganization: SubOrganization
+  clientSubscription: Subscription;
+  currentClient: Client
   currentRoutePath: string;
   currentUrl: any;
   currentRoutes: string[] = [];
@@ -55,7 +55,7 @@ export class ShellComponent implements OnInit, OnDestroy {
       this.isCollapsed=true;
     }
     this.loggedInUser = this.userService.getUserDetails();
-    this.appService.getSubOrganizations(true);
+    this.appService.getClient(true);
     this.organization = this.appService.organization;
     this.titleService.setTitle(this.organization.name)
     this.setFavicon(this.organization.icon)
@@ -84,8 +84,8 @@ export class ShellComponent implements OnInit, OnDestroy {
     console.log(this.currentRoutes);
   }
 
-  toggleOrganizations() {
-    this.showOrganizations = !this.showOrganizations;
+  toggleClients() {
+    this.showClients = !this.showClients;
   }
 
   onSiteChange() {
@@ -93,9 +93,9 @@ export class ShellComponent implements OnInit, OnDestroy {
     this.siteSubscription = this.siteForm.valueChanges.subscribe(change => {
       this.setCurrentSite(change.site);
     });
-    this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
+    this.clientSubscription = this.appService.currentClient.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
-        this.currentSubOrganization = change;
+        this.currentClient = change;
         this.currentOrganizationId = change.id
       }
     });
@@ -116,12 +116,12 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   logout() {
     this.userService.logout()
-    this.appService.setSubOrganization({ id: 0, name: '' } as SubOrganization)
+    this.appService.setClient({ id: 0, name: '' } as Client)
   }
 
   ngOnDestroy() {
     if (this.siteSubscription) { this.siteSubscription.unsubscribe() }
-    if (this.subOrgSubscription) { this.subOrgSubscription.unsubscribe() }
+    if (this.clientSubscription) { this.clientSubscription.unsubscribe() }
   }
 
   getUserInitials(name: string): string {

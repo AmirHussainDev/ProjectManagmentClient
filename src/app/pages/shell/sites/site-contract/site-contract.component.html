@@ -22,7 +22,7 @@
         [nzActive]="isActive || (contractDetails.get('state')?.value !== contractStates.Approved && contractDetails.get('state')?.value !== contractStates.Completed )"
         [nzDisabled]="(contractDetails.get('state')?.value !== contractStates.Approved && contractDetails.get('state')?.value !== contractStates.Completed )">
 
-        <div class="purchase-request" id="print-section">
+        <div class="task-request" id="print-section">
             <nz-card style="width:100%">
                 <form nz-form [formGroup]="contractDetails" (ngSubmit)="submitForm()">
                     <div #content>
@@ -96,7 +96,7 @@
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
                                         nzFor="payment_schedule">No of Days</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        {{contractDetails.get('no_of_units')?.value}}
+                                        {{contractDetails.get('no_of_hours')?.value}}
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -114,9 +114,9 @@
                             *ngIf="contractDetails.get('contract_type')?.value===contractorType.MeasurementBased">
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired
-                                        nzFor="no_of_units">No of Units</nz-form-label>
+                                        nzFor="no_of_hours">No of Units</nz-form-label>
                                     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
-                                        <input (change)="setAmountPerUnit()" class=" inputField" nz-input formControlName="no_of_units">
+                                        <input (change)="setAmountPerUnit()" class=" inputField" nz-input formControlName="no_of_hours">
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -135,10 +135,10 @@
 
                                 <nz-form-item>
                                     <nz-form-label [nzMd]="6" [nzSm]="24" [nzXs]="12" nzRequired
-                                        nzFor="subject">Subject</nz-form-label>
+                                        nzFor="title">Title</nz-form-label>
                                     <nz-form-control [nzMd]="17" [nzSm]="24" [nzXs]="24"
                                         nzErrorTip="The input is not valid date!">
-                                        <input class=" inputField" z-input formControlName="subject">
+                                        <input class=" inputField" z-input formControlName="title">
                                     </nz-form-control>
                                 </nz-form-item>
                             </nz-col>
@@ -219,7 +219,7 @@
         <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">
 
             <nz-card style="width:100%">
-                <app-work-log [site_id]="site_id" [contractDetails]="contractDetails.getRawValue()"></app-work-log>
+                <!-- <app-work-log [task_id]="site_id" [contractDetails]="contractDetails.getRawValue()"></app-work-log> -->
             </nz-card>
         </nz-col>
         <nz-col [nzMd]="12" [nzSm]="24" [nzXs]="24">

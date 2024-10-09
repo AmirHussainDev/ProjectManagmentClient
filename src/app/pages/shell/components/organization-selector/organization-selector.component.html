@@ -4,12 +4,15 @@
     <ng-container *nzDrawerContent>
         <nz-list nzItemLayout="horizontal" [nzLoading]="loading">
             @for (item of data; track item;) {
-            <nz-list-item nz-button nzType="text" style="padding: 4px;" class="selectedItem" (click)="setSubOrganization(item)">
+            <nz-list-item nz-button nzType="text" style="padding: 4px;" class="selectedItem" (click)="setClient(item)">
                 <nz-list-item-meta [nzAvatar]="item.filename? item.filename:
-                'A'" nzDescription="">
+                'A'" >
                     <nz-list-item-meta-title>
-                        {{ item.name }}
+                        {{ item.name }} <b>{{item.projectDuration}} hours</b> &nbsp; <b>{{item.projectBudget | currency :'PKR '}}</b>
                     </nz-list-item-meta-title>
+                    <nz-list-item-meta-description>
+                        {{item.projectDescription}}
+                    </nz-list-item-meta-description>
                 </nz-list-item-meta>
                 <ul nz-list-item-actions style="border: 0px !important;">
                     <nz-list-item-action> <span nz-icon nzType="edit" nzTheme="outline"
@@ -24,19 +27,40 @@
         </nz-list>
 
     </ng-container>
-    <nz-modal [(nzVisible)]="isModalVisible" [nzTitle]="newItem?'Add Organization':'Edit Organization'"
+    <nz-modal [(nzVisible)]="isModalVisible" [nzTitle]="newItem?'Add Client':'Edit Client'"
         (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
         <nz-form *nzModalContent [formGroup]="addOrgForm">
             <nz-form-item>
-                <nz-form-label nzRequired>Organization Name</nz-form-label>
+                <nz-form-label nzRequired>Client Name</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
                     <input nz-input formControlName="name" />
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-                <nz-form-label nzRequired>Organization Image</nz-form-label>
+                <nz-form-label nzRequired>Contact</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
-
+                    <input nz-input formControlName="contact" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzRequired>Project Description</nz-form-label>
+                <nz-form-control nzHasFeedback nzErrorTip="Please input project name and details">
+                    <textarea rows="5" nz-input formControlName="projectDescription" ></textarea>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzRequired>Project Duration in Hours</nz-form-label>
+                <nz-form-control nzHasFeedback nzErrorTip="Please input project name and details">
+                    <nz-input-number formControlName="projectDuration" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>                 </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzRequired>Project Budget</nz-form-label>
+                <nz-form-control nzHasFeedback nzErrorTip="Please input project name and details">
+                    <nz-input-number formControlName="projectBudget" nzPrefix="Rs." [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>                 </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label nzRequired>Client Image</nz-form-label>
+                <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
                     <section>
                         <button (click)="compressFile()">Upload</button>
                         <div>
@@ -52,7 +76,7 @@
 
 <ng-template #organization>
     <div class="flex space-between center">
-        <h4>Organizations</h4>
+        <h4>Clients</h4>
 
         <div *appHasPermission="appPermissions.CreateOrganization">
             <button nz-button nzType="primary" (click)="showModal()">+</button>

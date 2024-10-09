@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Employee, SubOrganization } from '../../../services/app.interfact';
+import { Employee, Client } from '../../../services/app.interfact';
 import { AppService } from '../../../services/app.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../services/user.service';
@@ -19,35 +19,35 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       compare: (a: any, b: any) => a.employeeName.localeCompare(b.employeeName),
       priority: 1
     },
-    // {
-    //   title: 'Position',
-    //   compare: (a: any, b: any) => a.position.localeCompare(b.position),
-    //   priority: false
-    // },
     {
-      title: 'Supervisor',
-      compare: (a: any, b: any) => a.supervisorName - b.supervisorName,
+      title: 'Position',
+      compare: (a: any, b: any) => a.position.localeCompare(b.position),
       priority: 2
     },
-    {
-      title: 'Overtime',
-      compare: (a: any, b: any) => a.overtime - b.overtime,
-      priority: 4
-    },
-    {
-      title: 'Signout Required',
-      compare: (a: any, b: any) => a.siginout_required - b.siginout_required,
-      priority: 5
-    },
-    {
-      title: 'Working Hours',
-      compare: (a: any, b: any) => a.workingHours - b.workingHours,
-      priority: 6
-    },
+    // {
+    //   title: 'HourlyRate',
+    //   compare: (a: any, b: any) => a.salary - b.salary,
+    //   priority: 3
+    // },
+    // {
+    //   title: 'Overtime',
+    //   compare: (a: any, b: any) => a.overtime - b.overtime,
+    //   priority: 4
+    // },
+    // {
+    //   title: 'Signout Required',
+    //   compare: (a: any, b: any) => a.siginout_required - b.siginout_required,
+    //   priority: 5
+    // },
+    // {
+    //   title: 'Working Hours',
+    //   compare: (a: any, b: any) => a.workingHours - b.workingHours,
+    //   priority: 6
+    // },
     {
       title: 'Action',
       compare: (a: any, b: any) => (a.id || 0) - (b.id || 0),
-      priority: 7
+      priority: 5
     }
   ];
   listOfData: Employee[] = [
@@ -56,8 +56,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   users: User[] = []
   visible = false;
   EmployeeRoles: any[];
-  subOrganizations: SubOrganization[];
-  subOrgSubscription: Subscription;
+  clients: Client[];
+  clientSubscription: Subscription;
   appPermissions = AppPermissions;
   currentOrganizationId: number;
   searchVisible: boolean;
@@ -78,7 +78,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     if(this.loggedInUser.is_admin){
       this.listOfColumn.push(
         {
-          title: 'Salary',
+          title: 'HourlyRate',
           compare: (a: Employee, b: Employee) => a.salary - b.salary,
           priority: 3
         },)
@@ -89,7 +89,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   }
   async getUsers() {
     this.users = await this.userService.getOrganizationUsers()
-    this.subOrgSubscription = this.appService.currentSubOrganization.subscribe(change => {
+    this.clientSubscription = this.appService.currentClient.subscribe(change => {
       if (change && change.id > 0 && this.currentOrganizationId != change.id) {
         this.populateEmployeeData();
         this.currentOrganizationId = change.id
@@ -99,8 +99,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subOrgSubscription) {
-      this.subOrgSubscription.unsubscribe()
+    if (this.clientSubscription) {
+      this.clientSubscription.unsubscribe()
     }
   }
 
@@ -120,7 +120,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     this.listOfData = await this.appService.getOrganizationEmployees(),
       this.listOfDisplayData = this.listOfData;
     //   this.EmployeeRoles = await this.appService.getRoles();
-    // this.subOrganizations = await this.appService.getSubOrganizations();
+    // this.clients = await this.appService.getClient();
     this.updateEditCache();
   }
 
@@ -144,14 +144,14 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     const index = this.listOfData.findIndex(item => item.id === id);
     await this.appService.updateEmployee({
       id: this.editCache[id].data.id,
-      // position: this.editCache[id].data.position,
+      position: this.editCache[id].data.position,
       employee: this.editCache[id].data.employee,
-      supervisor: this.editCache[id].data.supervisor,
+      // supervisor: this.editCache[id].data.supervisor,
       salary: this.editCache[id].data.salary,
-      overtime: this.editCache[id].data.overtime,
-      isSalaryHourly: this.editCache[id].data.isSalaryHourly,
-      workingHours: this.editCache[id].data.workingHours,
-      siginout_required: this.editCache[id].data.siginout_required,
+      // overtime: this.editCache[id].data.overtime,
+      // isHourlyRateHourly: this.editCache[id].data.isHourlyRateHourly,
+      // workingHours: this.editCache[id].data.workingHours,
+      // siginout_required: this.editCache[id].data.siginout_required,
       details: this.editCache[id].data.details,
     });
     this.editCache[id].edit = false;

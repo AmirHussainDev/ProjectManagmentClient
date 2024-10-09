@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeManagementComponent } from './employee-management.component';
-import { AttendanceComponent } from './attendance/attendance.component';
+import { WorklogComponent } from './worklog/worklog.component';
 import { PayProcessingComponent } from './pay-processing/pay-processing.component';
 import { EmployeeManagementRoutingModule } from './employee-management-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import * as AllIcons from '@ant-design/icons-angular/icons';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { EmployeeContractComponent } from './employee-contract/employee-contract.component';
 import { SafePipe } from '../../../pipes/safe.pipe';
-import { AttendanceDetailsComponent } from './attendance/attendance-details/attendance-details.component';
+import { WorklogDetailsComponent } from './worklog/worklog-details/worklog-details.component';
 import { SharedModule } from '../shared/shared.module';
 
 const antDesignIcons = AllIcons as {
@@ -28,10 +28,10 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 @NgModule({
   declarations: [
     EmployeeManagementComponent,
-    AttendanceComponent,
+    WorklogComponent,
     PayProcessingComponent,
     EmployeeContractComponent,
-    AttendanceDetailsComponent
+    WorklogDetailsComponent
     
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US },

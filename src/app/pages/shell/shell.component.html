@@ -33,72 +33,44 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.ManageSales">
-          <li nz-menu-item [class.selected-route]="currentRoutes.indexOf('customers')>-1 ">
-            <span nz-icon style="font-size: 18px;" nzType="user-switch"></span>
-            <span>
-              <a class="nav-link" [routerLink]="['/purchase/customers']" (click)="isMobile()?isCollapsed=true:null">
-                
-                {{isCollapsed? '': 'Customers'}}
-              </a>
-            </span>
-          </li>
+          
           <li nz-menu-item
-            [class.selected-route]="currentRoutes.indexOf('sales')>-1 && (currentRoutes.indexOf('status=' + saleState.Quote)>-1 || currentRoutes.join('').indexOf('SALE=')>-1 )">
-            <span nz-icon style="font-size: 18px;" nzType="file-text"></span>
-            <span>
-              <a class="nav-link" [routerLink]="['/purchase/sales']" [queryParams]="{status:saleState.Quote}"
-                (click)="isMobile()?isCollapsed=true:null">
-                {{isCollapsed? '': 'Quotes'}}
-              </a>
-            </span>
-          </li>
-          <li nz-menu-item
-            [class.selected-route]="currentRoutes.indexOf('sales')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
+            [class.selected-route]="currentRoutes.indexOf('board')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
             <span nz-icon style="font-size: 18px;" nzType="file-done"></span>
             <span>
-              <a class="nav-link" [routerLink]="['/purchase/sales']" [queryParams]="{status:saleState.Invoiced  }"
+              <a class="nav-link" [routerLink]="['/task/board']" [queryParams]="{status:saleState.Invoiced  }"
                 (click)="isMobile()?isCollapsed=true:null">
                 
-                {{isCollapsed? '': 'Sale Invoices'}}
+                {{isCollapsed? '': 'Board'}}
 
-              </a>
-            </span>
-          </li>
-        </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li *appHasPermission="appPermissions.ViewVendors" nz-menu-item
-            [class.selected-route]="currentRoutes.indexOf('vendor')>-1">
-            <span nz-icon style="font-size: 18px;" nzType="profile"></span>
-            <span>
-              <a class="nav-link" [routerLink]="['/vendor']" [state]="{tracingId: 123}"
-                (click)="isMobile()?isCollapsed=true:null">
-                Vendors
               </a>
             </span>
           </li>
           <li nz-menu-item *appHasPermission="appPermissions.InventoryUpdates"
-            [class.selected-route]="currentRoutes.indexOf('customers')==-1 && currentRoutes.indexOf('purchase')>-1 && currentRoutes.indexOf('sales')==-1&&currentRoutes.indexOf('sale')==-1&&currentRoutes.indexOf('sales?status=' + saleState.Quote)==-1&&currentRoutes.indexOf('sales?status=' + saleState.Invoiced)==-1">
+            [class.selected-route]="currentRoutes.indexOf('customers')==-1 && currentRoutes.indexOf('list')>-1 && currentRoutes.indexOf('sales')==-1&&currentRoutes.indexOf('sale')==-1&&currentRoutes.indexOf('sales?status=' + saleState.Quote)==-1&&currentRoutes.indexOf('sales?status=' + saleState.Invoiced)==-1">
             <span nz-icon style="font-size: 18px;" nzType="pull-request"></span>
             <span>
-              <a class="nav-link" [routerLink]="['/purchase']" [state]="{tracingId: 123}"
+              <a class="nav-link" [routerLink]="['/task/list']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Purchase Invoices
+                Tasks
               </a>
             </span>
           </li>
-          <li *appHasPermission="appPermissions.InventoryUpdates" nz-menu-item
-            [class.selected-route]="currentRoutes.indexOf('inventory')>-1">
-            <span nz-icon style="font-size: 18px;" nzType="appstore"></span>
+          <li nz-menu-item
+            [class.selected-route]="currentRoutes.indexOf('report')>-1">
+            <span nz-icon style="font-size: 18px;" nzType="file-done"></span>
             <span>
-              <a class="nav-link" [routerLink]="['/inventory']" [state]="{tracingId: 123}"
+              <a class="nav-link" [routerLink]="['/task/report']" [queryParams]="{status:saleState.Invoiced  }"
                 (click)="isMobile()?isCollapsed=true:null">
-                Inventory
+                
+                {{isCollapsed? '': 'Timeline'}}
+
               </a>
             </span>
           </li>
-
         </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline">
+      
+        <!-- <ul nz-menu nzTheme="dark" nzMode="inline">
           <li *appHasPermission="appPermissions.ManageSites" nz-menu-item style="margin-top: 12px;"
             [class.selected-route]="currentRoutes.indexOf('sites')>-1">
             <span nz-icon style="font-size: 18px;" nzType="build" size></span>
@@ -109,10 +81,10 @@
               </a>
             </span>
           </li>
-        </ul>
+        </ul> -->
         <ul nz-menu nzTheme="dark" nzMode="inline">
           <li nz-menu-item style="margin-top: 12px;"
-            [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('attendance')===-1&&currentRoutes.indexOf('pay-processing')===-1">
+            [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('worklog')===-1&&currentRoutes.indexOf('pay-processing')===-1">
             <span nz-icon style="font-size: 18px;" nzType="profile" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/employee']" [state]="{tracingId: 123}"
@@ -121,15 +93,15 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('attendance')>-1">
+          <!-- <li nz-menu-item style="margin-top: 12px;" [class.selected-route]="currentRoutes.indexOf('worklog')>-1">
             <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
             <span>
-              <a class="nav-link" [routerLink]="['/employee',loggedInUser.id,'attendance']" [state]="{tracingId: 123}"
+              <a class="nav-link" [routerLink]="['/employee',loggedInUser.id,'worklog']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Attendance
+                Worklog
               </a>
             </span>
-          </li>
+          </li> -->
           <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.ManagePayments"
             [class.selected-route]="currentRoutes.indexOf('pay-processing')>-1">
             <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
@@ -165,7 +137,7 @@
 
         </ul>
       </div>
-      <nz-footer *ngIf="!isCollapsed">Veins system ©2024 Implement By SA3</nz-footer>
+      <nz-footer *ngIf="!isCollapsed">Eleware system ©2024 Implement By SA3</nz-footer>
     </nz-sider>
     <nz-layout [ngClass]="isMobile()?'height-greater-than-width':''" class="appbackground"
       *ngIf="!isMobile() || (isCollapsed && isMobile())">
@@ -179,16 +151,16 @@
           <span class="flex center space-between" [style.width]="isMobile()?'100%':'auto'">
             <span>
               <button nz-button class="header-button" style="color: #836d89; font-size: 12px;"
-                (click)="toggleOrganizations()">
+                (click)="toggleClients()">
                 <nz-avatar style="width: 24px;height: 24px;margin-right: 5px;"
-                  [nzSrc]="currentSubOrganization?.filename"></nz-avatar>
+                  [nzSrc]="currentClient?.filename"></nz-avatar>
 
-                {{currentSubOrganization?.name}}
+                {{currentClient?.name}}
                 <span nz-icon style="font-size: 12px;" nzType="down"
                   *appHasPermission="appPermissions.SwitchOrganization"></span>
               </button>
               <app-organization-selector *appHasPermission="appPermissions.SwitchOrganization"
-                [visible]="showOrganizations" (closeDrawer)="toggleOrganizations()"></app-organization-selector>
+                [visible]="showClients" (closeDrawer)="toggleClients()"></app-organization-selector>
 
             </span>
             <button nz-button class="userbtn" nzType="text" nz-dropdown [nzDropdownMenu]="menu1">

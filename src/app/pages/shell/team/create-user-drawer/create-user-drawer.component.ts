@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, input } from '@angular/
 import { User, UserCreateObj, UserUpdateObj } from '../users/users.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../../services/user.service';
-import { RoleObj, SubOrganization } from '../../../../services/app.interfact';
+import { RoleObj, Client } from '../../../../services/app.interfact';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
@@ -14,7 +14,7 @@ export class CreateUserDrawerComponent implements OnInit {
   @Input() visible = false;
   @Input() users: User[] = [];
   @Input() userRoles: RoleObj[] = [];
-  @Input() subOrganizations: SubOrganization[] = [];
+  @Input() clients: Client[] = [];
   @Input() isEdit: boolean=false;
   @Input() selectedUser: User;
   
@@ -29,7 +29,7 @@ export class CreateUserDrawerComponent implements OnInit {
       name: ['', [Validators.required]],
       reports_to: [0, [Validators.required]],
       role: [null, [Validators.required]],
-      sub_organization_id: [null, [Validators.required]],
+      client_id: [null, [Validators.required]],
       organization_id: [parseInt(localStorage.getItem('organization_id') || '0')],
       password: ['p@ssw0rD'],
       email: [''],
@@ -47,7 +47,7 @@ export class CreateUserDrawerComponent implements OnInit {
         name: [this.selectedUser.name, [Validators.required]],
         reports_to: [this.selectedUser.reports_to, [Validators.required]],
         role: [this.selectedUser.role_id, [Validators.required]],
-        sub_organization_id: [this.selectedUser.sub_organization_id, [Validators.required]],
+        client_id: [this.selectedUser.client_id, [Validators.required]],
         organization_id: [parseInt(localStorage.getItem('organization_id') || '0')],
         email: [this.selectedUser.email],
         contact_no: [this.selectedUser.contact_no, [Validators.required]],
