@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "veins-frontend": {
+    "project-pilot": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/veins-frontend",
+            "outputPath": "dist/project-pilot",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -73,10 +73,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "veins-frontend:build:production"
+              "buildTarget": "project-pilot:build:production"
             },
             "development": {
-              "buildTarget": "veins-frontend:build:development"
+              "buildTarget": "project-pilot:build:development"
             }
           },
           "defaultConfiguration": "development",
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "veins-frontend:build"
+            "buildTarget": "project-pilot:build"
           }
         },
         "test": {

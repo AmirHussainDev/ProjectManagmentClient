@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/veins-frontend/browser",
+    "public": "dist/project-pilot/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
