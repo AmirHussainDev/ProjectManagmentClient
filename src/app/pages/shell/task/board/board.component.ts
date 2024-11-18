@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AppService } from '../../../../services/app.service';
 import { environment } from '../../../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
-import { TaskCardColors, TaskColors, TaskStateNames, TaskStates, TaskStatesConnectivity, TaskTypeColors } from '../../../../services/app.constants';
+import { TaskCardColors, TaskColors, TaskSeverity, TaskSeverityColors, TaskStateNames, TaskStates, TaskStatesConnectivity, TaskTypeColors } from '../../../../services/app.constants';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ExportSheetService } from '../../../../services/export-sheet.service';
@@ -18,6 +18,10 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
   apiUrl = environment.apiUrl;
+  @ViewChild('actionSetting', { static: true }) actionSetting!: TemplateRef<any>;
+  @ViewChild('actionEdit', { static: true }) actionEdit!: TemplateRef<any>;
+  @ViewChild('actionEllipsis', { static: true }) actionEllipsis!: TemplateRef<any>;
+
   pendingInvoices: any[] = [];
   stateNames = TaskStateNames
   paymentConfirmations: any[] = [];
@@ -25,6 +29,9 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
   stateColors = TaskColors;
   stateCardColors = TaskCardColors;
   taskTypeColors = TaskTypeColors;
+  taskTypeIcons = TaskTypeColors;
+  taskSeverity = TaskSeverity;
+  taskSeverityColors = TaskSeverityColors;
   partialPayments: any[] = []
   clientSubscription: Subscription;
   showSide = false;
@@ -43,6 +50,20 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
     private exportSheetService: ExportSheetService
 
   ) { }
+  getActions(item: any): TemplateRef<any>[] {
+    return [
+      this.createActionTemplate(this.actionSetting, item),
+      this.createActionTemplate(this.actionEdit, item),
+      this.createActionTemplate(this.actionEllipsis, item),
+    ];
+  }
+  
+  createActionTemplate(template: TemplateRef<any>, item: any): TemplateRef<any> {
+    return {
+      ...template,
+      context: { item }, // Bind the item to the template context
+    } as any;
+  }
   total = 1;
   loading = true;
   pageSize = 10;
@@ -117,10 +138,10 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
         event.previousIndex,
         event.currentIndex
       );
-      this.updateDetails((event.container.data[event.currentIndex] as any).id,(TaskStates as any)[event.container.id])
+      this.updateDetails((event.container.data[event.currentIndex] as any).id, (TaskStates as any)[event.container.id])
     }
   }
-  async updateDetails(id:number, state:number) {
+  async updateDetails(id: number, state: number) {
 
     const body: any = {
       id,
@@ -162,7 +183,7 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.currentOrganizationId) {
           this.router.navigate(['/', 'task', 'board'], {
             queryParams: {
-              'PO': null,
+              'TASK': null,
             },
             queryParamsHandling: 'merge'
           })
@@ -170,14 +191,15 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.currentOrganizationId = change.id;
         this.showSide = false;
         this.route.queryParams.subscribe(async (params) => {
-          if (!params['PO']) {
+          this.onTaskQueryParamsChange({
+            pageIndex: 0,
+            pageSize: 0,
+            sort: [],
+            filter: []
+          })
+          if (!params['TASK']) {
             this.showSide = false;
-            this.onTaskQueryParamsChange({
-              pageIndex: 0,
-              pageSize: 0,
-              sort: [],
-              filter: []
-            })
+           
           } else {
             this.showSide = true
           }
@@ -220,4 +242,17 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.listOfDisplayData = this.pendingInvoices
     }
   }
+
+  actionSettingTemplate(item: any) {
+    return { item };
+  }
+
+  actionEditTemplate(item: any) {
+    return { item };
+  }
+
+  actionEllipsisTemplate(item: any) {
+    return { item };
+  }
 }
+

@@ -44,7 +44,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
   taskStatesConnectivity = TaskStatesConnectivity
   ganttChartOptions: Highcharts.Options = {};
-  showChart=false;
+  showChart = false;
   constructor(
     private appService: AppService,
     private media: MediaMatcher,
@@ -52,7 +52,8 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private exportSheetService: ExportSheetService
 
-  ) {         HighchartsGantt(Highcharts);
+  ) {
+    HighchartsGantt(Highcharts);
   }
   total = 1;
   loading = true;
@@ -61,84 +62,115 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   filterStates = Object.keys(TaskStateNames).map((res: any) => ({ text: TaskStateNames[res], value: res }))
   createGanttChart() {
 
-    const ganttData = this.pendingInvoices.map(task => ({
-        name: task.task_no,
-        start: new Date(task.start_date).getTime(),
-        end: new Date(task.due_date).getTime()
+    let formedData = this.pendingInvoices.map(task => ({
+      name: task.task_no,
+      title: task.title,
+      status: task.state,
+      start: new Date(task.start_date).getTime(),
+      end: new Date(task.due_date).getTime()
     }));
+    const ganttData = formedData.sort((a, b) => b.start - a.start);
+
     const handleTaskClick = (task: { name: any; }) => {
-      this.router.navigate(['/', 'task', 'report','task'], {
+      this.router.navigate(['/', 'task', 'report', 'task'], {
         queryParams: {
-          'PO': task.name,
+          'TASK': task.name,
         },
         queryParamsHandling: 'merge'
       });
-    this.showSide=true
-  };
+      this.showSide = true
+    };
 
     this.ganttChartOptions = {
-        chart: {
-            type: 'gantt',
-            height: 400
-        },
-        title: {
-          text: 'Tasks Timeline',
-          align: 'left',
-          style: {
-            fontSize: '12px', // Title font size
-            fontWeight: 'bold' // Title font weight
-          }
-        },
-        subtitle: {
-          text:
-            '',
-          align: 'left',
-          style: {
-            fontSize: '12px' // Subtitle font size
-          }
-        },
-        
-        credits: {
-          enabled: false
-        },
-        xAxis: {
-            type: 'datetime'
-        },
-        yAxis: {
-            title: {
-                text: 'Tasks'
-            },
-            categories: ganttData.map(task => task.name)
-        },
-        series: [{
-          type:'gantt',
-            name: 'Tasks',
-            data: ganttData.map(task => ({
-                name: task.name,
-                start: task.start,
-                end: task.end,
-                y: ganttData.findIndex(t => t.name === task.name),
-            }))
-        }],
-        tooltip: {
-            pointFormat: '<b>{point.name}</b>: {point.start:%e. %b %Y} - {point.end:%e. %b %Y}'
-        },
-        plotOptions: {
-          series: {
-              cursor: 'pointer',
-              point: {
-                  events: {
-                      click: function () {
-                          // Invoke the onClick callback passed from the component
-                          handleTaskClick(this);
-                      }
-                  }
-              }
-          }
+      chart: {
+        type: 'gantt',
+        height: 400
       },
+      title: {
+        text: 'Tasks Timeline',
+        align: 'left',
+        style: {
+          fontSize: '12px',
+          fontWeight: 'bold'
+        }
+      },
+      subtitle: {
+        text: '',
+        align: 'left',
+        style: {
+          fontSize: '12px'
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      xAxis: {
+        type: 'datetime'
+      },
+      yAxis: {
+        title: {
+          text: 'Tasks'
+        },
+        categories: ganttData.map(task => task.name)
+      },
+      series: [{
+        type: 'gantt',
+        name: 'Tasks',
+        data: ganttData.map(task => ({
+          name: task.name,
+          start: task.start,
+          end: task.end,
+          title: task.title,
+          status: task.status,
+          y: ganttData.findIndex(t => t.name === task.name),
+          color: this.stateCardColors[task.status] // Set color based on status
+        }))
+      }],
+      tooltip: {
+        pointFormat: '<b>{point.name} : {point.title}</b>: {point.start:%e. %b %Y} - {point.end:%e. %b %Y}'
+      },
+      legend: {
+        enabled: true,
+        layout: 'horizontal',
+        align: 'center',
+        verticalAlign: 'bottom',
+        labelFormatter: function () {
+          return this.name; // Display legend item based on series name
+        }
+      },
+      plotOptions: {
+        series: {
+          cursor: 'pointer',
+          point: {
+            events: {
+              click: function () {
+                handleTaskClick(this); // Handle click events on tasks
+              }
+            }
+          }
+        },
+        gantt: {
+          dataLabels: {
+            enabled: true,
+            format: '{point.title}', // Display the task title on the bar
+            style: {
+              color: '#000000', // Text color
+              fontWeight: 'bold', // Text style
+              textOutline: 'none' // No text outline for better readability
+            }
+          }
+        }
+      }
     };
-    this.showChart=true
-}
+
+    this.showChart = true;
+
+    // Helper function to get color by status
+
+
+  }
+
+  
   groupByState(items: any[]) {
     const mappedResults = items.reduce((result, item) => {
       // Check if the state already exists in the result
@@ -207,10 +239,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         event.previousIndex,
         event.currentIndex
       );
-      this.updateDetails((event.container.data[event.currentIndex] as any).id,(TaskStates as any)[event.container.id])
+      this.updateDetails((event.container.data[event.currentIndex] as any).id, (TaskStates as any)[event.container.id])
     }
   }
-  async updateDetails(id:number, state:number) {
+  async updateDetails(id: number, state: number) {
 
     const body: any = {
       id,
@@ -252,7 +284,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.currentOrganizationId) {
           this.router.navigate(['/', 'task', 'report'], {
             queryParams: {
-              'PO': null,
+              'TASK': null,
             },
             queryParamsHandling: 'merge'
           })
@@ -260,7 +292,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.currentOrganizationId = change.id;
         this.showSide = false;
         this.route.queryParams.subscribe(async (params) => {
-          if (!params['PO']) {
+          if (!params['TASK']) {
             this.showSide = false;
             this.onTaskQueryParamsChange({
               pageIndex: 0,

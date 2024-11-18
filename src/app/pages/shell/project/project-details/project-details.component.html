@@ -2,7 +2,7 @@
     (nzOnClose)="onClose()">
 
     <div *nzDrawerContent class="project-details">
-        <span *appHasPermission="appPermissions.UpdateProjects" > <input nz-input placeholder="Enter product name" [(ngModel)]="newProduct" style="margin-bottom: 12px;">
+        <span *appHasPermission="appPermissions.AddUpdateTask" > <input nz-input placeholder="Enter product name" [(ngModel)]="newProduct" style="margin-bottom: 12px;">
             <button nz-button nzType="primary" (click)="handleAddProduct()" style="margin-bottom: 12px;">Add
                 Product</button>
         </span>

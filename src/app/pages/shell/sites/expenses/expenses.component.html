@@ -127,7 +127,7 @@
         <tr *ngFor="let data of sortTable.data">
             <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
                 <td>{{ data.refered_by | username }}</td>
-                <td>{{!data.is_general?'PO - '+data.task_id+' ':''}}
+                <td>{{!data.is_general?'TASK - '+data.task_id+' ':''}}
                     {{ data.name }}</td>
                 <td>{{ data.quantity }}</td>
                 <td>{{ data.unit_price }}</td>

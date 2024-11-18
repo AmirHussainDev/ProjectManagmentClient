@@ -1196,7 +1196,7 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
   // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/driver.mjs
   var IDLE_DELAY = 5e3;
   var MAX_IDLE_DELAY = 3e4;
-  var SUPPORTED_CONFIG_VERSION = 1;
+  var SUPTASKRTED_CONFIG_VERSION = 1;
   var NOTIFICATION_OPTION_NAMES = [
     "actions",
     "badge",
@@ -1615,10 +1615,10 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
     async setupUpdate(manifest, hash) {
       try {
         const newVersion = new AppVersion(this.scope, this.adapter, this.db, this.idle, this.debugger, manifest, hash);
-        if (manifest.configVersion !== SUPPORTED_CONFIG_VERSION) {
+        if (manifest.configVersion !== SUPTASKRTED_CONFIG_VERSION) {
           await this.deleteAllCaches();
           await this.scope.registration.unregister();
-          throw new Error(`Invalid config version: expected ${SUPPORTED_CONFIG_VERSION}, got ${manifest.configVersion}.`);
+          throw new Error(`Invalid config version: expected ${SUPTASKRTED_CONFIG_VERSION}, got ${manifest.configVersion}.`);
         }
         await newVersion.initializeFully(this);
         this.versions.set(hash, newVersion);

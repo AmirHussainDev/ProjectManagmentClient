@@ -1,4 +1,4 @@
-<nz-drawer *appHasPermission="appPermissions.SwitchOrganization" [nzClosable]="false" [nzVisible]="visible"
+<nz-drawer *appHasPermission="appPermissions.SwitchClients" [nzClosable]="false" [nzVisible]="visible"
     nzPlacement="right" [nzTitle]="organization" (nzOnClose)="close()">
 
     <ng-container *nzDrawerContent>
@@ -6,9 +6,10 @@
             @for (item of data; track item;) {
             <nz-list-item nz-button nzType="text" style="padding: 4px;" class="selectedItem" (click)="setClient(item)">
                 <nz-list-item-meta [nzAvatar]="item.filename? item.filename:
-                'A'" >
+                'A'">
                     <nz-list-item-meta-title>
-                        {{ item.name }} <b>{{item.projectDuration}} hours</b> &nbsp; <b>{{item.projectBudget | currency :'PKR '}}</b>
+                        {{ item.name }} <b>{{item.projectDuration}} hours</b> &nbsp; <b>{{item.projectBudget | currency
+                            :item.currency || 'PKR'}}</b>
                     </nz-list-item-meta-title>
                     <nz-list-item-meta-description>
                         {{item.projectDescription}}
@@ -37,6 +38,15 @@
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
+                <nz-form-label nzRequired>Owner</nz-form-label>
+                <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
+                    <nz-select id="owner" formControlName="owner" placeholder="Select user">
+                        <nz-option *ngFor="let user of listOfData" [nzValue]="user?.id"
+                            [nzLabel]="user?.name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
                 <nz-form-label nzRequired>Contact</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
                     <input nz-input formControlName="contact" />
@@ -45,28 +55,51 @@
             <nz-form-item>
                 <nz-form-label nzRequired>Project Description</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input project name and details">
-                    <textarea rows="5" nz-input formControlName="projectDescription" ></textarea>
+                    <textarea rows="5" nz-input formControlName="projectDescription"></textarea>
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
                 <nz-form-label nzRequired>Project Duration in Hours</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input project name and details">
-                    <nz-input-number formControlName="projectDuration" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>                 </nz-form-control>
+                    <nz-input-number formControlName="projectDuration" [nzStep]="1"></nz-input-number>
+                </nz-form-control>
             </nz-form-item>
             <nz-form-item>
                 <nz-form-label nzRequired>Project Budget</nz-form-label>
-                <nz-form-control nzHasFeedback nzErrorTip="Please input project name and details">
-                    <nz-input-number formControlName="projectBudget" nzPrefix="Rs." [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>                 </nz-form-control>
-            </nz-form-item>
+                <nz-form-control nzHasFeedback nzErrorTip="Please input project budget and select currency">
+                  <nz-input-group [nzSuffix]="currencySelect">
+                    <nz-input-number
+                      formControlName="projectBudget"
+                      nzPrefix="Rs."
+                      [nzStep]="1"
+                      style="width: 70%;"
+                    ></nz-input-number>
+                  </nz-input-group>
+                  <ng-template #currencySelect>
+                    <nz-select formControlName="currency" style="width: 30%;">
+                        <nz-option *ngFor="let currency of currency | keyvalue" [nzValue]="currency.key" [nzLabel]="currency.key"></nz-option>
+                    </nz-select>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
             <nz-form-item>
                 <nz-form-label nzRequired>Client Image</nz-form-label>
                 <nz-form-control nzHasFeedback nzErrorTip="Please input Organization name">
                     <section>
-                        <button (click)="compressFile()">Upload</button>
                         <div>
-                            <img style="width: 100px;height: 100px;" *ngIf="addOrgForm.get('filename')?.value"
-                                [src]="addOrgForm.get('filename')?.value" alt="" />
+                            <img style="
+    max-width: 200px;
+    max-height: 200px;
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;"
+                                *ngIf="addOrgForm.get('filename')?.value" [src]="addOrgForm.get('filename')?.value"
+                                alt="" />
                         </div>
+                        <button style="margin:10px auto" (click)="compressFile()" nz-button nzType="primary"
+                            nzSize="default" nzShape="round">
+                            <span nz-icon nzType="upload"></span>
+                            Upload
+                        </button>
+
                     </section>
                 </nz-form-control>
             </nz-form-item>
@@ -78,7 +111,7 @@
     <div class="flex space-between center">
         <h4>Clients</h4>
 
-        <div *appHasPermission="appPermissions.CreateOrganization">
+        <div *appHasPermission="appPermissions.AddClients">
             <button nz-button nzType="primary" (click)="showModal()">+</button>
         </div>
     </div>

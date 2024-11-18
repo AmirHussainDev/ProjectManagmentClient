@@ -80,7 +80,7 @@ export class TaskComponent implements OnInit, OnDestroy, CanComponentDeactivate 
     start_date:new FormControl(new Date()),
     due_date: new FormControl(new Date()),
     assignee: new FormControl(0),
-    attachment: new FormControl(),
+    comments: new FormControl(),
     terms: new FormControl('')
     })
   sites: any[];
@@ -121,7 +121,7 @@ export class TaskComponent implements OnInit, OnDestroy, CanComponentDeactivate 
       start_date:new FormControl(new Date()),
       due_date: new FormControl(new Date()),
       assignee: new FormControl(0),
-      attachment: new FormControl(),
+      comments: new FormControl(),
       terms: new FormControl('')
     });
     this.taskDetails.controls.type.setValue(Object.keys(this.taskTypes).find(key=>Number(key)===Number(2)))
@@ -157,7 +157,7 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
   close() {
     this.router.navigate(['/', 'task',location.href.indexOf('board')>-1?'board':location.href.indexOf('report')>-1?'report':'list'], {
       queryParams: {
-        'PO': null,
+        'TASK': null,
       },
       queryParamsHandling: 'merge'
     })
@@ -174,11 +174,11 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
       // Use this queryParams object to load data
       this.isSpinning = true;
       let id = 0
-      if (!params['PO'] || params['PO'] === 'new') {
+      if (!params['TASK'] || params['TASK'] === 'new') {
         this.taskDetails.enable();
         this.taskDetails.updateValueAndValidity();
       } else {
-        id = params['PO']
+        id = params['TASK']
       }
       this.created_by_users = [this.userService.loggedInUser]
 
@@ -236,10 +236,10 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
         due_date: response.due_date,
         organization_id: response.organization_id,
         client_id: response.client_id,
-        attachment: response.attachment,
+        comments: response.comments,
       })
-      if (response.attachment && response.attachment.length) {
-        this.fileList = response.attachment.map((file: any) => (
+      if (response.comments && response.comments.length) {
+        this.fileList = response.comments.map((file: any) => (
           {
             name: 'image.png',
             status: 'done',
@@ -281,7 +281,7 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
     }) as FormGroup<ItemControl>
   }
   async submitRequest() {
-    const response: any = await this.appService.addTaskRequest({
+    const response: any = await this.appService.AddUpdateTask({
       details: {
         ...this.taskDetails.getRawValue() as TaskOrder,
         state: TaskStates.Backlog,
@@ -371,7 +371,7 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
           controlName !== 'due_date' &&   
           controlName !== 'start_date' &&
         
-          controlName !== 'attachment' &&
+          controlName !== 'comments' &&
           controlName !== 'terms' &&
           controlName !== 'items' &&
           controlName !== 'discount_total' &&
@@ -388,7 +388,7 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
           control.disable();
         }
         if (control && (
-          (controlName !== 'attachment' &&
+          (controlName !== 'comments' &&
             controlName !== 'amount_paid' &&
 
             stateControl.value === this.TaskStates.Completed)
@@ -445,7 +445,7 @@ this.taskDetails.controls.severity.setValue(Object.keys(this.taskSeverity).find(
             Object.assign(this.fileList, info.fileList)
 
             this.taskDetails.patchValue({
-              attachment: info.fileList?.map(fileItem => fileItem.url)
+              comments: info.fileList?.map(fileItem => fileItem.url)
             })
           });
       }

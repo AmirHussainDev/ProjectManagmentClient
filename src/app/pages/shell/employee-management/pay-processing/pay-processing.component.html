@@ -28,7 +28,7 @@
                 <span>{{ row.paymentObject?.advanceBalance || 0 | currency :' '}}</span>
             </td> -->
             <td>
-                <a *appHasPermission="appPermissions.EmployeeHourlyRateManagment" nzType="primary" (click)="open(row)">Pay</a>
+                <a *appHasPermission="appPermissions.AddUpdatePayments" nzType="primary" (click)="open(row)">Pay</a>
 
             </td>
         </tr>

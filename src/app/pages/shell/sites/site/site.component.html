@@ -135,7 +135,7 @@
                                     <nz-form-control  [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid!">
                                       <nz-select nzMode="multiple" id="reports_to" formControlName="site_supervisors" placeholder="Select user">
                                         <ng-container *ngFor="let user of listOfData">
-                                            <ng-container *filterUser="{ user: user, permissionName: permissions.ManageProjects, isAdmin: false, isContractor: false }">
+                                            <ng-container *filterUser="{ user: user, permissionName: permissions.AddUpdateTask, isAdmin: false, isContractor: false }">
                                               <nz-option [nzValue]="user?.id" [nzLabel]="user?.name"></nz-option>
                                             </ng-container>
                                           </ng-container>

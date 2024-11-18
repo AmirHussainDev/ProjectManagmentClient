@@ -199,7 +199,7 @@ export class SiteContractComponent {
 
   async loadAndUsers() {
     this.listOfData = await this.userService.getOrganizationUsers();
-    this.listOfData = this.listOfData.filter(user => user.is_contractor)
+    this.listOfData = this.listOfData.filter(user => user.is_client)
   }
   async submitRequest() {
     const response: any = await this.appService.createContract({
@@ -219,7 +219,7 @@ export class SiteContractComponent {
 
   async cancelPaymentDetails() {
     // this.modal.confirm({
-    //   nzTitle: 'Cancel PO ' + this.contractDetails.get('id')?.value,
+    //   nzTitle: 'Cancel TASK ' + this.contractDetails.get('id')?.value,
     //   nzContent: '<h4> Are you sure cancel this contract order.</h4>',
     //   nzOkText: 'Yes',
     //   nzOkType: 'primary',

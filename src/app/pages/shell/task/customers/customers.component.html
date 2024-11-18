@@ -26,7 +26,7 @@
       </ng-template>
 
    </span>
-    <button *appHasPermission="appPermissions.AddCustomers" nz-button (click)="open()" nzType="primary"
+    <button *appHasPermission="appPermissions.AddClients" nz-button (click)="open()" nzType="primary"
         [nzSize]="'small'">
         <span nz-icon nzType="plus"> </span>
         Add Customer
@@ -52,7 +52,7 @@
                     <td>{{ data.contact_no }}</td>
                     <td>{{ data.address }}</td>
                     <td>{{ data.account_no }}</td>
-                    <td *appHasPermission="appPermissions.AddCustomers"><a (click)="startEdit(data.id)">Edit</a></td>
+                    <td *appHasPermission="appPermissions.AddClients"><a (click)="startEdit(data.id)">Edit</a></td>
                 </ng-container>
                 <ng-template #editTemplate>
                     <td></td>
@@ -69,7 +69,7 @@
                         <input type="text" nz-input [(ngModel)]="editCache[data.id].data.account_no" />
                     </td>
 
-                    <td *appHasPermission="appPermissions.AddCustomers">
+                    <td *appHasPermission="appPermissions.AddClients">
                         <a (click)="saveEdit(data.id)" class="save">Save</a> &nbsp;
                         <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
                     </td>

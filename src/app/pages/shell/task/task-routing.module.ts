@@ -17,12 +17,12 @@ const routes: Routes = [
     children: [
       {
         path: 'list', component: ListingComponent,
-        data: { name: ' ' , permission:AppPermissions.InventoryUpdates},
+        data: { name: ' ' , permission:AppPermissions.ViewTasks},
         canActivate:[AuthGuard],
         children:[
           {
             path: 'task', component: TaskComponent,
-            data: { name: ' ' , permission:AppPermissions.AddTaskRequest},
+            data: { name: ' ' , permission:AppPermissions.ViewTasks},
             canActivate:[AuthGuard],
             canDeactivate: [CanDeactivateGuard],
           },
@@ -30,21 +30,21 @@ const routes: Routes = [
       },
       {
         path: 'board', component: BoardComponent,
-        data: { name: ' ' , permission:AppPermissions.ManageTasks},
+        data: { name: ' ' , permission:AppPermissions.ViewProjectBoard},
         canActivate:[AuthGuard],
         children: [{
           path: 'task', component: TaskComponent,
-          data: { name: ' ' , permission:AppPermissions.AddTaskRequest},
+          data: { name: ' ' , permission:AppPermissions.ViewTasks},
           canActivate:[AuthGuard],
           canDeactivate: [CanDeactivateGuard],
         },]
       },{
         path: 'report', component: ReportComponent,
-        data: { name: ' ' , permission:AppPermissions.ManageTasks},
+        data: { name: ' ' , permission:AppPermissions.ViewProjectBoard},
         canActivate:[AuthGuard],
         children: [{
           path: 'task', component: TaskComponent,
-          data: { name: ' ' , permission:AppPermissions.AddTaskRequest},
+          data: { name: ' ' , permission:AppPermissions.AddUpdateTask},
           canActivate:[AuthGuard],
           canDeactivate: [CanDeactivateGuard],
         },]

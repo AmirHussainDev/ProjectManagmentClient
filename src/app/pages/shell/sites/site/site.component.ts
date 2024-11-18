@@ -273,7 +273,7 @@ export class SiteComponent implements OnInit, OnDestroy {
 
   async cancelPaymentDetails() {
     // this.modal.confirm({
-    //   nzTitle: 'Cancel PO ' + this.siteDetails.get('id')?.value,
+    //   nzTitle: 'Cancel TASK ' + this.siteDetails.get('id')?.value,
     //   nzContent: '<h4> Are you sure cancel this site order.</h4>',
     //   nzOkText: 'Yes',
     //   nzOkType: 'primary',

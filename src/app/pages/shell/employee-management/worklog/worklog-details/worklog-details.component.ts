@@ -42,7 +42,7 @@ export class WorklogDetailsComponent implements OnInit {
   }
 
   async getCurrentUserWorklog() {
-    const worklog: any[] = await this.appService.getCurrentEmployeeWorkLog(this.employee.employee.id)
+    const worklog: any[] = await this.appService.getCurrentAddUpdateTaskWorklog(this.employee.employee.id)
     if (worklog) {
       this.initializeWorklogTableData(worklog);
 
@@ -117,7 +117,7 @@ export class WorklogDetailsComponent implements OnInit {
     this.getCurrentUserWorklog();
   }
   async completeEmployeePayment() {
-      await this.appService.payEmployeeWorklogs(
+      await this.appService.payAddUpdateTaskWorklogs(
   this.employee.employee.id) 
     this.getCurrentUserWorklog();
       

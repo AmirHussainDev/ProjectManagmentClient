@@ -12,6 +12,8 @@ export interface Client {
     key?: string;
     value?: number;
     filename?: string;
+    owner?: User;
+    currency?: string;
 }
 export interface Organization {
     id: number;
@@ -98,7 +100,7 @@ export interface TaskOrder {
     title: string;
     due_date: Date;
     assignee: number;
-    attachment: string;
+    comments: string;
     terms: string;
 }
 
@@ -189,7 +191,7 @@ export interface TaskDetails {
     start_date:FormControl;
     due_date: FormControl;
     assignee: FormControl;
-    attachment: FormControl;
+    comments: FormControl;
     task_no:FormControl;
     terms: FormControl;
 }

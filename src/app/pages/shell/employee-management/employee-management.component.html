@@ -21,7 +21,7 @@
         </ng-template>
 
     </span>
-    <button *appHasPermission="appPermissions.AddEmployees" nz-button nzType="primary" (click)="open()">Add</button>
+    <button *appHasPermission="appPermissions.UpdateClientEmployee" nz-button nzType="primary" (click)="open()">Add</button>
 </div>
 
 <app-employee-contract *ngIf="visible" [clients]="clients" [visible]="visible" [users]="users"
@@ -46,7 +46,7 @@
                 <!-- <td>{{ data.overtime }}</td>
                 <td>{{ data.siginout_required }}</td>
                 <td>{{ data.workingHours }}</td> -->
-                <td><a *appHasPermission="appPermissions.AddEmployees" (click)="startEdit(data.id);open(false)">Edit</a>
+                <td><a *appHasPermission="appPermissions.UpdateClientEmployee" (click)="startEdit(data.id);open(false)">Edit</a>
                 </td>
             </ng-container>
             <ng-template #editTemplate>

@@ -25,10 +25,10 @@ export class AppService {
   currentSite = new Subject<any>();
   currentSiteId = 0;
   currentSubOrgId = 0;
-  currentSubOrg :Client;
+  currentSubOrg: Client;
   user_permissions = [];
 
-  currentClient = new BehaviorSubject<Client>({ id: 0, projectDescription:'' ,projectDuration:0,projectBudget:0, contact:'', organization_id: 0, name: '' });
+  currentClient = new BehaviorSubject<Client>({ id: 0, projectDescription: '', projectDuration: 0, projectBudget: 0, contact: '', organization_id: 0, name: '' });
   currentOrganization = new Subject<Organization>();
   organization: Organization;
   constructor(private http: HttpClient, private userService: UserService, private media: MediaMatcher) { }
@@ -57,7 +57,7 @@ export class AppService {
 
   setClient(item: Client) {
     this.currentSubOrgId = item.id;
-    this.currentSubOrg=item;
+    this.currentSubOrg = item;
     this.currentClient.next(item);
   }
   setCurrentOrganization(item: Organization) {
@@ -91,15 +91,26 @@ export class AppService {
       const clients = response as Client[]
       if (clients && clients.length && setDefault && localStorage.getItem('selectedOrganzation')) {
         const client = clients.find((sub) => sub.id == JSON.parse(localStorage.getItem('selectedOrganzation') || '{}').id || 0)
-        this.setClient(client || { id: 0, name: '',projectDescription:'',projectDuration:0,projectBudget:0 , contact:'',organization_id: (organization_id || 0) as number })
+        this.setClient(client || { id: 0, name: '', projectDescription: '', projectDuration: 0, projectBudget: 0, contact: '', organization_id: (organization_id || 0) as number })
       } else if (clients && clients.length && setDefault && localStorage.getItem('client_id')) {
         const client = clients.find((sub) => sub.id == parseInt(localStorage.getItem('client_id') || '0') || 0)
-        this.setClient(client || { id: 0, name: '',projectDescription:'' ,projectDuration:0,projectBudget:0, contact:'', organization_id: (organization_id || 0) as number })
+        this.setClient(client || { id: 0, name: '', projectDescription: '', projectDuration: 0, projectBudget: 0, contact: '', organization_id: (organization_id || 0) as number })
       }
       return clients;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
+  getCurrencies() {
+    try {
+      const rates = JSON.parse(localStorage.getItem('currency') || '{}');
+      return rates;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching currency rates:', error);
       throw error;
     }
   }
@@ -176,7 +187,7 @@ export class AppService {
       const body = new FormData();
       body.append('name', roleObj.name)
       body.append('description', roleObj.description)
-      if (file&& typeof file !=='string') {
+      if (file && typeof file !== 'string') {
         body.append('file', file)
       }
       const organization_id = localStorage.getItem('organization_id');
@@ -359,7 +370,7 @@ export class AppService {
     }
   }
 
-  async addTaskRequest(po: { details: any }): Promise<any[]> {
+  async AddUpdateTask(po: { details: any }): Promise<any[]> {
     try {
       po.details = {
         ...po.details,
@@ -375,7 +386,7 @@ export class AppService {
     }
   }
 
-  async updateTaskRequest(po: TaskOrder ): Promise<any[]> {
+  async updateTaskRequest(po: TaskOrder): Promise<any[]> {
     try {
       const response = await this.http.put(`${this.apiUrl}/task`, po, { headers: this.header }).toPromise()
       return response as any[];
@@ -521,7 +532,7 @@ export class AppService {
   }
 
 
-  findObjectDifferences(obj1: any={}, obj2: any={}): any {
+  findObjectDifferences(obj1: any = {}, obj2: any = {}): any {
     const diffs: any = {};
 
     // Iterate through properties of obj1
@@ -554,13 +565,13 @@ export class AppService {
     if (arr1.length !== arr2.length) {
       return true;
     }
-  
+
     for (let i = 0; i < arr1.length; i++) {
       if (arr1[i].key !== arr2[i].key || arr1[i].value !== arr2[i].value) {
         return true;
       }
     }
-  
+
     return false;
   }
 
@@ -569,10 +580,10 @@ export class AppService {
       for (const sort of sortDefinition) {
         const key = sort.key;
         const order = sort.value;
-  
+
         let aValue = a[key];
         let bValue = b[key];
-  
+
         // Convert date strings to Date objects
         if (typeof aValue === 'string' && !isNaN(Date.parse(aValue))) {
           aValue = new Date(aValue);
@@ -580,7 +591,7 @@ export class AppService {
         if (typeof bValue === 'string' && !isNaN(Date.parse(bValue))) {
           bValue = new Date(bValue);
         }
-  
+
         if (order === 'ascend') {
           if (aValue > bValue) return 1;
           if (aValue < bValue) return -1;
@@ -936,11 +947,11 @@ export class AppService {
     }
   }
 
-  async getCurrentEmployeeWorkLog(employeeId: number): Promise<Worklog[]> {
+  async getCurrentAddUpdateTaskWorklog(employeeId: number): Promise<Worklog[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/employee/worklog/currentEmployeeWorkLog/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
-      return response as Worklog[] ;
+      const response = await this.http.get(`${this.apiUrl}/employee/worklog/currentAddUpdateTaskWorklog/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
+      return response as Worklog[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);
@@ -975,19 +986,19 @@ export class AppService {
       throw error;
     }
   }
-  
-  async payEmployeeWorklogs(id: number): Promise<Worklog> {
+
+  async payAddUpdateTaskWorklogs(id: number): Promise<Worklog> {
     try {
       const organization_id = localStorage.getItem('organization_id');
 
-      const response = await this.http.put(`${this.apiUrl}/employee/payemployee/${organization_id}/${this.currentSubOrgId}/${id}`,{}).toPromise();
+      const response = await this.http.put(`${this.apiUrl}/employee/payemployee/${organization_id}/${this.currentSubOrgId}/${id}`, {}).toPromise();
       return response as Worklog;
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);
       throw error;
     }
-  }  async updateWorklog(roleObj: Worklog): Promise<Worklog> {
+  } async updateWorklog(roleObj: Worklog): Promise<Worklog> {
     try {
       const response = await this.http.put(`${this.apiUrl}/employee/worklog`, roleObj).toPromise();
       return response as Worklog;
@@ -1000,11 +1011,11 @@ export class AppService {
 
 
 
-  async getEmployeePaymentsDetail(clientId: number = 0): Promise<{ paymentObject: any, employee: Employee ,worklog:any[]}[]> {
+  async getEmployeePaymentsDetail(clientId: number = 0): Promise<{ paymentObject: any, employee: Employee, worklog: any[] }[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
       const response = await this.http.get(`${this.apiUrl}/payments/employees/${organization_id}/${clientId || this.currentSubOrgId}`, { headers: this.header }).toPromise()
-      return response as { paymentObject: any, employee: Employee,worklog:any[] }[];
+      return response as { paymentObject: any, employee: Employee, worklog: any[] }[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
       console.error('Error fetching organization users:', error);

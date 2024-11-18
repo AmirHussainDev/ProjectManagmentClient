@@ -10,17 +10,17 @@ import { AuthGuard } from '../../../guards/auth.guard';
 const routes: Routes = [
   {
     path: '', component: ProjectsComponent,
-    data:{name:'All Projects', permission:AppPermissions.ManageProjects},
+    data:{name:'All Projects', permission:AppPermissions.AddUpdateTask},
     canActivate:[AuthGuard]
   },
   {
     path: ':siteId', component: SiteComponent,
-    data:{name:'Site', permission:AppPermissions.ManageProjects},
+    data:{name:'Site', permission:AppPermissions.AddUpdateTask},
     canActivate:[AuthGuard]
   },
   {
     path: ':siteId/contract/:contractId', component: SiteContractComponent,
-    data:{name:'Create Contract', permission:AppPermissions.ManageSiteContract},
+    data:{name:'Create Contract', permission:AppPermissions.UpdateClientContract},
     canActivate:[AuthGuard]
   },
 ];

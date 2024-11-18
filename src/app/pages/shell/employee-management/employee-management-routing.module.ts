@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'pay-processing', component: PayProcessingComponent,
-    data: { name: 'Payment' , permission:AppPermissions.EmployeeHourlyRateManagment},
+    data: { name: 'Payment' , permission:AppPermissions.AddUpdatePayments},
     canActivate:[AuthGuard]
   },
   {

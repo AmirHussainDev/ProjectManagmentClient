@@ -11,7 +11,7 @@
             <th>Hours Worked</th>
             <th>Approved Hours</th>
             <th>Amount</th>
-            <th *appHasPermission="appPermissions.ManagePayments"> Action </th>
+            <th *appHasPermission="appPermissions.AddUpdatePayments"> Action </th>
         </tr>
     </thead>
     <tbody>
@@ -49,7 +49,7 @@
             <td> <span *ngIf="!editCache[row.id]?.edit"> {{ (row.approved_hours || row.no_of_hours || 0) * employee.salary }} </span>
                 <span *ngIf="editCache[row.id]?.edit"> {{ (editCache[row.id].data.approved_hours || editCache[row.id].data.no_of_hours || 0) * employee.salary }}</span>
             </td>
-            <td *appHasPermission="appPermissions.ManagePayments">
+            <td *appHasPermission="appPermissions.AddUpdatePayments">
                 <a *ngIf="!editCache[row.id]?.edit && !row.paid" (click)="startEdit(row.id)">Edit</a>
                 <a *ngIf="editCache[row.id]?.edit" (click)="saveEdit(row.id)" class="save">Save</a> &nbsp;
                 <a *ngIf="editCache[row.id]?.edit" nz-popconfirm nzPopconfirmTitle="Sure to cancel?"
@@ -79,7 +79,7 @@
                         <span > <b>Balance:</b> </span><span> {{(balanceAmount ||0) |
                             currency:'PKR ' }}</span>
                     </div>
-                    <button nz-button *appHasPermission="appPermissions.ManagePayments" (click)="completeEmployeePayment()"  nzType="primary"  style="margin-top: 12px;float: right;">
+                    <button nz-button *appHasPermission="appPermissions.AddUpdatePayments" (click)="completeEmployeePayment()"  nzType="primary"  style="margin-top: 12px;float: right;">
                         Pay</button>
                 </div>
             </div>

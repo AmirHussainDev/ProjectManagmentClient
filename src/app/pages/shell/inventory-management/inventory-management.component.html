@@ -44,7 +44,7 @@
                         </nz-form-control>
                     </nz-form-item>
                     <nz-form-item *ngIf="inventoryItemForm.get('stock_in')?.value">
-                        <nz-form-label nzRequired>PO Number</nz-form-label>
+                        <nz-form-label nzRequired>TASK Number</nz-form-label>
                         <nz-form-control>
                             <input nz-input formControlName="task_id" />
                         </nz-form-control>
@@ -135,14 +135,14 @@
                     <tr [className]="subData.stock_in?'task-row':'sale-row'">
                         <td>
                             <a *ngIf="subData.stock_in" [routerLink]="['/', 'task','task']"
-                                [queryParams]="{ PO: subData.task_no }" href="">PO -{{subData.task_no}}</a>
+                                [queryParams]="{ TASK: subData.task_no }" href="">TASK -{{subData.task_no}}</a>
                             <a *ngIf="!subData.stock_in && subData.sale_no"
                                 [routerLink]="['/','task', 'sales','sale']"
                                 [queryParams]="{ SALE: subData.sale_no }" href="">SALE
                                 -{{subData.sale_no||subData.sale_id}}</a>
 
                             <a *ngIf="!subData.stock_in && (subData.site_no||subData.site_id)"
-                                [routerLink]="['/', 'sites',subData.site_id]" [queryParams]="{ PO: subData.sale_no }"
+                                [routerLink]="['/', 'sites',subData.site_id]" [queryParams]="{ TASK: subData.sale_no }"
                                 href="">SITE -{{subData.site_no||subData.site_id}}</a>
 
                         <td> {{subData.stock_in ?'+':'-'}} {{subData.qty}} </td>

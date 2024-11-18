@@ -28,7 +28,7 @@
                             </ng-template>
 
                         </span>
-                        <a (click)="showSide=true" [routerLink]="['./task']" [queryParams]="{ PO: 'new' }"
+                        <a (click)="showSide=true" [routerLink]="['./task']" [queryParams]="{ TASK: 'new' }"
                             [state]="{tracingId: 2}">
                             <button nz-button nzType="primary" [nzSize]="'small'">
                                 <span nz-icon nzType="plus"> </span>
@@ -57,7 +57,7 @@
                                     <nz-list nzItemLayout="horizontal">
                                         <nz-list-item (click)="showSide=true"
                                             [routerLink]="['/', 'task','list','task']"
-                                            [queryParams]="{ PO: data.task_no }">
+                                            [queryParams]="{ TASK: data.task_no }">
                                             <nz-list-item-meta>
                                                 <nz-list-item-meta-avatar *ngIf="data.filename; else initialsTemplate"
                                                     [nzSrc]="apiUrl + '/images/' + data.filename"></nz-list-item-meta-avatar>

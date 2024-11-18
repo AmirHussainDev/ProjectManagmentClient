@@ -1,7 +1,7 @@
 <div class="app-shell">
   <nz-layout style="height: 100%;">
     <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null"
-      [nzWidth]="!isCollapsed && isMobile()? '100%' :'200px'" [nzCollapsedWidth]="65" class="appbackground">
+      [nzWidth]="!isCollapsed && isMobile()? '100%' :'20%'" [nzCollapsedWidth]="65" class="appbackground">
       <span style="
       display: flow-root;">
         <div [class]="!isCollapsed?'logo flex center space-between':'logo flex center space-around'"
@@ -20,7 +20,7 @@
       <div class="sideMenuItems">
         <ul nz-menu nzTheme="dark" nzMode="inline">
           <li nz-menu-item [class.selected-route]="currentRoutes.length==0"
-            *appHasPermission="appPermissions.MainDashboardView">
+            *appHasPermission="appPermissions.MainDashboard">
             <span nz-icon style="font-size: 18px;" nzType="bar-chart"></span>
             <span>
               <a class="nav-link" [routerLink]="['/']" [state]="{tracingId: 123}"
@@ -32,7 +32,7 @@
             </span>
           </li>
         </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.ManageTasks">
+        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.AddUpdateTask">
           
           <li nz-menu-item
             [class.selected-route]="currentRoutes.indexOf('board')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
@@ -46,7 +46,7 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item *appHasPermission="appPermissions.InventoryUpdates"
+          <li nz-menu-item *appHasPermission="appPermissions.ViewTasks"
             [class.selected-route]="currentRoutes.indexOf('customers')==-1 && currentRoutes.indexOf('list')>-1 && currentRoutes.indexOf('sales')==-1&&currentRoutes.indexOf('sale')==-1&&currentRoutes.indexOf('sales?status=' + saleState.Quote)==-1&&currentRoutes.indexOf('sales?status=' + saleState.Invoiced)==-1">
             <span nz-icon style="font-size: 18px;" nzType="pull-request"></span>
             <span>
@@ -71,7 +71,7 @@
         </ul>
       
         <!-- <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li *appHasPermission="appPermissions.ManageProjects" nz-menu-item style="margin-top: 12px;"
+          <li *appHasPermission="appPermissions.AddUpdateTask" nz-menu-item style="margin-top: 12px;"
             [class.selected-route]="currentRoutes.indexOf('sites')>-1">
             <span nz-icon style="font-size: 18px;" nzType="build" size></span>
             <span>
@@ -102,7 +102,7 @@
               </a>
             </span>
           </li> -->
-          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.ManagePayments"
+          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.AddUpdatePayments"
             [class.selected-route]="currentRoutes.indexOf('pay-processing')>-1">
             <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
             <span>
@@ -114,7 +114,7 @@
           </li>
         </ul>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li *appHasPermission="appPermissions.ManageUsers" nz-menu-item style="margin-top: 12px;"
+          <li *appHasPermission="appPermissions.ViewUsers" nz-menu-item style="margin-top: 12px;"
             [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')==-1">
             <span nz-icon style="font-size: 18px;" nzType="team" size></span>
             <span>
@@ -124,7 +124,7 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.ManagePermissions"
+          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.UpdatePermissions"
             [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')>-1">
             <span nz-icon style="font-size: 18px;" nzType="sliders" size></span>
             <span>
@@ -157,9 +157,9 @@
 
                 {{currentClient?.name}}
                 <span nz-icon style="font-size: 12px;" nzType="down"
-                  *appHasPermission="appPermissions.SwitchOrganization"></span>
+                  *appHasPermission="appPermissions.SwitchClients"></span>
               </button>
-              <app-organization-selector *appHasPermission="appPermissions.SwitchOrganization"
+              <app-organization-selector *appHasPermission="appPermissions.SwitchClients"
                 [visible]="showClients" (closeDrawer)="toggleClients()"></app-organization-selector>
 
             </span>

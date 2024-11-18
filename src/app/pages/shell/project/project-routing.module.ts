@@ -7,7 +7,7 @@ import { AuthGuard } from '../../../guards/auth.guard';
 const routes: Routes = [
   {
     path: '', component: ProjectComponent,
-    children: [], data: { name: '' , permission:AppPermissions.ViewProjects},
+    children: [], data: { name: '' , permission:AppPermissions.ViewTasks},
     canActivate:[AuthGuard]
   },
 ];

@@ -1,64 +1,83 @@
 <nz-row style="height: 100%;">
     <nz-col [nzSpan]="!isMobile()&&showSide?8:24" style="height: 100%; overflow-y: auto;">
-        <div nz-row >
+        <div nz-row>
             <ng-container *ngFor="let key of states | keyvalue:sortByValue ">
-            <div nz-col class="boardCard" [ngClass]="showSide?' boardCard boardCardSmall':'boardCard'" *ngIf="key.value!==states.Backlog"
-            [style.border-color]="stateColors[key.value]"
-            [style.background-color]="stateCardColors[key.value]"
-             nz-col >
-                <h4 class="tab-heading">{{stateNames[key.value]}}</h4>
-                <div cdkDropList style="padding-bottom: 50px;" [id]="key.key" [cdkDropListConnectedTo]="taskStatesConnectivity[key.value]"
-                    [cdkDropListData]="listOfDisplayData[key.value]" (cdkDropListDropped)="drop($event)">
-                    <div class="item" cdkDrag *ngFor="let item of listOfDisplayData[key.value]">
-                        <nz-list  class="listItem"  nzItemLayout="horizontal" style="border-left: 3px solid;" [style.border-left-color]="taskTypeColors[item.type]||'green'">
-                            <nz-list-item nz-button
-                            (click)="showSide=true"
-                        [routerLink]="['/', 'task','board','task']"
-                        [queryParams]="{ PO: item.task_no }"
-                         nzType="text" style="padding: 4px;"
-                                class="selectedItem">
-                                <nz-list-item-meta>
-                                    <nz-list-item-meta-title>
-                                        {{ item.title }}
-                                    </nz-list-item-meta-title>
-                                    <nz-list-item-meta-description>
-                                        {{item.description}}
-                                    </nz-list-item-meta-description>
-                                </nz-list-item-meta>
-                            </nz-list-item>
-                        </nz-list>
+                <div nz-col class="boardCard" [ngClass]="showSide?' boardCard boardCardSmall':'boardCard'"
+                    *ngIf="key.value!==states.Backlog" nz-col>
+                    <h4 class="tab-heading">{{stateNames[key.value]}}</h4>
+                    <div cdkDropList style="padding-bottom: 50px;" [id]="key.key"
+                        [cdkDropListConnectedTo]="taskStatesConnectivity[key.value]"
+                        [cdkDropListData]="listOfDisplayData[key.value]" (cdkDropListDropped)="drop($event)">
+                        <div class="item" cdkDrag *ngFor="let item of listOfDisplayData[key.value]">
+                            <nz-card [nzBordered]="false" [nzBodyStyle]="{ padding: '12px' }" class="custom-card">
+                                <nz-card-meta [nzDescription]="item.title"></nz-card-meta>
+                                <span class="flex space-between">
+                                    <span>
+                                        
+                                        <span class="dateDisplay">
+                                            {{item.due_date | date : 'dd MMM yyyy'
+                                            }}</span>
+                                    </span>
+                                </span>
+                                <div nz-card-actions>
+                                    <ul class="ant-card-actions">
+                                        <li style="text-align: left;width: 33.33%;">
+                                            <ng-container
+                                                *ngTemplateOutlet="actionSetting; context: { $implicit: item }"></ng-container>
+                                        </li>
+                                        <li style="width: 33.33%;">
+                                            <ng-container
+                                                *ngTemplateOutlet="actionEdit; context: { $implicit: item }"></ng-container>
+                                        </li>
+                                        <li style="width: 33.33%; text-align: right;"> <ng-container
+                                                *ngTemplateOutlet="actionEllipsis; context: { $implicit: item }"></ng-container>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nz-card>
+
+                        </div>
+                        
                     </div>
                 </div>
-            </div>
-        </ng-container>
+            </ng-container>
 
         </div>
-        <div nz-row >
-            <div nz-col class="boardCard" 
-            [style.border-color]="stateColors[states.Backlog]"
-            [style.background-color]="stateCardColors[states.Backlog]"
-             nz-col nzSpan="24">
+        <div nz-row>
+            <div nz-col class="boardCard" style="margin: 0px;padding: 10px;" [style.border-color]="stateColors[states.Backlog]" nz-col nzSpan="24">
                 <h4 class="tab-heading">{{stateNames[states.Backlog]}}</h4>
-                <div cdkDropList style="padding-bottom: 50px;"  [id]="'Backlog'" [cdkDropListConnectedTo]="taskStatesConnectivity[states.Backlog]"
+                <div cdkDropList style="padding-bottom: 50px;" [id]="'Backlog'"
+                    [cdkDropListConnectedTo]="taskStatesConnectivity[states.Backlog]"
                     [cdkDropListData]="listOfDisplayData[states.Backlog]" (cdkDropListDropped)="drop($event)">
                     <div class="item" cdkDrag *ngFor="let item of listOfDisplayData[states.Backlog]">
-                        <nz-list  class="listItem"  nzItemLayout="horizontal"
-                           style="border-left: 3px solid;" [style.border-left-color]="taskTypeColors[item.type]||'green'">
-                            <nz-list-item nz-button (click)="showSide=true"
-                            [routerLink]="['/', 'task','board','task']"
-                            [queryParams]="{ PO: item.task_no }"
-                           nzType="text" style="padding: 4px;"
-                                class="selectedItem">
-                                <nz-list-item-meta>
-                                    <nz-list-item-meta-title>
-                                        {{ item.title }}
-                                    </nz-list-item-meta-title>
-                                    <nz-list-item-meta-description>
-                                        {{item.description}}
-                                    </nz-list-item-meta-description>
-                                </nz-list-item-meta>
-                            </nz-list-item>
-                        </nz-list>
+                        <nz-card [nzBordered]="false" [nzBodyStyle]="{ padding: '12px' }" class="custom-card"
+                            (click)="showSide = true" [routerLink]="['/', 'task', 'board', 'task']"
+                            [queryParams]="{ TASK: item.task_no }">
+                            <nz-card-meta [nzDescription]="item.title"></nz-card-meta>
+                            <span class="flex space-between">
+                                <span>
+                                    
+                                    <span class="dateDisplay">
+                                        {{item.due_date | date : 'dd MMM yyyy'
+                                        }}</span>
+                                </span>
+                            </span>
+                            <div nz-card-actions>
+                                <ul class="ant-card-actions">
+                                    <li style="text-align: left;width: 33.33%;">
+                                        <ng-container
+                                            *ngTemplateOutlet="actionSetting; context: { $implicit: item }"></ng-container>
+                                    </li>
+                                    <li style="width: 33.33%;">
+                                        <ng-container
+                                            *ngTemplateOutlet="actionEdit; context: { $implicit: item }"></ng-container>
+                                    </li>
+                                    <li style="width: 33.33%; text-align: right;"> <ng-container
+                                            *ngTemplateOutlet="actionEllipsis; context: { $implicit: item }"></ng-container>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nz-card>
                     </div>
                 </div>
             </div>
@@ -91,7 +110,7 @@
                             </ng-template>
 
                         </span>
-                        <a (click)="showSide=true" [routerLink]="['./task']" [queryParams]="{ PO: 'new' }"
+                        <a (click)="showSide=true" [routerLink]="['./task']" [queryParams]="{ TASK: 'new' }"
                             [state]="{tracingId: 2}">
                             <button nz-button nzType="primary" [nzSize]="'small'">
                                 <span nz-icon nzType="plus"> </span>
@@ -120,7 +139,7 @@
                                     <nz-list nzItemLayout="horizontal">
                                         <nz-list-item (click)="showSide=true"
                                             [routerLink]="['/', 'task','task']"
-                                            [queryParams]="{ PO: data.task_no }">
+                                            [queryParams]="{ TASK: data.task_no }">
                                             <nz-list-item-meta>
                                                 <nz-list-item-meta-avatar *ngIf="data.filename; else initialsTemplate"
                                                     [nzSrc]="apiUrl + '/images/' + data.filename"></nz-list-item-meta-avatar>
@@ -139,7 +158,7 @@
                                                 <nz-list-item-meta-description>
                                                     <span class="flex space-between">
                                                         <span>
-                                                            <span> PO-{{data.task_no}}</span>
+                                                            <span> TASK-{{data.task_no}}</span>
                                                             <nz-divider nzType="vertical"></nz-divider>
                                                             <span class="dateDisplay">
                                                                 {{data.date_created | date : 'dd MMM yyyy'
@@ -191,3 +210,14 @@
         </ng-container>
     </nz-drawer>
 </div>
+<ng-template #actionSetting let-item>
+    <span nz-icon nzType="check-square" [nzTheme]="'twotone'"
+        [nzTwotoneColor]="taskTypeIcons[item?.type]"></span> </ng-template>
+<ng-template #actionEdit let-item="item">
+    <span nz-icon nzType="project" [nzTheme]="'twotone'"
+        [nzTwotoneColor]="taskSeverityColors[item?.severity]"> </span>
+</ng-template>
+<ng-template #actionEllipsis let-item>
+    <a style="font-size: 12px;" (click)="showSide = true" [routerLink]="['/', 'task', 'board', 'task']"
+        [queryParams]="{ TASK: item?.task_no }">TASK-{{item?.task_no}}</a>
+</ng-template>

@@ -102,7 +102,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.currentOrganizationId) {
           this.router.navigate(['/', 'task','list'], {
             queryParams: {
-              'PO': null,
+              'TASK': null,
             },
             queryParamsHandling: 'merge'
           })
@@ -110,7 +110,7 @@ export class ListingComponent implements OnInit, AfterViewInit, OnDestroy {
         this.currentOrganizationId = change.id;
         this.showSide = false;
         this.route.queryParams.subscribe(async (params) => {
-          if (!params['PO']) {
+          if (!params['TASK']) {
             this.showSide = false;
             this.onTaskQueryParamsChange({
               pageIndex: 0,

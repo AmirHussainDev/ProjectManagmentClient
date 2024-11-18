@@ -7,6 +7,8 @@ import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { Observable, Observer } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { DataUrl, NgxImageCompressService, UploadResponse } from 'ngx-image-compress';
+import { UserService } from '../../../../services/user.service';
+import { User } from '../../team/users/users.interface';
 
 @Component({
   selector: 'app-organization-selector',
@@ -25,9 +27,13 @@ export class OrganizationSelectorComponent implements OnInit {
   msg: any;
   apiUrl = environment.apiUrl;
   newItem: boolean;
+  listOfData : User[];
+  currency={};
+  
   constructor(private appService: AppService,
     private fb: FormBuilder,
-    private imageCompress: NgxImageCompressService
+    private imageCompress: NgxImageCompressService,
+    private userService:UserService
   ) {
     this.addOrgForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -36,13 +42,19 @@ export class OrganizationSelectorComponent implements OnInit {
       projectDescription: ['', [Validators.required]],
       projectDuration:[0,Validators.required],
       projectBudget:[0,Validators.required],
+      owner:[null,[Validators.required]],
+      currency:[null,[Validators.required]],
       id: ['']
     })
   }
 
   ngOnInit(): void {
+    this.loadProjectsProjectsAndUsers();
+
     this.getAndSetClient();
+    this.currency=this.appService.getCurrencies() || {};
   }
+  
 
   getUserInitials(name: string): string {
     const nameArray = name.trim().split(' '); // Split the name into an array of words
@@ -63,7 +75,7 @@ export class OrganizationSelectorComponent implements OnInit {
 
     }
     if (index) {
-      const element = this.data.find(org => org.id == index) || { name:'', filename :'',projectDescription:'',projectDuration:0,projectBudget:0,contact:''}
+      const element = this.data.find(org => org.id == index) || { name:'', filename :'',projectDescription:'',projectDuration:0,projectBudget:0,currency:'', contact:'',owner:{id:0}}
       this.addOrgForm = this.fb.group({
         name: [element.name, [Validators.required]],
         filename: [element.filename, [Validators.required]],
@@ -71,6 +83,8 @@ export class OrganizationSelectorComponent implements OnInit {
         projectDescription: [element.projectDescription,[Validators.required]],
         projectDuration: [element.projectDuration,[Validators.required]],
         projectBudget: [element.projectBudget,[Validators.required]],
+        currency: [element.currency,[Validators.required]],
+        owner:[element.owner? (element.owner.id || 0) : 0,[Validators.required]],
         id: [index]
       })
       this.avatarUrl = element.filename || ''
@@ -86,7 +100,11 @@ export class OrganizationSelectorComponent implements OnInit {
     this.isModalVisible = false;
     this.getAndSetClient();
   }
-
+  async loadProjectsProjectsAndUsers() {
+    // this.projects = await this.appService.getProjects()
+    // await this.setProjectsData();
+  }
+  
   compressFile() {
     return this.imageCompress
       .uploadFile()
@@ -187,6 +205,9 @@ export class OrganizationSelectorComponent implements OnInit {
   }
 
   async getAndSetClient() {
+
+    this.listOfData = await this.userService.getOrganizationUsers();
+    this.listOfData = this.listOfData.filter(user=>user.is_client);
     this.loading = true;
     this.data = await this.appService.getClient(true);
     this.loading = false;

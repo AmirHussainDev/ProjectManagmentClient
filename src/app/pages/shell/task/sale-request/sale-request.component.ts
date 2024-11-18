@@ -574,7 +574,7 @@ export class SaleRequestComponent implements OnInit, OnDestroy, CanDeactivateGua
 
   async cancelPaymentDetails() {
     this.modal.confirm({
-      nzTitle: 'Cancel PO ' + this.SaleRequestDetails.get('id')?.value,
+      nzTitle: 'Cancel TASK ' + this.SaleRequestDetails.get('id')?.value,
       nzContent: '<h4> Are you sure cancel this SaleRequest order.</h4>',
       nzOkText: 'Yes',
       nzOkType: 'primary',

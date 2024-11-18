@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
       const requiredPermission = route.data['permission'];
       if (requiredPermission && !this.userService.hasPermission(requiredPermission)) {
         // Redirect to not authorized page
-        if(requiredPermission==AppPermissions.MainDashboardView){
+        if(requiredPermission==AppPermissions.MainDashboard){
           this.router.navigate(['/employee']);
         }else{
           const modal = this.modal.create({
