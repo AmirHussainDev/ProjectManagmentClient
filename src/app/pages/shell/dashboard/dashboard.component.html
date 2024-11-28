@@ -4,7 +4,7 @@
             <nz-col [nzSm]="12" [nzXs]="12" [nzMd]="6" [nzXl]="6" [nzXXl]="6">
                 <nz-card style="margin-top: 12px;;margin-bottom: 12px;" [title]="'Current Stock'">
                     <h3>  {{currentClient?.name  }}</h3>
-                    <h5>Budget: <b>  {{currentClient?.projectBudget  |currency :'PKR '}}</b></h5>
+                    <h5>Budget: <b>  {{currentClient?.projectBudget  |currency :currentClient.currency}}</b></h5>
                     <h5>Duration:  <b> {{currentClient?.projectDuration  }} hours</b></h5>
                 </nz-card>
             </nz-col>

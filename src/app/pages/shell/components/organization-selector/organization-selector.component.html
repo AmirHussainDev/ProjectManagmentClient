@@ -76,7 +76,7 @@
                     ></nz-input-number>
                   </nz-input-group>
                   <ng-template #currencySelect>
-                    <nz-select formControlName="currency" style="width: 30%;">
+                    <nz-select nzShowSearch formControlName="currency" style="width: 30%;">
                         <nz-option *ngFor="let currency of currency | keyvalue" [nzValue]="currency.key" [nzLabel]="currency.key"></nz-option>
                     </nz-select>
                   </ng-template>

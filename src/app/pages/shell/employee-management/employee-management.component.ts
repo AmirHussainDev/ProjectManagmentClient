@@ -78,9 +78,15 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     if(this.loggedInUser.is_admin){
       this.listOfColumn.push(
         {
-          title: 'HourlyRate',
-          compare: (a: Employee, b: Employee) => a.salary - b.salary,
+          title: 'Hourly/Fixed',
+          compare: (a: Employee, b: Employee) => a.isHourlyRateHourly > b.isHourlyRateHourly,
           priority: 3
+        },)
+        this.listOfColumn.push(
+        {
+          title: 'Amount',
+          compare: (a: Employee, b: Employee) => a.salary - b.salary,
+          priority: 4
         },)
 
         this.listOfColumn = this.listOfColumn.sort((a, b) => a.priority - b.priority);

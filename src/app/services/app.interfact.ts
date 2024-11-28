@@ -351,6 +351,17 @@ export interface ContractorPaymentForm {
     client?: FormControl;
     created_by?: FormControl;
 }
+export interface AmmountRecievedForm {
+    id?: FormControl;
+    amount: FormControl;
+    recieving_date: FormControl;
+    note: FormControl;
+    organization?: FormControl;
+    client?: FormControl;
+    created_by?: FormControl;
+}
+
+
 export interface ContractorPayment {
     id: number;
     contractor: number;
@@ -368,7 +379,7 @@ export interface EmployeeForm {
     position: FormControl;
     employee: FormControl;
     // supervisor: FormControl;
-    // isHourlyRateHourly: FormControl;
+    isHourlyRateHourly: FormControl;
     salary: FormControl;
     // overtime: FormControl;
     // siginout_required: FormControl;
@@ -385,7 +396,7 @@ export interface Employee {
     employee: any;
     salary: number;
     // workingHours:number;
-    // isHourlyRateHourly:boolean;
+    isHourlyRateHourly:boolean;
     // overtime: boolean;
     // siginout_required: boolean;
     details: string;

@@ -24,8 +24,9 @@
                     <div #content>
 
                         <nz-form-item>
-                            <nz-form-label  nzRequired nzFor="title">Title</nz-form-label>
-                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24" nzErrorTip="The input is not valid date!">
+                            <nz-form-label nzRequired nzFor="title">Title</nz-form-label>
+                            <nz-form-control [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzXl]="24" [nzXXl]="24"
+                                nzErrorTip="The input is not valid date!">
                                 <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
                                     <textarea rows="1" nz-input formControlName="title"></textarea>
                                 </nz-input-group>
@@ -41,7 +42,7 @@
 
                             </nz-form-control>
                         </nz-form-item>
-                        
+
 
                         <nz-card style="width:100%;margin-bottom: 12px;">
 
@@ -61,7 +62,7 @@
                                             <span>{{taskSeverity[selected.nzValue]}}</span>
                                         </span>
                                     </ng-template>
-    
+
                                 </nz-form-control>
                             </nz-form-item>
                             <nz-form-item>
@@ -84,7 +85,7 @@
                                     </nz-select>
                                 </nz-form-control>
                             </nz-form-item>
-                           
+
 
                             <nz-form-item>
                                 <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="date_created">Date
@@ -139,7 +140,7 @@
                                         formControlName="due_date"></nz-date-picker>
                                 </nz-form-control>
                             </nz-form-item>
-                            
+
                             <ng-template #addOnBeforeTemplate>
                                 <nz-select class="taskTypeSelector" style="width: auto;" formControlName="type"
                                     nzPlaceHolder="Type" [nzCustomTemplate]="defaultTemplate">
@@ -152,7 +153,7 @@
                                 </ng-template>
                             </ng-template>
 
-                            
+
                             <!-- <nz-form-item>
                                 <nz-form-label nzRequired nzFor="due_date">Attachments</nz-form-label>
 
@@ -171,11 +172,12 @@
                                     </nz-upload>
                                 </nz-form-control>
                             </nz-form-item> -->
-                            <app-work-log *ngIf="taskDetails.get('id')?.value"
+                            <span *appHasPermission="appPermissions.AddTaskWorklog">
+                            <app-work-log *ngIf="taskDetails.get('id')?.value&&isSelectedEmployeeHourlyBased()"
                                 [user_id]="this.taskDetails.controls.assignee.value"
                                 [task_id]="taskDetails.get('id')?.value"
                                 [contractDetails]="taskDetails.getRawValue()"></app-work-log>
-
+                            </span>
                         </nz-card>
                     </div>
 
@@ -188,15 +190,17 @@
                     <span class="flex space-between">
 
                         <span>
-                            <button *ngIf="!taskDetails.controls.id.value" nz-button nzType="primary"
-                                [disabled]="taskDetails.invalid" (click)="submitRequest()"
-                                [disabled]="taskDetails.invalid"
-                                style="margin-bottom: 12px;float: right;">Submit</button>
-
-                            <button *ngIf="taskDetails.controls.id.value" nz-button nzType="primary"
-                                [disabled]="taskDetails.invalid" (click)="updateDetails()"
-                                style="margin-bottom: 12px;float: right;">Save</button>
-
+                            <span *appHasPermission="appPermissions.AddTask">
+                                <button *ngIf="!taskDetails.controls.id.value" nz-button nzType="primary"
+                                    [disabled]="taskDetails.invalid" (click)="submitRequest()"
+                                    [disabled]="taskDetails.invalid"
+                                    style="margin-bottom: 12px;float: right;">Submit</button>
+                            </span>
+                            <span *appHasPermission="appPermissions.UpdateTask">
+                                <button *ngIf="taskDetails.controls.id.value" nz-button nzType="primary"
+                                    [disabled]="taskDetails.invalid" (click)="updateDetails()"
+                                    style="margin-bottom: 12px;float: right;">Save</button>
+                            </span>
                         </span>
                     </span>
                 </form>

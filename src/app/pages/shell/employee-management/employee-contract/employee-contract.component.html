@@ -4,7 +4,7 @@
         <div nz-row [nzGutter]="8">
             <div nz-col nzSpan="12">
                 <nz-form-item>
-                    <nz-form-label>JobSubject</nz-form-label>
+                    <nz-form-label>Job Title</nz-form-label>
                     <nz-form-control>
                         <input formControlName="position" nz-input placeholder="please enter user position" />
                     </nz-form-control>
@@ -39,17 +39,19 @@
                 </nz-form-item>
             </div>
         </div> -->
-        <!-- <div nz-row [nzGutter]="8">
+        <div nz-row [nzGutter]="8">
             <div nz-col nzSpan="12">
                 <nz-form-item>
-                    <nz-form-label>HourlyRate Nature</nz-form-label>
+                    <nz-form-label>Salary Nature</nz-form-label>
                     <nz-form-control>
-                        <nz-switch formControlName="isHourlyRateHourly" nzCheckedChildren="Hourly"
-                        nzUnCheckedChildren="Monthly"></nz-switch>
+                        <nz-radio-group formControlName="isHourlyRateHourly" >
+                            <label nz-radio [nzValue]="true">Hourly</label>
+                            <label nz-radio [nzValue]="false">Fixed</label>
+                          </nz-radio-group>
                     </nz-form-control>
                 </nz-form-item>
             </div>
-        </div> -->
+        </div>
         <!-- <div nz-row [nzGutter]="8">
             <div nz-col nzSpan="12">
                 <nz-form-item>

@@ -21,3 +21,25 @@
     background-color: #FFA500; /* Customize the background color of the dragged element preview */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a box shadow to the dragged element preview */
   }
+
+ ::ng-deep.boardCards  .ant-card-meta-avatar {
+    padding-right: 0px !important;
+    width: 34px !important;
+    margin-top: 3px !important;
+}
+
+.avatar-initials2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  border-radius: 50%;
+  background-color: #BB86FC;
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+}
+}

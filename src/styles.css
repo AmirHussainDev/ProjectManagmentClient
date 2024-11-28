@@ -592,6 +592,7 @@ nz-filter-trigger {
         }
         .ant-card-meta{
             margin-bottom: 10px;
+            padding: 2px;
         }
     }
 }
@@ -603,6 +604,7 @@ nz-filter-trigger {
     border-top: 0px solid #f0f0f0;
     border: 0px solid #f0f0f0;
     max-width: 180px;
+    align-items: center;
 }
 .ant-card-actions > li {
     float: left;
@@ -610,8 +612,18 @@ nz-filter-trigger {
     color: rgba(0, 0, 0, .45);
     text-align: center;
 }
+.ant-card-actions > li > span {
+    line-height: 0.5715;
+}
 .dateDisplay{
     font-size: 10px;
     color: grey;
     font-weight: 600;
+}
+.ant-avatar-lg-string, .ant-avatar-sm-string, .ant-avatar-string {
+    position: absolute;
+    left: 0px !important;
+    transform-origin: 0 center;
+    text-align: center;
+    width: 100%;
 }

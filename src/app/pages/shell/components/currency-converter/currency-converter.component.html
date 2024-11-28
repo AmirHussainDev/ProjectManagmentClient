@@ -1,0 +1,66 @@
+<button nz-button style="float: right;
+width: auto;
+background: transparent;
+color: black;" (click)="showModal()" nzType="default">
+    <span style="display: flex;"> <span nz-icon nzType="dollar-circle"></span>
+        &nbsp;
+        <span nz-icon nzType="swap" nzTheme="outline"></span>
+        &nbsp;
+        <span nz-icon nzType="euro"></span>
+    </span>
+</button>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Currency Converter" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+nzOkText="Convert">
+    <div *nzModalContent style="width:100%">
+        <form nz-form [formGroup]="converterForm" (ngSubmit)="convertCurrency()">
+            <nz-row nzGutter="2" style="margin-bottom: 12px;">
+
+                <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="amount">Amount
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                            <input nz-input formControlName="amount">
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+                <nz-col [nzMd]="12" [nzSm]="12" [nzXs]="12">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="fromCurrency">From
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                            <nz-select nzShowSearch formControlName="fromCurrency" style="width: 100%;">
+                                <nz-option *ngFor="let currency of conversionRates|keyvalue" [nzValue]="currency.key"
+                                    [nzLabel]="currency.key+'('+currency.value+')'"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                      
+                    </nz-form-item>
+                </nz-col>
+
+                <nz-col [nzMd]="12" [nzSm]="12" [nzXs]="12">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="toCurrency">To
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                            <nz-select nzShowSearch formControlName="toCurrency" style="width: 100%;">
+                                <nz-option *ngFor="let currency of conversionRates|keyvalue" [nzValue]="currency.key"
+                                [nzLabel]="currency.key+'('+currency.value+')'"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                      
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+        </form>
+        <div *ngIf="convertedAmount !== null" class="result">
+            <p>
+              {{ converterForm.value.amount }} {{ converterForm.value.fromCurrency }} = {{ convertedAmount | number: '1.2-2' }}
+              {{ converterForm.value.toCurrency }}
+            </p>
+          </div>    
+    </div>
+
+  
+</nz-modal>

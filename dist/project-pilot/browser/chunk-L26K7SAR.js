@@ -1,0 +1,1 @@
+import{$ as n,Hb as a,N as s}from"./chunk-RYV5VKQF.js";var m=(()=>{class r{constructor(e){this.userService=e}transform(e,...t){let i=this.userService.users?.find(c=>c.id==e);return i?i.name:e}static{this.\u0275fac=function(t){return new(t||r)(n(a,16))}}static{this.\u0275pipe=s({name:"username",type:r,pure:!0,standalone:!0})}}return r})();export{m as a};

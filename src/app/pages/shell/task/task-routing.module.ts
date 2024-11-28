@@ -44,7 +44,7 @@ const routes: Routes = [
         canActivate:[AuthGuard],
         children: [{
           path: 'task', component: TaskComponent,
-          data: { name: ' ' , permission:AppPermissions.AddUpdateTask},
+          data: { name: ' ' , permission:AppPermissions.ViewTasks},
           canActivate:[AuthGuard],
           canDeactivate: [CanDeactivateGuard],
         },]

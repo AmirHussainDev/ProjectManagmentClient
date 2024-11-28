@@ -6,7 +6,7 @@ import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './login.component';
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import en from '@angular/common/locales/en';
 import * as AllIcons from '@ant-design/icons-angular/icons';
@@ -22,18 +22,12 @@ const antDesignIcons = AllIcons as {
 const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
 
 
-@NgModule({
-  declarations: [LoginComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    HttpClientModule,
-    HttpClientJsonpModule,
-    ReactiveFormsModule,
-    NgZorroAntdModule
-  ],
-  providers: [
-    provideRouter(routes), { provide: NZ_I18N, useValue: en_US },
-    { provide: NZ_ICONS, useValue: icons }]
-})
+@NgModule({ declarations: [LoginComponent], imports: [CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgZorroAntdModule], providers: [
+        provideRouter(routes), { provide: NZ_I18N, useValue: en_US },
+        { provide: NZ_ICONS, useValue: icons },
+        provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())
+    ] })
 export class LoginModule { }

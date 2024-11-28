@@ -1,4 +1,4 @@
-<div *appHasPermission="appPermissions.AddUpdateTask" class="flex space-between" style="margin-bottom:5px">
+<div *appHasPermission="appPermissions.AddTask" class="flex space-between" style="margin-bottom:5px">
     <span style="display: -webkit-box;width: 100%;">
         <h3 style="margin-right: 5px;">
             Projects
@@ -86,7 +86,7 @@
                 </td>
                 <td>{{data.description}}</td>
                 <td>
-                    <a *appHasPermission="appPermissions.AddUpdateTask"
+                    <a *appHasPermission="appPermissions.AddTask"
                         (click)="startEdit(data.id); showModal(false)">Edit</a>
                 </td>
             </ng-container>

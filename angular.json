@@ -33,7 +33,12 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@kolkov/angular-editor/assets/",
+                "output": "./assets/fonts/"
+              }
             ],
             "styles": [
               "node_modules/ng-zorro-antd/src/ng-zorro-antd.min.css",

@@ -1,40 +1,194 @@
 <!-- NZ Table -->
+<nz-row style="margin: 10px">
+    <nz-col nzSpan="12">
+        <h3>{{currentClinet?.name}}</h3>
 
-<h3>Employee Payments</h3>
+    </nz-col>
+
+    <nz-col nzSpan="12">
+        <nz-table #summaryTable [nzPageSize]="1000" nzShowPagination="false" [nzBordered]="true" style="width: auto;">
+            <thead>
+                <tr>
+                    <th>Budget</th>
+                    <th>Budget(PKR)</th>
+                    <th>Expense</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ projectBudgetSummary?.budget| currency :currentClinet?.currency}}</td>
+                    <td>{{ projectBudgetSummary?.budgetPKR| currency :'PKR'}}</td>
+                    <td>{{ projectBudgetSummary?.expense| currency :'PKR'}}</td>
+                    <td>{{ projectBudgetSummary?.profit| currency :'PKR'}}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-col>
+</nz-row>
+<nz-row style="margin: 10px">
+    <nz-col nzSpan="12">
+
+        <h3>Project Budget</h3>
+
+    </nz-col>
+    <nz-col nzSpan="12" style="text-align: right;">
+        <button nz-button nzType="primary" [nzSize]="'small'" (click)="addAmmountRecievedModal()">
+            Amount Recieved <span nz-icon [nzType]="'plus'"></span>
+        </button>
+    </nz-col>
+</nz-row>
+
+<nz-table #basicTable [nzPageSize]="1000" nzShowPagination="false" [nzBordered]="true">
+    <thead>
+        <tr>
+            <th width="24%">Budget</th>
+            <th width="24%">Recieved</th>
+            <!-- <th>Payment From</th> -->
+            <th width="26%">Recieving Date</th>
+            <th width="24%">Balance</th>
+            <!-- <th>Advance Balance</th> -->
+            <th width="2%"></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background: #d5d5d5;">
+
+            <td>{{ projectBudgetDetail.summary.budget| currency :currentClinet?.currency}}</td>
+            <td>{{ projectBudgetDetail.summary.recieved| currency :currentClinet?.currency}}</td>
+            <td>{{ projectBudgetDetail.summary.recieving_date| date : 'dd MMM yyyy' }}</td>
+            <td>{{ projectBudgetDetail.summary.balance| currency :currentClinet?.currency}}</td>
+            <td>
+                <button (click)="budegetExpanded=!budegetExpanded" nz-button nzType="primary" [nzSize]="'small'"
+                    nzShape="circle">
+                    <span nz-icon [nzType]="budegetExpanded?'up':'down'"></span>
+                </button>
+            </td>
+
+        </tr>
+        <ng-container *ngIf="budegetExpanded">
+            <tr *ngFor="let item of projectBudgetDetail.details">
+
+                <td width="24%"></td>
+                <td width="24%">{{ item.recieved| currency :currentClinet?.currency}}</td>
+                <td width="26%">{{ item.recieving_date | date : 'dd MMM yyyy' }}</td>
+                <td width="24%"></td>
+                <td width="2%"></td>
+            </tr>
+        </ng-container>
+    </tbody>
+</nz-table>
+<nz-row style="margin: 10px">
+    <nz-col>
+        <h3>Employee Payments</h3>
+    </nz-col>
+</nz-row>
 
 <nz-table #basicTable [nzPageSize]="1000" nzShowPagination="false" [nzData]="paymentData" [nzBordered]="true">
     <thead>
         <tr>
-            <th>Employee</th>
-            <th>Hourly Rate</th>
-            <!-- <th>Payment From</th> -->
-            <th>Amount</th>
-            <th>Balance</th>
-            <!-- <th>Advance Balance</th> -->
-            <th> Proceed For Payment </th>
+            <th [width]="'13%'">Employee</th>
+            <th [width]="'13%'">Rate</th>
+            <th [width]="'13%'">Total Amount</th>
+            <th [width]="'13%'">Paid</th>
+            <th [width]="'13%'">Date Paid</th>
+            <th [width]="'13%'">Balance</th>
+            <th [width]="'1.8%'"> </th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let row of paymentData">
-            <td>{{ row.employee?.employee?.name}}
-            <td>{{ row.employee?.salary | currency :' '}} </td>
-            <!-- <td><span>{{ row.paymentObject?.minDateCreated | date : 'dd MMM yyyy' }}
-                </span>
-            </td> -->
-            <td>{{ row.paymentObject?.totalAmount|| 0 | currency :' ' }}</td>
-            <td>{{ row.paymentObject?.balance||0 | currency :' ' }}
-            </td>
-            <!-- <td>
-                <span>{{ row.paymentObject?.advanceBalance || 0 | currency :' '}}</span>
-            </td> -->
-            <td>
-                <a *appHasPermission="appPermissions.AddUpdatePayments" nzType="primary" (click)="open(row)">Pay</a>
+        <tr style="background: #d5d5d5;">
+            <td style="text-align: center;">---</td>
+            <td style="text-align: center;">---</td>
+            <td>{{ (totalAmount || 0) | currency : 'PKR' }}</td>
+            <td>{{ (totalPaid || 0) | currency : 'PKR' }}</td>
+            <td>{{ latestDate ? (latestDate | date : 'dd MMM yyyy') : '---' }}</td>
+            <td>{{ (totalBalance || 0) | currency : 'PKR' }}</td>
 
+
+            <td>
+                <button (click)="employeeExpanded=!employeeExpanded" nz-button nzType="primary" [nzSize]="'small'"
+                    nzShape="circle">
+                    <span nz-icon [nzType]="employeeExpanded?'up':'down'"></span>
+                </button>
             </td>
         </tr>
+        <ng-container *ngIf="employeeExpanded">
+
+            <tr *ngFor="let row of paymentData">
+                <td>{{ row.employee?.employee?.name}}
+                <td>
+                    <b>{{row.employee?.isHourlyRateHourly?'Hourly':'Fixed'}}</b>
+                    {{ row.employee?.salary | currency :'PKR'}}
+                </td>
+                <td>{{ row.paymentObject?.totalAmount|| 0 | currency :'PKR' }}</td>
+                <td>{{ row.paymentObject?.totalPaid||0 | currency :'PKR' }} </td>
+                <td>{{ '1-1-2024' | date : 'dd MMM yyyy' }}</td>
+                <td>{{ row.paymentObject?.balance||0 | currency :'PKR' }}</td>
+
+                <td>
+                    <a *appHasPermission="appPermissions.AddUpdatePayments" nzType="primary" (click)="
+                        row.employee?.isHourlyRateHourly?
+                        open(row):addAmmountRecievedModal(false,row)">
+
+                        Pay</a>
+
+                </td>
+            </tr>
+        </ng-container>
     </tbody>
 </nz-table>
 
+<nz-modal [(nzVisible)]="showAddAmountRecieved" [nzTitle]="addingAmountRecieved?'Add Recieved Amount':'Pay Amount to '+selectedEmployee?.employee?.employee.name"
+    (nzOnCancel)="closeModal()" [nzOkDisabled]="addAmmountRecievedForm.invalid"
+    (nzOnOk)="handleRecieveAmountOk()" [nzOkLoading]="isOkLoading">
+
+    <nz-card *nzModalContent style="width:100%">
+        <form nz-form [formGroup]="addAmmountRecievedForm" (ngSubmit)="handleRecieveAmountOk()">
+            <nz-row nzGutter="2" style="margin-bottom: 12px;">
+
+                <nz-col [nzMd]="10" [nzSm]="16" [nzXs]="16">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="amount">Amount
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                            <input nz-input formControlName="amount">
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+
+            <nz-row *ngIf="addingAmountRecieved" nzGutter="2" style="margin-bottom: 12px;">
+
+                <nz-col [nzMd]="10" [nzSm]="16" [nzXs]="16">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="12" nzRequired nzFor="recieving_date">Recieving
+                            Date
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid date!">
+                            <nz-date-picker nzFormat="MM-dd-yyyy" class="inputField"
+                                formControlName="recieving_date"></nz-date-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+
+            <nz-row nzGutter="2" style="margin-bottom: 12px;">
+                <nz-col [nzMd]="24" [nzSm]="24" [nzXs]="24">
+                    <nz-form-item>
+                        <nz-form-label [nzMd]="8" [nzSm]="24" [nzXs]="24" nzRequired nzFor="name">Payment
+                            Description</nz-form-label>
+                        <nz-form-control class="flex space-between center " [nzSm]="14" [nzXs]="24"
+                            nzErrorTip="The input is not valid date!">
+                            <textarea class="inputField" nz-input formControlName="note"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+                </nz-col>
+            </nz-row>
+        </form>
+    </nz-card>
+</nz-modal>
 
 <nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right"
     [nzTitle]="'Employee: ' +selectedEmployee?.employee?.employee.name" [nzWidth]="isMobile()?'100%': '50%'"
@@ -42,9 +196,8 @@
     <ng-container *nzDrawerContent>
 
         <h3><strong>Worklog and Payments </strong></h3>
-        <app-worklog-details *ngIf="selectedEmployee"
-        [worklog]="selectedEmployee.worklog"
-        [employee]="selectedEmployee.employee">
+        <app-worklog-details *ngIf="selectedEmployee" [worklog]="selectedEmployee.worklog"
+            [employee]="selectedEmployee.employee">
         </app-worklog-details>
 
 

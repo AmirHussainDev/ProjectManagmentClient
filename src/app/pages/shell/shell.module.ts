@@ -5,7 +5,7 @@ import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShellComponent } from './shell.component';
-import { HttpClientModule, HttpClientJsonpModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import en from '@angular/common/locales/en';
 import * as AllIcons from '@ant-design/icons-angular/icons';
@@ -21,6 +21,7 @@ import { UsernamePipe } from '../../pipes/username.pipe';
 import { EmployeeContractComponent } from './employee-management/employee-contract/employee-contract.component';
 import { HasPermissionDirective } from '../../directives/permissions.directive';
 import { SharedModule } from './shared/shared.module';
+import { CurrencyConverterModalComponent } from './components/currency-converter/currency-converter.component';
 
 registerLocaleData(en);
 
@@ -30,26 +31,18 @@ const antDesignIcons = AllIcons as {
 const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
 
 
-@NgModule({
-  declarations: [
-    ShellComponent,
-    NullToStringPipe,
-    BreadcrumbComponent,
-    OrganizationSelectorComponent,
+@NgModule({ declarations: [
+        ShellComponent,
+        NullToStringPipe,
+        BreadcrumbComponent,
+        OrganizationSelectorComponent,
+        CurrencyConverterModalComponent
     ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    HttpClientModule,
-    HttpClientJsonpModule,
-    ReactiveFormsModule,
-    ShellRoutingModule,
-    NgZorroAntdModule,
-    SharedModule
-  ],
-  exports:[],
-  providers: [{ provide: NZ_I18N, useValue: en_US },
-  { provide: NZ_ICONS, useValue: icons },
-]
-})
+    exports: [], imports: [CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ShellRoutingModule,
+        NgZorroAntdModule,
+        SharedModule], providers: [{ provide: NZ_I18N, useValue: en_US },
+        { provide: NZ_ICONS, useValue: icons }, provideHttpClient(withInterceptorsFromDi(), withJsonpSupport()),] })
 export class ShellModule { }

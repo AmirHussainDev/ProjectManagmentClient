@@ -1,0 +1,40 @@
+<!-- NZ Table -->
+<nz-row style="margin: 10px">
+    <nz-col nzSpan="24">
+        <h3>Payment Summary</h3>
+    </nz-col>
+
+    <nz-col nzSpan="24">
+        <nz-table #summaryTable [nzPageSize]="1000" nzShowPagination="false" [nzBordered]="true" style="width: auto;">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Budget</th>
+                    <th>Budget(PKR)</th>
+                    <th>Expense</th>
+                    <!-- <th>Payment From</th> -->
+                    <th>Profit</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let client of projectBudgetSummary">
+                    <td>{{ client.client}}</td>
+                    <td>{{ client.budget| currency :client.currency}}</td>
+                    <td>{{ client.budgetPKR| currency :'PKR'}}</td>
+                    <td>{{ client.expense| currency :'PKR'}}</td>
+                    <td>{{ client.profit| currency :'PKR'}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><b>Total:</b></td>
+                    <td></td>
+                    <td><b>{{ totalBudgetPKR | currency:'PKR' }}</b></td>
+                    <td><b>{{ totalExpense | currency:'PKR' }}</b></td>
+                    <td><b>{{ totalProfit | currency:'PKR' }}</b></td>
+                  </tr>
+            </tfoot>
+        </nz-table>
+    </nz-col>
+</nz-row>

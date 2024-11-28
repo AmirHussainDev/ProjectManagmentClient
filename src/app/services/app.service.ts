@@ -370,7 +370,7 @@ export class AppService {
     }
   }
 
-  async AddUpdateTask(po: { details: any }): Promise<any[]> {
+  async AddTask(po: { details: any }): Promise<any[]> {
     try {
       po.details = {
         ...po.details,
@@ -947,10 +947,10 @@ export class AppService {
     }
   }
 
-  async getCurrentAddUpdateTaskWorklog(employeeId: number): Promise<Worklog[]> {
+  async getCurrentAddTaskWorklog(employeeId: number): Promise<Worklog[]> {
     try {
       const organization_id = localStorage.getItem('organization_id');
-      const response = await this.http.get(`${this.apiUrl}/employee/worklog/currentAddUpdateTaskWorklog/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
+      const response = await this.http.get(`${this.apiUrl}/employee/worklog/currentAddTaskWorklog/${organization_id}/${this.currentSubOrgId}/${employeeId}`, { headers: this.header }).toPromise()
       return response as Worklog[];
     } catch (error) {
       // Handle error appropriately, such as logging or throwing
@@ -987,7 +987,7 @@ export class AppService {
     }
   }
 
-  async payAddUpdateTaskWorklogs(id: number): Promise<Worklog> {
+  async payAddTaskWorklogs(id: number): Promise<Worklog> {
     try {
       const organization_id = localStorage.getItem('organization_id');
 
@@ -1023,6 +1023,92 @@ export class AppService {
     }
   }
 
+  async getClientExpenseSummary(clientId: number = 0): Promise<{
+    expense: any,
+  }> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http
+        .get(`${this.apiUrl}/payments/client/expense/${organization_id}/${clientId || this.currentSubOrgId}`, {
+          headers: this.header,
+        })
+        .toPromise();
+
+      return response as {
+        expense: any,
+      };
+    } catch (error) {
+      console.error('Error fetching project budget detail:', error);
+      throw error;
+    }
+  }
+  async getClientsExpenseSummary(): Promise<[{
+    expense: any,
+    name: any,
+    budget: any,
+    currency:any,
+  }]> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http
+        .get(`${this.apiUrl}/payments/client/expense/all/${organization_id}/0`, {
+          headers: this.header,
+        })
+        .toPromise();
+
+      return response as [{
+        expense: any,
+        name: any,
+        budget: any,
+        currency:any,
+      }];
+    } catch (error) {
+      console.error('Error fetching project budget detail:', error);
+      throw error;
+    }
+  }
+
+
+  async getClientBudgetRecievingDetails(clientId: number = 0): Promise<{
+    summary: any,
+    details: any[],
+  }> {
+    try {
+      const organization_id = localStorage.getItem('organization_id');
+      const response = await this.http
+        .get(`${this.apiUrl}/payments/client/${organization_id}/${clientId || this.currentSubOrgId}`, {
+          headers: this.header,
+        })
+        .toPromise();
+
+      return response as {
+        summary: any,
+        details: any[],
+      };
+    } catch (error) {
+      console.error('Error fetching project budget detail:', error);
+      throw error;
+    }
+  }
+
+  async createClientPayment(userObj: any): Promise<any> {
+    try {
+      const orgId = parseInt(localStorage.getItem('organization_id') || '0')
+      const body = {
+        ...userObj,
+        organization: orgId,
+        client: this.currentSubOrgId,
+        created_by: this.userService.loggedInUser.id,
+      }
+      const response = await this.http.post(`${this.apiUrl}/payments/client/${orgId}/${this.currentSubOrgId}`, body).toPromise();
+      return response;
+    } catch (error) {
+      // Handle error appropriately, such as logging or throwing
+      console.error('Error fetching organization users:', error);
+      throw error;
+    }
+  }
+
   async createPayment(userObj: any): Promise<any> {
     try {
       const body = {
@@ -1050,5 +1136,26 @@ export class AppService {
       console.error('Error fetching organization users:', error);
       throw error;
     }
+  }
+
+  convertCurrency(value: number, sourceCurrency: string, targetCurrency: string): number {
+    // Retrieve the exchange rates from local storage
+    const currencyRates = JSON.parse(localStorage.getItem('currency') || '{}');
+  
+    // Validate if the required currencies exist in the rates
+    if (!currencyRates[sourceCurrency]) {
+      throw new Error(`Exchange rate for source currency "${sourceCurrency}" not found.`);
+    }
+    if (!currencyRates[targetCurrency]) {
+      throw new Error(`Exchange rate for target currency "${targetCurrency}" not found.`);
+    }
+  
+    // Calculate the converted value
+    const sourceRate = currencyRates[sourceCurrency];
+    const targetRate = currencyRates[targetCurrency];
+    const convertedValue = (value / sourceRate) * targetRate;
+  
+    // Return the converted value
+    return convertedValue;
   }
 }

@@ -42,11 +42,12 @@ export class WorklogDetailsComponent implements OnInit {
   }
 
   async getCurrentUserWorklog() {
-    const worklog: any[] = await this.appService.getCurrentAddUpdateTaskWorklog(this.employee.employee.id)
-    if (worklog) {
-      this.initializeWorklogTableData(worklog);
+    // const worklog: any[] = await this.appService.getCurrentAddTaskWorklog(this.employee.employee.id)
+    // if (worklog) {
+      // this.initializeWorklogTableData(worklog);
 
-    }
+    // }
+    this.initializeWorklogTableData(this.worklog)
     this.updateEditCache();
   }
 
@@ -117,7 +118,7 @@ export class WorklogDetailsComponent implements OnInit {
     this.getCurrentUserWorklog();
   }
   async completeEmployeePayment() {
-      await this.appService.payAddUpdateTaskWorklogs(
+      await this.appService.payAddTaskWorklogs(
   this.employee.employee.id) 
     this.getCurrentUserWorklog();
       

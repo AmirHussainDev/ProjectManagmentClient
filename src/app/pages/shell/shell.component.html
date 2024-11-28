@@ -32,7 +32,7 @@
             </span>
           </li>
         </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.AddUpdateTask">
+        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.ViewTasks">
           
           <li nz-menu-item
             [class.selected-route]="currentRoutes.indexOf('board')>-1 && (currentRoutes.indexOf('status=' + saleState.Invoiced)>-1 || currentRoutes.join('').indexOf('INVOICE=')>-1  )">
@@ -56,7 +56,7 @@
               </a>
             </span>
           </li>
-          <li nz-menu-item
+          <li nz-menu-item *appHasPermission="appPermissions.ViewTasks"
             [class.selected-route]="currentRoutes.indexOf('report')>-1">
             <span nz-icon style="font-size: 18px;" nzType="file-done"></span>
             <span>
@@ -70,21 +70,9 @@
           </li>
         </ul>
       
-        <!-- <ul nz-menu nzTheme="dark" nzMode="inline">
-          <li *appHasPermission="appPermissions.AddUpdateTask" nz-menu-item style="margin-top: 12px;"
-            [class.selected-route]="currentRoutes.indexOf('sites')>-1">
-            <span nz-icon style="font-size: 18px;" nzType="build" size></span>
-            <span>
-              <a class="nav-link" [routerLink]="['/sites']" [state]="{tracingId: 123}"
-                (click)="isMobile()?isCollapsed=true:null">
-                Projects
-              </a>
-            </span>
-          </li>
-        </ul> -->
-        <ul nz-menu nzTheme="dark" nzMode="inline">
+        <ul nz-menu nzTheme="dark" nzMode="inline" *appHasPermission="appPermissions.AddUpdatePayments">
           <li nz-menu-item style="margin-top: 12px;"
-            [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('worklog')===-1&&currentRoutes.indexOf('pay-processing')===-1">
+            [class.selected-route]="currentRoutes.indexOf('employee')>-1&&currentRoutes.indexOf('worklog')===-1&&currentRoutes.indexOf('pay-processing')===-1&&currentRoutes.indexOf('client-processing')===-1">
             <span nz-icon style="font-size: 18px;" nzType="profile" size></span>
             <span>
               <a class="nav-link" [routerLink]="['/employee']" [state]="{tracingId: 123}"
@@ -108,12 +96,22 @@
             <span>
               <a class="nav-link" [routerLink]="['/employee','pay-processing']" [state]="{tracingId: 123}"
                 (click)="isMobile()?isCollapsed=true:null">
-                Payments
+                Client Payments
+              </a>
+            </span>
+          </li>
+          <li nz-menu-item style="margin-top: 12px;" *appHasPermission="appPermissions.AddUpdatePayments"
+            [class.selected-route]="currentRoutes.indexOf('client-processing')>-1">
+            <span nz-icon style="font-size: 18px;" nzType="schedule" size></span>
+            <span>
+              <a class="nav-link" [routerLink]="['/employee','client-processing']" [state]="{tracingId: 123}"
+                (click)="isMobile()?isCollapsed=true:null">
+                Budget Summary
               </a>
             </span>
           </li>
         </ul>
-        <ul nz-menu nzTheme="dark" nzMode="inline">
+        <ul *appHasPermission="appPermissions.ViewUsers||appPermissions.UpdatePermissions" nz-menu nzTheme="dark" nzMode="inline">
           <li *appHasPermission="appPermissions.ViewUsers" nz-menu-item style="margin-top: 12px;"
             [class.selected-route]="currentRoutes.indexOf('team')>-1&&currentRoutes.indexOf('roles')==-1">
             <span nz-icon style="font-size: 18px;" nzType="team" size></span>
@@ -147,6 +145,8 @@
             <span class="trigger" *ngIf="isMobile() || (!isMobile()&&isCollapsed)" nz-icon style="font-size: 18px;"
               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" (click)="isCollapsed = !isCollapsed"></span>
             <!-- <h3 class="header-text" style="padding-left: 16px;">Home</h3> -->
+            <app-currency-converter *appHasPermission="appPermissions.AddUpdatePayments"></app-currency-converter>
+
           </span>
           <span class="flex center space-between" [style.width]="isMobile()?'100%':'auto'">
             <span>

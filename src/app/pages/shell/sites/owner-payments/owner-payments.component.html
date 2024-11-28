@@ -84,7 +84,7 @@
             <td>{{ data.amount }}</td>
             <td>
 
-                <label nz-checkbox [disabled]="!editCache[data.id]?.edit" [nzChecked]="editCache[data.id].data.is_paid"
+                <label nz-checkbox [disabled]="!editCache[data.id].edit" [nzChecked]="editCache[data.id].data.is_paid"
                     [(ngModel)]="editCache[data.id].data.is_paid"></label>
             </td>
             <td>

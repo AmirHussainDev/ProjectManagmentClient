@@ -4,7 +4,7 @@ import { environment } from '../../../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { HttpParams } from '@angular/common/http';
-import { TaskCardColors, TaskColors, TaskSeverity, TaskSeverityColors, TaskStateNames, TaskStates, TaskStatesConnectivity, TaskTypeColors } from '../../../../services/app.constants';
+import { AppPermissions, TaskCardColors, TaskColors, TaskSeverity, TaskSeverityColors, TaskStateNames, TaskStates, TaskStatesConnectivity, TaskTypeColors } from '../../../../services/app.constants';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ExportSheetService } from '../../../../services/export-sheet.service';
@@ -41,7 +41,8 @@ export class BoardComponent implements OnInit, AfterViewInit, OnDestroy {
   listOfDisplayData: any = {};
   currentOrganizationId: number;
   sort: { key: string; value: import("ng-zorro-antd/table").NzTableSortOrder; }[];
-  taskStatesConnectivity = TaskStatesConnectivity
+  taskStatesConnectivity = TaskStatesConnectivity;
+  appPermissions=AppPermissions;
   constructor(
     private appService: AppService,
     private media: MediaMatcher,

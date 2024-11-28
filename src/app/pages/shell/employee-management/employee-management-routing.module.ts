@@ -6,6 +6,7 @@ import { WorklogComponent } from './worklog/worklog.component';
 import { PayProcessingComponent } from './pay-processing/pay-processing.component';
 import { AppPermissions } from '../../../services/app.constants';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,11 @@ const routes: Routes = [
   {
     path: 'pay-processing', component: PayProcessingComponent,
     data: { name: 'Payment' , permission:AppPermissions.AddUpdatePayments},
+    canActivate:[AuthGuard]
+  },
+  {
+    path: 'client-processing', component: PaymentSummaryComponent,
+    data: { name: 'Budget Payment' , permission:AppPermissions.AddUpdatePayments},
     canActivate:[AuthGuard]
   },
   {

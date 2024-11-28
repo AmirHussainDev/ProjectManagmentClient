@@ -15,6 +15,7 @@ import { EmployeeContractComponent } from './employee-contract/employee-contract
 import { SafePipe } from '../../../pipes/safe.pipe';
 import { WorklogDetailsComponent } from './worklog/worklog-details/worklog-details.component';
 import { SharedModule } from '../shared/shared.module';
+import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -31,9 +32,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     WorklogComponent,
     PayProcessingComponent,
     EmployeeContractComponent,
-    WorklogDetailsComponent
-    
-  ],
+    WorklogDetailsComponent,
+    PaymentSummaryComponent  ],
   providers: [{ provide: NZ_I18N, useValue: en_US },
     { provide: NZ_ICONS, useValue: icons },
     UsernamePipe,

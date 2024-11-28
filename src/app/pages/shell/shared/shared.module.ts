@@ -8,6 +8,7 @@ import { PdfGeneratorService } from '../../../services/pdf-generator.service';
 import { SelectModalControlComponent } from '../components/select-modal-control/select-modal-control.component';
 import { UserHasPermissionDirective } from '../../../directives/filterUserBasedOnPermission.directive';
 import { ExportSheetService } from '../../../services/export-sheet.service';
+import { AngularEditorModule } from '@kylepairish/angular-editor';
 
 
 
@@ -20,7 +21,8 @@ import { ExportSheetService } from '../../../services/export-sheet.service';
     CommonModule,
     NgZorroAntdModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    AngularEditorModule
   ],
   providers:[
     PdfGeneratorService,
