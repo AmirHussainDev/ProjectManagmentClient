@@ -57,7 +57,7 @@ export class LoginComponent {
           localStorage.setItem('permissions', JSON.stringify(data.user.role_permissions));
           localStorage.setItem('client_id', JSON.stringify(data.user.client_id));
           const lastUrl=localStorage.getItem('redirectUrl')
-          this.router.navigateByUrl(lastUrl||'/');
+          this.router.navigateByUrl(lastUrl&&lastUrl?.indexOf('login')==-1?lastUrl:'/');
         }
 
       } else {
