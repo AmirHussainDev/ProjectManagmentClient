@@ -42,4 +42,12 @@
   font-size: 9px;
   font-weight: bold;
 }
+::ng-deep.ant-card-meta-description{
+  display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: inherit;
+    line-height: 1.5;
 }

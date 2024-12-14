@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-body {
-    
-    background-color: #49324f;
-    background-image: linear-gradient(90deg, #140f1e 0%, #ffffff 100%);
+body {    
+    background: #20002c;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #cbb4d4, #20002c);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #cbb4d4, #20002c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .text-center {
@@ -32,8 +32,10 @@ body {
 app-shell {
     width: 100% !important;
     height: 100vh;
-    background-color: #74EBD5;
-    background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+    background: #20002c;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #cbb4d4, #20002c);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #cbb4d4, #20002c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
 }
 
 .flex {
@@ -574,9 +576,6 @@ nz-filter-trigger {
 
 .boardCard {
 
-    width: calc(20% - 20px);
-    margin: 10px;
-
     .tab-heading {
         background: #EAEBED;
         padding: 5px;
@@ -592,7 +591,6 @@ nz-filter-trigger {
 .boardCardSmall {
     height: 100%;
     width: calc(50% - 20px);
-    margin: 10px;
 }
 
 .custom-card {
@@ -647,4 +645,15 @@ nz-filter-trigger {
     transform-origin: 0 center;
     text-align: center;
     width: 100%;
+}
+
+nz-input-group:has(input[placeholder="Search here"]) {
+   
+    background: transparent;
+
+}
+input[placeholder="Search here"] {
+   
+        background: transparent;
+   
 }

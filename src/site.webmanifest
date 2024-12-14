@@ -3,12 +3,12 @@
     "short_name": "ElewareGOC",
     "icons": [
         {
-            "src": "/veins-192x192.png",
+            "src": "/apple-touch-icon192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/veins-512x512.png",
+            "src": "/apple-touch-icon512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         }

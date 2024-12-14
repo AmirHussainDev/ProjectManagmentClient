@@ -1,8 +1,8 @@
 <nz-row style="height: 100%;">
     <nz-col [nzSpan]="!isMobile()&&showSide?8:24" style="height: 100%; overflow-y: auto;">
-        <div nz-row class="boardCards">
-            <ng-container *ngFor="let key of states | keyvalue:sortByValue ">
-                <div nz-col class="boardCard" [ngClass]="showSide?' boardCard boardCardSmall':'boardCard'"
+        <div nz-row [nzGutter]="5" class="boardCards">
+            <ng-container *ngFor="let key of states | keyvalue:sortByValue  let i=index">
+                <div nz-col [nzMd]="key.value==states.Cancelled?4:5" [nzSm]="6" [nzXs]="12" class="boardCard" [ngClass]="showSide?' boardCard boardCardSmall':'boardCard'"
                     *ngIf="key.value!==states.Backlog" nz-col>
                     <h4 class="tab-heading">{{stateNames[key.value]}}</h4>
                     <div cdkDropList style="padding-bottom: 50px;" [id]="key.key"
@@ -10,7 +10,7 @@
                         [cdkDropListData]="listOfDisplayData[key.value]" (cdkDropListDropped)="drop($event)">
                         <div class="item" cdkDrag *ngFor="let item of listOfDisplayData[key.value]">
                             <nz-card [nzBordered]="false" [nzBodyStyle]="{ padding: '12px' }" class="custom-card">
-                                <nz-card-meta [nzDescription]="item.title"></nz-card-meta>
+                                <nz-card-meta class="title-text" [nzDescription]="item.title"></nz-card-meta>
                                
                                 <span class="flex space-between">
                                     <span>
@@ -58,7 +58,7 @@
                         <nz-card [nzBordered]="false" [nzBodyStyle]="{ padding: '12px' }" class="custom-card"
                             (click)="showSide = true" [routerLink]="['/', 'task', 'board', 'task']"
                             [queryParams]="{ TASK: item.task_no }">
-                            <nz-card-meta   [nzDescription]="item.title"></nz-card-meta>
+                            <nz-card-meta    class="title-text" [nzDescription]="item.title"></nz-card-meta>
                             
                             <span class="flex space-between">
                                 <span>

@@ -153,9 +153,10 @@ nz-header {
 }
 
 nz-content {
-    background: white;
+    background: #f7f6f6;;
     padding: 6px 6px;
     overflow: auto;
+    
 }
 
 nz-breadcrumb {
